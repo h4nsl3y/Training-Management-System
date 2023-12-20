@@ -58,5 +58,22 @@ namespace TrainingManagementSystem.Controllers
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message}, JsonRequestBehavior.AllowGet);
         }
+        public JsonResult UpdateTraining(Training training)
+        {
+            Dictionary<string, object> values = new Dictionary<string, object>();
+            values.Add("Title", training.Title);
+            values.Add("DepartmentId", training.DepartmentId);
+            values.Add("SeatNumber", training.SeatNumber);
+            values.Add("Deadline", training.Deadline);
+            values.Add("StartDate", training.StartDate);
+            values.Add("EndDate", training.EndDate);
+            values.Add("ShortDescription", training.ShortDescription);
+            values.Add("LongDescription", training.LongDescription);
+            Result<bool> result = _genericBusinessLogic.Update(training.TrainingId,values);
+            return result.Success ?
+                Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
+                Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

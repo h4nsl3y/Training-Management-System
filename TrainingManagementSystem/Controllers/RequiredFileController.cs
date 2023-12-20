@@ -66,12 +66,6 @@ namespace TrainingManagementSystem.Controllers
             string filename = myFile.FileName;
 
             return File(fileByte, fileType, filename);
-
-            // TO DO : async one for message and one for display 
-            //string path = Server.MapPath("~/data/" + requiredFileResult.Data.FirstOrDefault().FileName);
-            /* return (requiredFileResult.Success) ?
-                 Json(new { message = "success", data = requiredFileResult.Data }, JsonRequestBehavior.AllowGet):
-                 Json(new { message = "failed", data = requiredFileResult.Data }, JsonRequestBehavior.AllowGet);*/
         }
 
 

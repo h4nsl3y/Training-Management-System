@@ -71,8 +71,8 @@
     <Compile Include="PrerequisiteBusinesslogics\IPrerequisiteBusinessLogic.cs" />
     <Compile Include="PrerequisiteBusinesslogics\PrequisiteBusinessLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RequiredFileBusinessLogics\RequiredFileBusinessLogic.cs" />
     <Compile Include="RequiredFileBusinessLogics\IRequiredFileBusinessLogic.cs" />
+    <Compile Include="RequiredFileBusinessLogics\RequiredFileBusinessLogic.cs" />
     <Compile Include="TrainingBusinessLogics\TrainingBusinesslogic.cs" />
     <Compile Include="TrainingBusinessLogics\ITrainingBusinesslogic.cs" />
     <Compile Include="ViewModelsBusinessLogics\IViewModelBusinesslogic.cs" />

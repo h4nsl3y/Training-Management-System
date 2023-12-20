@@ -71,9 +71,11 @@
     <Compile Include="DataBaseUtils\DataBaseUtil.cs" />
     <Compile Include="DataBaseUtils\IDataBaseUtil.cs" />
     <Compile Include="Entity\Account.cs" />
+    <Compile Include="Entity\State.cs" />
     <Compile Include="Entity\Department.cs" />
     <Compile Include="Entity\Enrollment.cs" />
     <Compile Include="Entity\Prerequisite.cs" />
+    <Compile Include="Entity\Rejection.cs" />
     <Compile Include="Entity\RequiredFiles.cs" />
     <Compile Include="Entity\Result.cs" />
     <Compile Include="Entity\Role.cs" />

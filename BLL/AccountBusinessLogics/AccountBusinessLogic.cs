@@ -52,7 +52,7 @@ namespace BLL.AccountBusinessLogics
                     {"EMAIL", email }
                 };
                 Result<Account> result = _accountRepository.Get(conditions);
-                if (result.Success)
+                if (result.Success && result.Data.First() != null)
                 {
                     object passwordHash = result.Data.FirstOrDefault().Password;
                     bool authenticateFlag = BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash.ToString());

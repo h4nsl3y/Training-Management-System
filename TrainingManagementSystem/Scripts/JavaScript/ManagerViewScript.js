@@ -11,7 +11,7 @@ function GetDocument(prerequisiteId, employeeId) {
         url: "/RequiredFile/GetFile",
         data: { prerequisiteId: prerequisiteId, accountId: employeeId },
         success: function (result) {
-            let myFile = new Blob([result], { type: 'application/pdf;charset=UTF-16LE;' });
+            let myFile = new Blob([result], { encoding: "ASCII-85", type: 'application/pdf;charset=UTF-8;' });
             let url = URL.createObjectURL(myFile);
             window.open(url, '_blank');
         },
@@ -84,7 +84,12 @@ function GetRequestByEmployee(requestAccountId) {
                         {
                             "data": "PrerequisiteId",
                             render: function (data) {
-                                return "<button class='item-button' id='viewDocumentBtn' onclick='GetDocument(" + data + " , " + requestAccountId + ")'>Document(s)</button>";
+                                if (data != 0) {
+                                    return "<button class='item-button' id='viewDocumentBtn' onclick='GetDocument(" + data + " , " + requestAccountId + ")'>Document(s)</button>";
+                                }
+                                else {
+                                    return "No document required";
+                                }
                             }
                         },
                         {
@@ -127,6 +132,7 @@ function UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId)
         success: function (result) {
             if (result.message == "success") {
                 GetRequestByEmployee(requestEmployeeId)
+                GetEnrollment()
             }
             else {
                 ShowNotification("Error", result.data);
@@ -142,13 +148,29 @@ function RejectRequest(requestEnrollmentId, requestState, requestEmployeeId) {
     let overlay = document.getElementById("commentContainerId");
     overlay.style.visibility = "visible";
     document.getElementById("submitRejectionCommentBtn").onclick = function () {
-        SubmitRejectionReason( requestEnrollmentId + "," + requestState + "," + requestEmployeeId );
+        SubmitRejectionReason(requestEnrollmentId, requestState, requestEmployeeId);
     }
 };
 
 function SubmitRejectionReason(requestEnrollmentId, requestState, requestEmployeeId) {
-    let text = document.getElementById("rejectionReasonid").value;
-    console.log(text);
+    let rejectionComment = document.getElementById("rejectionReasonid").value;
+    $.ajax({
+        type: "POST",
+        url: "/Rejection/SetRejectionComment",
+        data: { enrollmentId: requestEnrollmentId, comment: rejectionComment },
+        success: function (result) {
+            if (result.message == "success") {
+                UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId);
+                CloseTextArea();
+            }
+            else {
+                ShowNotification("Error", result.data);
+            };
+        },
+        error: function (result) {
+            ShowNotification("Error", "Communication has been interupted");
+        },
+    });
 }
 
 

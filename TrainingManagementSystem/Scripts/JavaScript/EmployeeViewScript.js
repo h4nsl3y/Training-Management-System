@@ -1,6 +1,6 @@
 ﻿$(document).ready(
     GetAvailableTrainingList(),
-    GetEnrolledTrainingList()
+    GetStateList(),
 )
 function GetPrerequisite(trainingId) {
     $.ajax({
@@ -129,8 +129,7 @@ function Enroll() {
         }
     });
 };
-function GetEnrolledTrainingList() {
-    let states = GetDepartmentList();
+function GetEnrolledTrainingList(states) {
     $.ajax({
         type: 'GET',
         url: "/Enrollment/GetAllEnrollmentByEmployee",
@@ -150,7 +149,13 @@ function GetEnrolledTrainingList() {
                                 return new Date(Number((data).match(/\d+/)[0]));
                             }
                         },
-                        { "data": "StateId" },
+                        {
+                            "data": "StateId",
+                            render: function (data) {
+                                index = data - 1;
+                                return states[index].StateDefinition;
+                            }
+                        },
                         {
                             "data": "TrainingId",
                             render: function (data) {
@@ -245,12 +250,17 @@ function FileUpload(fileData) {
     });
 };
 
-function GetDepartmentList() {
+function GetStateList() {
     $.ajax({
         type: "GET",
         url: "/State/GetStateList",
         success: function (result) {
-            return result
+            if (message = "success") {
+                GetEnrolledTrainingList(result.data);
+            }
+            else {
+                ShowNotification("Error",result.data)
+            }
         },
         error: function (error) {
             ShowNotification("Error", "Communication has been interupted");

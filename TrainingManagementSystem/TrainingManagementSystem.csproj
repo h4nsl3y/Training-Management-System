@@ -138,8 +138,10 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PrerequisiteController.cs" />
+    <Compile Include="Controllers\RejectionController.cs" />
     <Compile Include="Controllers\RequiredFileController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
+    <Compile Include="Controllers\StateController.cs" />
     <Compile Include="Controllers\TrainingController.cs" />
     <Compile Include="Controllers\ViewModelController.cs" />
     <Compile Include="Global.asax.cs">
@@ -12143,8 +12145,10 @@
     <Folder Include="Views\Department\" />
     <Folder Include="Views\Enroll\" />
     <Folder Include="Views\Prequisite\" />
+    <Folder Include="Views\Rejection\" />
     <Folder Include="Views\RequiredFile\" />
     <Folder Include="Views\Role\" />
+    <Folder Include="Views\State\" />
     <Folder Include="Views\Training\" />
     <Folder Include="Views\ViewModel\" />
   </ItemGroup>

@@ -152,6 +152,7 @@ function FillTrainingDetail(trainingId) {
             if (message = 'success') {
                 document.getElementById("submitTrainingDetailsBtn").onclick = function () {
                     UpdateTraining(training.TrainingId);
+                    GetTrainingList();
                 };
 
                 document.getElementById("trainingTitleId").value = training.Title;
@@ -174,6 +175,7 @@ function FillTrainingDetail(trainingId) {
 };
 function UpdateTraining(trainingId) {
     let data = {
+        TrainingId: trainingId,
         Title: document.getElementById("trainingTitleId").value,
         DepartmentId: document.getElementById("trainingDepartmentId").value,
         SeatNumber: document.getElementById("trainingSeatAvailableId").value,
@@ -185,7 +187,7 @@ function UpdateTraining(trainingId) {
     };
     $.ajax({
         type: "POST",
-        url: "/Training/RegisterTraining",
+        url: "/Training/UpdateTraining",
         data: data,
         dataType: 'json',
         success: function () {

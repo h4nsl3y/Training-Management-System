@@ -48,7 +48,7 @@ namespace DAL.DataBaseUtils
             {
                 _logger.Log(exception);
                 result.Success = false;
-                result.Message = "Server encountered an error";
+                result.Message = "No account has been find";
             }
             finally
             {

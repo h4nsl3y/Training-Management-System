@@ -22,6 +22,7 @@ namespace DAL.Repository.ViewModelRepositories
             List<SqlParameter> parameters = new List<SqlParameter>();
             string query = $@"SELECT * FROM TRAINING
                             INNER JOIN ENROLLMENT ON TRAINING.TRAININGID = ENROLLMENT.TRAININGID
+                            LEFT OUTER JOIN TRAININGPREREQUISITE ON TRAININGPREREQUISITE.TRAININGID =  TRAINING.TRAININGID
                             WHERE ENROLLMENT.ACCOUNTID = @ACCOUNTID AND ENROLLMENT.STATEID = @STATEID;";
             parameters.Add(new SqlParameter("@ACCOUNTID", accountId));
             parameters.Add(new SqlParameter("@STATEID", EnrollmentStateEnum.Waiting_For_Approval));
