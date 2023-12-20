@@ -1,0 +1,68 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script defer src="~/Scripts/JavaScript/EmployeeViewScript.js"></script>
+<link rel="stylesheet" href="~/Content/CSS/EmployeeOverlay.css">
+
+<div class="List-area">
+    <div class="area-container ">
+        <div class="container-title">
+            <h3>Available Trainings</h3>
+        </div>
+        <div class="container-list" id="containerUnenrolledListId">
+            <table class="list-item" id="trainingTableId">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Date</th>
+                        <th>Available seats</th>
+                        <th>Description</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="area-container ">
+        <div class="container-title">
+            <h3>Submitted training request</h3>
+        </div>
+        <div class="container-list" id="containerEnrolledListId">
+            <table class="list-item" id="enrollmentTableId">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Submission date</th>
+                        <th>Status</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+</div>
+<div id="screenOverlay" class="overlay">
+    <div class="display-content">
+        <div class="text-content">
+            <p id="detailTitle">Title :</p>
+            <p id="detailId">Training ID :</p>
+            <p id="detailDepartmentPriority">Priority to :</p>
+            <p id="detailDescription">Description : </p>
+            <p id="detailDate">Date : </p>
+        </div>
+        <div class="upload-area" id="upload-form-container">
+            <form class="upload-form" id="uploadFormId">
+            </form>
+        </div>
+        <div class="button-content">
+            <div class="button-container">
+                <button class="item-button-overlay" id="enrollBtn" onclick="Enroll()">Enroll</button>
+                <button class="item-button-overlay" id="closeDetailsBtn" onclick="HideDetail()">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>

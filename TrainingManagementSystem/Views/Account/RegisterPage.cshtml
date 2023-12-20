@@ -1,0 +1,116 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/CSS/RegisterStyleSheet.css">
+    <link rel="stylesheet" href="~/Content/CSS/NotificationStyleSheet.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script defer src="~/Scripts/JavaScript/RegisterAccountScript.js"></script>
+    <script src="~/Scripts/JavaScript/NotificationScript.js"></script>
+    <!--Flag script-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.min.css" />
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <div class="area">
+        <form id="container-form">
+            <div class="image-container">
+                <!--Insert Image-->
+            </div>
+            <h2>Registration</h2>
+            <div class="input-container">
+
+                <div class="field-container">
+                    <div class="input-field">
+                        <label for="FirstName">First name*</label>
+                        <input type="text" id="FirstNameFieldId" name="FirstName" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="OtherNameFieldId">Other name(s)</label>
+                        <input type="text" id="OtherNameFieldId" name="OtherNameField">
+                    </div>
+                </div>
+
+                <div class="field-container">
+                    <div class="input-field">
+                        <label for="LastNameFieldId">Last name*</label>
+                        <input type="text" id="LastNameFieldId" name="LastNameField" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="NationalIdentificationNumberFieldId">National Identification Number *</label>
+                        <input type="text" id="NationalIdentificationNumberFieldId" name="NationalIdentificationNumberField" required>
+                    </div>
+                </div>
+
+                <div class="field-container">
+                    <div class="input-field">
+                        <label for="MobileNumberField">Mobile number*</label>
+                        <input type="tel" id="MobileNumberFieldId" name="MobileNumberField" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="EmailFieldId">Email*</label>
+                        <input type="text" id="EmailFieldId" name="EmailField" required>
+                    </div>
+                </div>
+
+                <div class="field-container">
+                    <div class="input-field">
+                        <label for="DepartmentComboBoxId">Department*</label>
+                        <select id="DepartmentComboBoxId" name="DepartmentComboBox" required>
+                            <option value="none" selected disabled hidden>Select a department</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                        <label for="ManagerComboBoxId">Manager*</label>
+                        <select id="ManagerComboBoxId" name="ManagerComboBox" required>
+                            <option value="none" selected disabled hidden>Select an manager</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field-container">
+                    <div class="input-field">
+                        <label for="RoleComboBoxId">Role*</label>
+                        <select id="RoleComboBoxId" name="RoleComboBox" required>
+                            <option value="none" selected disabled hidden>Select a role</option>
+                        </select>
+                    </div>
+                    <div class="input-field">
+                    </div>
+                </div>
+
+
+
+                <div class="field-container">
+                    <div class="input-field">
+                        <label for="PasswordFieldId">Password*</label>
+                        <input type="Password" id="PasswordFieldId" name="PasswordField" required>
+                    </div>
+                    <div class="input-field">
+                        <label for="ConfirmPasswordFieldId">Confirm Password*</label>
+                        <input type="Password" id="ConfirmPasswordFieldId" name="ConfirmPasswordField" required>
+                    </div>
+                </div>
+
+                <div class="notification">
+                    <p id="notificationText"> </p>
+                </div>
+                <div class="button-container">
+                    <input type="button" value="Sign Up" OnClick="CheckTextField()">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="notification" class="notification-container">
+        <p id="notificationTitle" class="notification-title">warning</p>
+        <p id="notificationMessage"></p>
+    </div>
+    <select name="country" id="country" class="country"></select>
+</body>
+</html>
+

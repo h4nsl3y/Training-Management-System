@@ -1,0 +1,154 @@
+﻿$(document).ready(
+    GetEnrollment()
+)
+function CloseTextArea() {
+    let overlay = document.getElementById("commentContainerId");
+    overlay.style.visibility = "hidden";
+}
+function GetDocument(prerequisiteId, employeeId) {
+    $.ajax({
+        type: "GET",
+        url: "/RequiredFile/GetFile",
+        data: { prerequisiteId: prerequisiteId, accountId: employeeId },
+        success: function (result) {
+            let myFile = new Blob([result], { type: 'application/pdf;charset=UTF-16LE;' });
+            let url = URL.createObjectURL(myFile);
+            window.open(url, '_blank');
+        },
+        error: function () {
+            ShowNotification("Error, File could not be load");
+        }
+    });
+}
+function GetEnrollment() {
+    $.ajax({
+        type: "GET",
+        url: "/Account/GetEmployeeEnrolled",
+        success: function (result) {
+            if (result.message == "success") {
+                if ($.fn.DataTable.isDataTable('#employeeEnrollmentTableId')) {
+                    $('#employeeEnrollmentTableId').DataTable().destroy();
+                }
+                $('#employeeEnrollmentTableId').DataTable({
+                    "data": result.data,
+                    "columns": [
+                        {
+                            render: function (data, type, row) {
+                                return row.FirstName + ' ' + row.OtherName + ' ' + row.LastName;
+                            }
+                        },
+                        {
+                            "data": "AccountId",
+                            render: function (data) {
+                                return "<button class='item-button' id='detailBtn' onclick='GetRequestByEmployee(" + data + ")'> See Requests</button>";
+                            }
+                        }
+                    ],
+
+                });
+            }
+            else {
+                ShowNotification("Error", result.data);
+            };
+        },
+        error: function () {
+            ShowNotification("Error", "Communication has been interupted");
+        },
+    });
+};
+
+function GetRequestByEmployee(requestAccountId) {
+    $.ajax({
+        type: "GET",
+        url: "/ViewModel/GetTrainingEnrollmentViewModel",
+        data: { accountId: requestAccountId },
+        dataType: 'json',
+        success: function (result) {
+            if (result.message == "success") {
+                if ($.fn.DataTable.isDataTable('#requestTableId')) {
+                    $('#requestTableId').DataTable().destroy();
+                }
+                let approve = 3;
+                let reject = 2;
+                $('#requestTableId').DataTable({
+                    "data": result.data,
+                    "columns": [
+                        { "data": "Title" },
+                        {
+                            "data": "StartDate",
+                            render: function (data) {
+                                return new Date(Number((data).match(/\d+/)[0]));
+                            },
+                        },
+                        { "data": "ShortDescription" },
+                        {
+                            "data": "PrerequisiteId",
+                            render: function (data) {
+                                return "<button class='item-button' id='viewDocumentBtn' onclick='GetDocument(" + data + " , " + requestAccountId + ")'>Document(s)</button>";
+                            }
+                        },
+                        {
+                            "data": "EnrollmentId",
+                            render: function (data) {
+                                return "<button class='item-button' id='detailBtn' onclick='UpdatRequestState(" + data + ", " + approve + " , " + requestAccountId + ")'>Approve</button>";
+                            }
+                        },
+                        {
+                            "data": "EnrollmentId",
+                            render: function (data) {
+                                return "<button class='item-button' id='detailBtn' onclick='RejectRequest(" + data + ", " + reject + " , " + requestAccountId + ")'>Reject</button>";
+                            }
+                        }
+                    ],
+                });
+            }
+            else {
+                ShowNotification("Error", result.data);
+            };
+            let overlay = document.getElementById("screenOverlay");
+            overlay.style.visibility = "visible";
+        },
+        error: function () {
+            ShowNotification("Error", "Communication has been interupted");
+        },
+    });
+};
+function HideRequest() {
+    let overlay = document.getElementById("screenOverlay");
+    overlay.style.visibility = "hidden";
+}
+function UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId) {
+    let data = { enrollmentId: requestEnrollmentId, state: requestState }
+    $.ajax({
+        type: "POST",
+        url: "/Enrollment/UpdateState",
+        data: data,
+        dataType: 'json',
+        success: function (result) {
+            if (result.message == "success") {
+                GetRequestByEmployee(requestEmployeeId)
+            }
+            else {
+                ShowNotification("Error", result.data);
+            };
+        },
+        error: function () {
+            ShowNotification("Error", "Communication has been interupted");
+        },
+    });
+};
+
+function RejectRequest(requestEnrollmentId, requestState, requestEmployeeId) {
+    let overlay = document.getElementById("commentContainerId");
+    overlay.style.visibility = "visible";
+    document.getElementById("submitRejectionCommentBtn").onclick = function () {
+        SubmitRejectionReason( requestEnrollmentId + "," + requestState + "," + requestEmployeeId );
+    }
+};
+
+function SubmitRejectionReason(requestEnrollmentId, requestState, requestEmployeeId) {
+    let text = document.getElementById("rejectionReasonid").value;
+    console.log(text);
+}
+
+

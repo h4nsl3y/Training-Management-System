@@ -1,0 +1,69 @@
+﻿.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(155, 155, 155, 0.5);
+    top: 0;
+    left: 0;
+    z-index: 1;
+    visibility: hidden;
+}
+
+.display-content {
+    width: 60%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: rgb(250, 250, 250);
+    padding: 2%;
+    margin: 200px 16%;
+    justify-content: center;
+}
+
+request-list {
+    width: 80%;
+    margin: 10px 10%;
+    padding: 10px;
+}
+
+.button-content {
+    width: 80%;
+    text-align: center;
+}
+
+.text-content, .button-content {
+    margin: 10px 10%;
+}
+
+.upload-form {
+}
+
+.upload-button {
+    float: right;
+}
+
+.zindex2 {
+    z-index: 2;
+}
+
+.comment-container {
+    width: 60%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: rgb(250, 250, 250);
+    padding: 2%;
+    margin: 300px 19%;
+}
+
+.rejection-textArea {
+    width: 80%;
+    height: 100px;
+    margin: 10px 10%;
+}
+
+.item-button-overlay {
+    width: 40%;
+    height: 20px;
+    background-color: rgb(57,130,232);
+    border: none;
+    color: white;
+}

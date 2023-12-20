@@ -1,0 +1,16 @@
+﻿.notification-container {
+    position: absolute;
+    z-index: 5;
+    width: 16%;
+    min-width: 50px;
+    text-align: center;
+    top: 5px;
+    margin: 0px 42%;
+    visibility: hidden;
+}
+.notification-container > p {
+    padding: 0px 5px;
+}
+.notification-title {
+    border-bottom: 1px solid rgb(70, 70, 50);
+}

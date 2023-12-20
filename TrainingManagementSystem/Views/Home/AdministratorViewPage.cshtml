@@ -1,0 +1,91 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/CSS/AdministratorOverlay.css">
+<script src="~/Scripts/JavaScript/AdministratorViewScript.js"></script>
+
+<div class="List-area">
+    <div class="area-container ">
+        <div class="container-title">
+            <h3>Training</h3>
+            <button class="item-button" onclick="DisplayTrainingForm(true,0)">Add</button>
+        </div>
+        <div class="container-list" id="containerTrainingId">
+            <table class="list-item" id="TrainingTableId">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Department</th>
+                        <th>Available seats</th>
+                        <th>Start date</th>
+                        <th>Deadlines</th>
+                        <th>Short description</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="screenOverlay" class="overlay">
+    <div class="display-content">
+        <form class="training-creation-form">
+            <h2 id="trainingFormId">formTitle</h2>
+            <div class="form-row">
+
+                <div class="input-field">
+                    <label for="trainingTitleId" class="training-form-label">Title</label>
+                    <input type="text" id="trainingTitleId" class="input-text-field" />
+                </div>
+
+                <div class="input-field">
+                    <label for="trainingDepartmentId" class="training-form-label">Department</label>
+                    <select id="trainingDepartmentId" class="input-text-field">
+                        <option value="none" selected disabled hidden>Select an department</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-field">
+                    <label for="trainingStartDateId" class="training-form-label">Start date</label>
+                    <input type="datetime-local" id="trainingStartDateId" class="input-text-field" />
+
+                </div>
+                <div class="input-field">
+                    <label for="trainingEndDateId" class="training-form-label">End date</label>
+                    <input type="datetime-local" id="trainingEndDateId" class="input-text-field" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-field">
+                    <label for="trainingDeadLineId" class="training-form-label">Deadline</label>
+                    <input type="date" id="trainingDeadLineId" class="input-text-field" />
+                </div>
+                <div class="input-field">
+                    <label for="trainingSeatAvailableId" class="training-form-label">Available seat</label>
+                    <input type="text" id="trainingSeatAvailableId" class="input-text-field" />
+                </div>
+            </div>
+
+            <div class="form-row">
+            </div>
+
+            <div class="textArea-field">
+                <label for="trainingShortDescriptionId" class="training-form-label">Short Description</label>
+                <textarea id="trainingShortDescriptionId" class="input-text-area" maxlength="64" rows="2"></textarea>
+            </div>
+            <div class="textArea-field">
+                <label for="trainingLongDescriptionId" class="training-form-label">Complete description</label>
+                <textarea id="trainingLongDescriptionId" class="input-text-area" maxlength="256" rows="4"></textarea>
+            </div>
+
+        </form>
+        <div class="button-content">
+            <button class="item-button" id="submitTrainingDetailsBtn"></button>
+            <button class="item-button" id="closeTrainingDetailsBtn" onclick="CloseTrainingCreationForm()">Close</button>
+        </div>
+    </div>
+</div>

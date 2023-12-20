@@ -1,0 +1,45 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/Content/CSS/LoginStyleSheet.css">
+    <link rel="stylesheet" href="~/Content/CSS/NotificationStyleSheet.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="~/Scripts/JavaScript/LogInUserScript.js"></script>
+    <script src="~/Scripts/JavaScript/NotificationScript.js"></script>
+</head>
+<body>
+    <div class="area">
+        <form>
+            <div class="image-container">
+                <!--Insert Image-->
+            </div>
+            <h2>Login</h2>
+            <div class="input-container">
+                <div class="input-field">
+                    <label for="employeeEmail">Email</label>
+                    <input type="text" id="employeeEmailId" name="employeeEmail">
+                </div>
+                <div class="input-field">
+                    <label for="employeePassword">Password</label>
+                    <input type="password" id="employeePasswordId" name="employeePassword">
+                </div>
+                <div class="notification">
+                    <label id="notificationText"></label>
+                </div>
+                <div class="button-container">
+                    <input type="button" value="Sign In" onclick="CheckTextField()">
+                    <input type="button" value="Sign Up" onclick="RegisterUser()">
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="notification" class="notification-container">
+        <p id="notificationTitle" class="notification-title">warning</p>
+        <p id="notificationMessage"></p>
+    </div>
+</body>
+</html>
