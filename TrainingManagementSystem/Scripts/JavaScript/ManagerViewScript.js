@@ -10,9 +10,11 @@ function GetDocument(prerequisiteId, employeeId) {
         type: "GET",
         url: "/RequiredFile/GetFile",
         data: { prerequisiteId: prerequisiteId, accountId: employeeId },
+        xhrFields: {
+            responseType: 'blob' 
+        },
         success: function (result) {
-            let myFile = new Blob([result], { encoding: "ASCII-85", type: 'application/pdf;charset=UTF-8;' });
-            let url = URL.createObjectURL(myFile);
+            let url = URL.createObjectURL(result);
             window.open(url, '_blank');
         },
         error: function () {

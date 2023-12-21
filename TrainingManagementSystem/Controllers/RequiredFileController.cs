@@ -32,7 +32,6 @@ namespace TrainingManagementSystem.Controllers
                 HttpPostedFileBase file = Request.Files[0];
                 if (file != null && file.ContentLength > 0)
                 {
-                    string fileName = Path.GetFileName(file.FileName);
                     string path = Path.Combine(Server.MapPath("~/data"), "fileData");
                     file.SaveAs(path);
                     byte[] binaryData = _requiredFileBusinessLogic.GetFileData(path);
@@ -65,7 +64,7 @@ namespace TrainingManagementSystem.Controllers
             string fileType = myFile.FileType;
             string filename = myFile.FileName;
 
-            return File(fileByte, fileType, filename);
+            return File(fileByte, fileType);
         }
 
 

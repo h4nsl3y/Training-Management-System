@@ -126,7 +126,6 @@ namespace TrainingManagementSystem.Controllers
                 }
             }
         }
-
         public RedirectToRouteResult RedirectToView()
         {
             RoleEnum actualRole = (RoleEnum)Session["Role"];
@@ -147,20 +146,18 @@ namespace TrainingManagementSystem.Controllers
                 return RedirectToRoute(new { controller = "Error", action = "NotFound" });
             }
         }
-
         public JsonResult GetEmployeeEnrolled()
         {
             int managerId = (int)Session["AccountId"];
             Result<Account> accountResult = _accountBusinessLogic.GetActiveRequestEmployee(managerId);
             return (accountResult.Success) ?
-               Json(new { message = "success", data = accountResult.Data }, JsonRequestBehavior.AllowGet) :
+                Json(new { message = "success", data = accountResult.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
         public JsonResult GetManagerList()
         {
             Result<Account> accountResult = _accountBusinessLogic.GetManagerList();
-            
             if (accountResult.Success)
             {
                 var managerNames = accountResult.Data.Select(manager => new
@@ -175,9 +172,6 @@ namespace TrainingManagementSystem.Controllers
                 return Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);
             }
         }
-
-
-
     }
 }
 
