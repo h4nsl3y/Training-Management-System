@@ -145,15 +145,11 @@ function UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId)
         },
     });
 };
-
 function RejectRequest(requestEnrollmentId, requestState, requestEmployeeId) {
     let overlay = document.getElementById("commentContainerId");
     overlay.style.visibility = "visible";
-    document.getElementById("submitRejectionCommentBtn").onclick = function () {
-        SubmitRejectionReason(requestEnrollmentId, requestState, requestEmployeeId);
-    }
+    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", "SubmitRejectionReason(" + requestEnrollmentId + " , " + requestState + " , "  + requestEmployeeId + ");");
 };
-
 function SubmitRejectionReason(requestEnrollmentId, requestState, requestEmployeeId) {
     let rejectionComment = document.getElementById("rejectionReasonid").value;
     $.ajax({
@@ -174,5 +170,4 @@ function SubmitRejectionReason(requestEnrollmentId, requestState, requestEmploye
         },
     });
 }
-
 

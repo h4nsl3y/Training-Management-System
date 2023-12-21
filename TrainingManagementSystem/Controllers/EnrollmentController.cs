@@ -85,21 +85,8 @@ namespace TrainingManagementSystem.Controllers
 
         public ActionResult UpdateState(int enrollmentId, int state)
         {
-            EnrollmentStateEnum enrollmentState;
-            switch (state)
-            {
-                case 3:
-                    enrollmentState = EnrollmentStateEnum.Approved;
-                    break;
-                case 2:
-                    enrollmentState = EnrollmentStateEnum.Rejected;
-                    break;
-                default:
-                    enrollmentState = EnrollmentStateEnum.Waiting_For_Approval;
-                    break;
-            }
             Dictionary<string, object> conditions = new Dictionary<string, object>();
-            conditions.Add("STATEID", enrollmentState);
+            conditions.Add("STATEID", state);
             _boolResult = _genericBusinessLogic.Update(enrollmentId,conditions);
             return (_boolResult.Success)?
                  Json(new { message = "success" }) :

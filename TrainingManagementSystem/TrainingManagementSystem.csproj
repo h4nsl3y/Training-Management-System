@@ -175,6 +175,7 @@
     <Content Include="Content\CSS\NotificationStyleSheet.css" />
     <Content Include="Content\CSS\RegisterStyleSheet.css" />
     <Content Include="Content\CSS\UserViewStyleSheet.css" />
+    <Content Include="Content\image\Arrow.png" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />

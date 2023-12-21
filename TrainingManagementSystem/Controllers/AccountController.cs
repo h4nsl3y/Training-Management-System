@@ -129,23 +129,21 @@ namespace TrainingManagementSystem.Controllers
         public RedirectToRouteResult RedirectToView()
         {
             RoleEnum actualRole = (RoleEnum)Session["Role"];
-            if ( actualRole == RoleEnum.Employee)
+            switch (actualRole)
             {
-                return RedirectToRoute(new { controller = "Home", action = "EmployeeViewPage" });
+                case RoleEnum.Employee:
+                    return RedirectToRoute(new { controller = "Home", action = "EmployeeViewPage" });
+                case RoleEnum.Manager:
+                    return RedirectToRoute(new { controller = "Home", action = "ManagerViewPage" });
+                case RoleEnum.Administrator:
+                    return RedirectToRoute(new { controller = "Home", action = "AdministratorViewPage" });
+                default:
+                    return RedirectToRoute(new { controller = "Error", action = "NotFound" });
+
             }
-            else if ( actualRole == RoleEnum.Manager)
-            {
-                return RedirectToRoute(new { controller = "Home", action = "ManagerViewPage" }); 
-            }
-            else if ( actualRole == RoleEnum.Administrator)
-            {
-                return RedirectToRoute(new { controller = "Home", action = "AdministratorViewPage" });
-            }
-            else 
-            {
-                return RedirectToRoute(new { controller = "Error", action = "NotFound" });
-            }
+
         }
+        [HttpGet]
         public JsonResult GetEmployeeEnrolled()
         {
             int managerId = (int)Session["AccountId"];

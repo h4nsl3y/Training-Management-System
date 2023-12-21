@@ -2,9 +2,36 @@
     GetDepartmentList(),
     GetTrainingList()
 )
+// GLOBAL VARIABLES
+let rowCount = 0
+function AddDisplaPrerequisite() {
+    let body = document.getElementById("prerequisiteRowId");
+
+    let comboBoxElement = document.createElement("select");
+    comboBoxElement.setAttribute("id", "trainingPrerequisiteDetailId-" + rowCount);
+    comboBoxElement.setAttribute("name", "PrerequisiteField");
+    comboBoxElement.setAttribute("class", "input-combo-box");
+
+    let buttonElement = document.createElement("button");
+    buttonElement.setAttribute("id", "removePrerequisiteBtnId-" + rowCount);
+    buttonElement.setAttribute("name", "PrerequisiteField");
+    buttonElement.setAttribute("class", "item-button");
+    buttonElement.setAttribute("type", "button");
+    buttonElement.setAttribute("onclick", "RemoveDisplayPrerequisite(" + rowCount + ");");
+    buttonElement.textContent = "Remove";
+
+    body.appendChild(comboBoxElement);
+    body.appendChild(buttonElement);
+    GetPrerequisiteList(rowCount)
+    rowCount += 1;
+}
 function CloseTrainingCreationForm() {
     document.getElementById("screenOverlay").style.visibility = "hidden";
     document.getElementById("submitTrainingDetailsBtn").style.visibility = "hidden";
+    const elements = document.querySelectorAll('[name="PrerequisiteField"]');
+    elements.forEach(function (element) {
+        element.remove();
+    });
 }
 function DisplayTrainingForm(isAdding, trainingId) {
     if (isAdding) {
@@ -17,9 +44,7 @@ function DisplayTrainingForm(isAdding, trainingId) {
         document.getElementById("trainingSeatAvailableId").value = null;
         document.getElementById("trainingShortDescriptionId").value = null;
         document.getElementById("trainingLongDescriptionId").value = null;
-        document.getElementById("submitTrainingDetailsBtn").onclick = function () {
-            RegisterTraining();
-        };
+        document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "RegisterTraining()");
         document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
         document.getElementById("submitTrainingDetailsBtn").textContent = "Register";
     }
@@ -41,12 +66,35 @@ function GetDepartmentList() {
         url: "/Department/GetDepartmentList",
         success: function (result) {
             if (result.message == "success") {
-                let managerCombobox = document.getElementById("trainingDepartmentId");
+                let combobox = document.getElementById("trainingDepartmentId");
                 result.data.forEach(function (row) {
                     let option = document.createElement("option");
                     option.value = row.DepartmentId;
                     option.text = row.DepartmentName;
-                    managerCombobox.add(option);
+                    combobox.add(option);
+                })
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+};
+function GetPrerequisiteList(rowId) {
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetAllPrerequisite",
+        success: function (result) {
+            if (result.message == "success") {
+                let combobox = document.getElementById("trainingPrerequisiteDetailId-" + rowId);
+                result.data.forEach(function (row) {
+                    let option = document.createElement("option");
+                    option.value = row.PrerequisiteId;
+                    option.text = row.PrerequisiteDescription;
+                    combobox.add(option);
                 })
             }
             else {
@@ -150,11 +198,8 @@ function FillTrainingDetail(trainingId) {
         success: function (result) {
             let training = result.data;
             if (message = 'success') {
-                document.getElementById("submitTrainingDetailsBtn").onclick = function () {
-                    UpdateTraining(training.TrainingId);
-                    GetTrainingList();
-                };
 
+                document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "UpdateTraining(" + training.TrainingId + ");");
                 document.getElementById("trainingTitleId").value = training.Title;
                 document.getElementById("trainingDepartmentId").value = training.DepartmentId;
                 document.getElementById("trainingStartDateId").value = ConvertToDateString(training.StartDate);
@@ -163,6 +208,7 @@ function FillTrainingDetail(trainingId) {
                 document.getElementById("trainingSeatAvailableId").value = training.SeatNumber;
                 document.getElementById("trainingShortDescriptionId").value = training.ShortDescription;
                 document.getElementById("trainingLongDescriptionId").value = training.LongDescription;
+                UpdateDisplayPrerequisite(training.TrainingId);
             }
             else {
                 ShowNotification('Error', "Some error has been encountered while loading the training details");
@@ -204,4 +250,65 @@ function UpdateTraining(trainingId) {
     });
     CloseTrainingCreationForm();
     GetTrainingList();
+}
+
+function RemoveDisplayPrerequisite(rowId) {
+    document.getElementById("trainingPrerequisiteDetailId-" + rowId).remove();
+    document.getElementById("removePrerequisiteBtnId-" + rowId).remove();
+}
+function UpdateDisplayPrerequisite(trainingId) {
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetPrerequisite",
+        data: { trainingId: trainingId },
+        success: function (result) {
+            if (result.message == "success") {
+                
+                result.data.forEach(function (row)
+                {
+                  AddDisplaPrerequisite()
+                  let combobox = document.getElementById("trainingPrerequisiteDetailId-" + (rowCount - 1));
+                  combobox.value = row.PrerequisiteId;
+                })
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+}
+function AddPrerequisite() {
+    $.ajax({
+        type: "POST",
+        url: "/Training/UpdateTraining",
+        data: data,
+        dataType: 'json',
+        success: function () {
+            if (mesage = 'success') {
+                ShowNotification('Success', "Prerequisite has been successfully registered");
+            }
+            else {
+                ShowNotification('Error', "Some error has been encountered while registering the prerequisite");
+            }
+        },
+        error: function () {
+            ShowNotification('Error', "Some error has been encountered")
+        }
+    });
+    CloseTrainingCreationForm();
+    GetTrainingList();
+}
+function TrainingTableToggle() {
+    table = document.getElementById("TrainingTableId_wrapper");
+    image = document.getElementById("trainingTableArrowId");
+    if (table.style.display == 'none') {
+        table.style.display = 'table';
+        image.style.transform = "scaleY(-1)";
+    } else {
+        table.style.display = 'none';
+        image.style.transform = "scaleY(1)";
+    }
 }
