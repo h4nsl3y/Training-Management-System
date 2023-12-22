@@ -53,8 +53,9 @@ namespace TrainingManagementSystem.Controllers
             else { return Json(new { message = "failed", data = "No file has been recieved" }); }
         }
 
-        public ActionResult GetFile(int prerequisiteId, int accountId)
+        public ActionResult GetFile(int prerequisiteId, int accountId = 0)
         {
+            if (accountId == 0) { accountId = (int)Session["AccountId"]; }
             Dictionary<string, object> conditions = new Dictionary<string, object>();
             conditions.Add("PREREQUISITEID", prerequisiteId);
             conditions.Add("ACCOUNTID", accountId);

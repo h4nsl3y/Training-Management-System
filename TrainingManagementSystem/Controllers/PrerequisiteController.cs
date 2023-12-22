@@ -34,7 +34,17 @@ namespace TrainingManagementSystem.Controllers
                 Json(new { message = "Failed", data = prerequisiteResult.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetPrerequisite(int trainingId)
+        public JsonResult GetPrerequisite(int prerequisiteId)
+        {
+            Dictionary<string, object> conditions = new Dictionary<string, object>();
+            conditions.Add("PREREQUISITEID", prerequisiteId);
+            Result<Prerequisite> prerequisiteResult = _genericBusinessLogic.Get(conditions);
+            return (prerequisiteResult.Success) ?
+                Json(new { message = "success", data = prerequisiteResult.Data }, JsonRequestBehavior.AllowGet) :
+                Json(new { message = "Failed", data = prerequisiteResult.Message }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public JsonResult GetPrerequisiteByTraining(int trainingId)
         {
             Result<Prerequisite> prerequisiteResult = _prerequisiteBusinessLogic.GetPrequisite(trainingId);
             return (prerequisiteResult.Success) ?
