@@ -39,5 +39,19 @@ namespace BLL.PrerequisiteBusinesslogics
                 return _resultError;
             }
         }
+        public Result<int> GetPrerequisiteIdByEmployee(int accountId)
+        {
+            try
+            {
+                Result<int> result = _prerequisiteRepository.GetPrerequisiteIdByEmployee(accountId); 
+                return result;
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+                Result<int> errorResult = new Result<int> { Success = false, Message = "an Error has been encounter" };
+                return errorResult;
+            }
+        }
     }
 }

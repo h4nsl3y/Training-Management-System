@@ -3,63 +3,7 @@
     GetEnrolledTrainingList(),
     GetPrerequisiteFiles()
 )
-function GetPrerequisite(trainingId) { // TO REMOVE
-    $.ajax({
-        type: "GET",
-        url: "/Prerequisite/GetPrerequisite",
-        data: { trainingId: trainingId },
-        dataType: 'json',
-        success: function (result) {
-            if (result.message == "success") {
-                let fileForm = $('#uploadFormId');
-                fileForm.empty();
-                let prerequisites = result.data
-                prerequisites.forEach(function (prerequisite) {
-                    let row = "<label for='uploadFileId" + prerequisite.PrerequisiteId + "'> " + prerequisite.PrerequisiteDescription + " </label><br>";
-                    row += "<input type='file' name='file' id='uploadFileId" + prerequisite.PrerequisiteId + "' />";
-                    row += "<input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(" + prerequisite.PrerequisiteId + ")'><br>";
-                    fileForm.append(row);
-                })
-            }
-            else {
-                ShowNotification("Error", result.data);
-            }
-        },
-        error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
-        }
-    });
-}
-function DisplayTrainingDetails(training, displayButton) {
-    let overlay = document.getElementById("screenOverlay");
-    let trainingTitle = document.getElementById("detailTitle");
-    let trainingId = document.getElementById("detailId")
-    let trainingDepartment = document.getElementById("detailDepartmentPriority");
-    let trainingDescription = document.getElementById("detailDescription");
-    let trainingDate = document.getElementById("detailDate");
-    let trainingDeadline = new Date(Number((training.Deadline).match(/\d+/)[0]));
-
-    trainingTitle.textContent = "Title : " + trainingTitle;
-    trainingId.textContent = "Id : " + training.TrainingId;
-    trainingDepartment.textContent = "Priority to department : " + training.DepartmentId;
-    trainingDescription.textContent = "Description : " + training.LongDescription;
-    trainingDate.textContent = "Application deadline : " + trainingDeadline;
-
-    GetPrerequisite(training.TrainingId)
-    let enrollButton = document.getElementById("enrollBtn");
-    let uploadForm = document.getElementById("upload-form-container");
-
-    if (displayButton) {
-        enrollButton.style.visibility = "visible";
-        uploadForm.style.visibility = "visible";
-    }
-    else {
-        enrollButton.style.visibility = "hidden";
-        uploadForm.style.visibility = "hidden";
-    }
-    overlay.style.visibility = "visible";
-}
-
+//#region DataTable
 function GetUnenrolledTrainingList() {
     $.ajax({
         type: 'GET',
@@ -95,36 +39,7 @@ function GetUnenrolledTrainingList() {
         }
     });
 }
-function Enroll() {
-    let textId = document.getElementById("detailId").textContent
-    let Id = textId.split(" ")[2]
 
-    $.ajax({
-        type: "POST",
-        url: "/Enrollment/RegisterEnrollment",
-        data: { trainingId: Id },
-        dataType: 'json',
-        success: function (result) {
-            if (result.message == "success") {
-                ShowNotification("Success", "Successfully enrolled")
-                let overlay = document.getElementById("screenOverlay");
-                let enrollButton = document.getElementById("enrollBtn");
-                let uploadForm = document.getElementById("upload-form-container");
-                GetUnenrolledTrainingList();
-                GetEnrolledTrainingList();
-                uploadForm.style.visibility = "hidden";
-                enrollButton.style.visibility = "hidden";
-                overlay.style.visibility = "hidden";
-            }
-            else {
-                ShowNotification("Error", result.data);
-            }
-        },
-        error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
-        }
-    });
-}
 function GetEnrolledTrainingList() {
     $.ajax({
         type: 'GET',
@@ -173,6 +88,207 @@ function GetEnrolledTrainingList() {
         }
     });
 };
+
+
+function GetPrerequisiteFiles() {
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetPrerequisiteFile",
+        success: function (result) {
+            if (result.message = "success") {
+                GetAllPrerequisite(result.data)
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    })
+}
+function GetAllPrerequisite(setPrerequisite) {
+    console.log(setPrerequisite.includes(1));
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetAllPrerequisite",
+        success: function (result) {
+            if (result.message = "success") {
+                if ($.fn.DataTable.isDataTable('#prerequisiteTableId')) {
+                    $('#prerequisiteTableId').DataTable().destroy();
+                }
+                $('#prerequisiteTableId').DataTable({
+                    "data": result.data,
+                    "columns": [
+                        { "data": "PrerequisiteDescription" },
+                        {
+                            "data": " PrerequisiteId",
+                            render: function (data) {
+                                if (setPrerequisite.includes(data)) {
+                                    return "<button class='item-button' id='detailBtn' onclick='DisplayFile(" + data + ")'>View</button>";
+                                }
+                                else {
+                                    return "";
+                                }
+                            }
+                        },
+                        {
+                            "data": " PrerequisiteId",
+                            render: function (data) {
+                                if (setPrerequisite.includes(data)) {
+                                    return "<button class='item-button' id='detailBtn' onclick='Update(" + data + ")'>Update</button>";
+                                }
+                                else {
+                                    return "<button class='item-button' id='detailBtn' onclick='Upload(" + data + ")'>Upload</button>";
+                                }
+                            }
+                        },
+                    ],
+                });
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+}
+
+
+function TrainingTableToggle() {
+    let table = document.getElementById("trainingTableId_wrapper");
+    let image = document.getElementById("trainingTableArrowId");
+    if (table.style.display == 'none') {
+        table.style.display = '';
+        table.style.width = '80 % !important';
+        table.style.padding = '0px 10 % !important';
+        image.style.transform = "scaleY(-1)";
+    } else {
+        console.log(table.style.display);
+        table.style.display = 'none';
+        image.style.transform = "scaleY(1)";
+    }
+}
+function EnrollmentTableToggle() {
+    table = document.getElementById("enrollmentTableId_wrapper");
+    image = document.getElementById("enrollmentTableArrowId");
+    if (table.style.display == 'none') {
+        table.style.display = '';
+        table.style.width = '80 % !important';
+        table.style.padding = '0px 10 % !important';
+        image.style.transform = "scaleY(-1)";
+    } else {
+        table.style.display = 'none';
+        image.style.transform = "scaleY(1)";
+    }
+}
+function PrerequisiteTableToggle() {
+    table = document.getElementById("prerequisiteTableId_wrapper");
+    image = document.getElementById("prerequisiteTableArrowId");
+    if (table.style.display == 'none') {
+        table.style.display = '';
+        table.style.width = '80 % !important';
+        table.style.padding = '0px 10 % !important';
+        image.style.transform = "scaleY(-1)";
+    } else {
+        table.style.display = 'none';
+        image.style.transform = "scaleY(1)";
+    }
+}
+//#endregion
+
+
+function GetTrainingPrerequisite(trainingId) { // TO REMOVE
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetPrerequisite",
+        data: { trainingId: trainingId },
+        dataType: 'json',
+        success: function (result) {
+            if (result.message == "success") {
+                let fileForm = $('#uploadFormId');
+                fileForm.empty();
+                let prerequisites = result.data
+                prerequisites.forEach(function (prerequisite) {
+                    let row = "<label for='uploadFileId" + prerequisite.PrerequisiteId + "'> " + prerequisite.PrerequisiteDescription + " </label><br>";
+                    row += "<input type='file' name='file' id='uploadFileId" + prerequisite.PrerequisiteId + "' />";
+                    row += "<input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(" + prerequisite.PrerequisiteId + ")'><br>";
+                    fileForm.append(row);
+                })
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+}
+function DisplayTrainingDetails(training, displayButton) {
+    let overlay = document.getElementById("screenOverlay");
+    let trainingTitle = document.getElementById("detailTitle");
+    let trainingId = document.getElementById("detailId")
+    let trainingDepartment = document.getElementById("detailDepartmentPriority");
+    let trainingDescription = document.getElementById("detailDescription");
+    let trainingDate = document.getElementById("detailDate");
+    let trainingDeadline = new Date(Number((training.Deadline).match(/\d+/)[0]));
+
+    trainingTitle.textContent = "Title : " + trainingTitle;
+    trainingId.textContent = "Id : " + training.TrainingId;
+    trainingDepartment.textContent = "Priority to department : " + training.DepartmentId;
+    trainingDescription.textContent = "Description : " + training.LongDescription;
+    trainingDate.textContent = "Application deadline : " + trainingDeadline;
+
+    GetTrainingPrerequisite(training.TrainingId)
+    let enrollButton = document.getElementById("enrollBtn");
+    let uploadForm = document.getElementById("upload-form-container");
+
+    if (displayButton) {
+        enrollButton.style.visibility = "visible";
+        uploadForm.style.visibility = "visible";
+    }
+    else {
+        enrollButton.style.visibility = "hidden";
+        uploadForm.style.visibility = "hidden";
+    }
+    overlay.style.visibility = "visible";
+}
+
+
+function Enroll() {
+    let textId = document.getElementById("detailId").textContent
+    let Id = textId.split(" ")[2]
+
+    $.ajax({
+        type: "POST",
+        url: "/Enrollment/RegisterEnrollment",
+        data: { trainingId: Id },
+        dataType: 'json',
+        success: function (result) {
+            if (result.message == "success") {
+                ShowNotification("Success", "Successfully enrolled")
+                let overlay = document.getElementById("screenOverlay");
+                let enrollButton = document.getElementById("enrollBtn");
+                let uploadForm = document.getElementById("upload-form-container");
+                GetUnenrolledTrainingList();
+                GetEnrolledTrainingList();
+                uploadForm.style.visibility = "hidden";
+                enrollButton.style.visibility = "hidden";
+                overlay.style.visibility = "hidden";
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+}
+
 function GetTrainingDetail(id, displayButton) {
     $.ajax({
         type: 'GET',
@@ -240,76 +356,9 @@ function FileUpload(fileData) {
         }
     });
 }
-function TrainingTableToggle() {
-    let table = document.getElementById("trainingTableId_wrapper");
-    let image = document.getElementById("trainingTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = 'table';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
-function EnrollmentTableToggle() {
-    table = document.getElementById("enrollmentTableId_wrapper");
-    image = document.getElementById("enrollmentTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = 'table';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
-function PrerequisiteTableToggle() {
-    table = document.getElementById("prerequisiteTableId_wrapper");
-    image = document.getElementById("prerequisiteTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = 'table';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
-function GetPrerequisiteFiles() {
-    $.ajax({
-        type: "GET",
-        url: "/Prerequisite/GetAllPrerequisite",
-        success: function (result) {
-            if (result.message = "success") {
-                if ($.fn.DataTable.isDataTable('#prerequisiteTableId')) {
-                    $('#prerequisiteTableId').DataTable().destroy();
-                }
-                $('#prerequisiteTableId').DataTable({
-                    "data": result.data,
-                    "columns": [
-                        { "data": "PrerequisiteDescription" },
-                        {
-                            "data": " PrerequisiteId",
-                            render: function (data) {
-                                return "<button class='item-button' id='detailBtn' onclick='DisplayFile(" + data + ")'>View</button>";
-                            }
-                        },
-/*                        {
-                            "data": " PrerequisiteId",
-                            render: function (data) {
-                                return "<button class='item-button' id='detailBtn' onclick='Update(" + data + ")'>View</button>";
-                            }
-                        },*/
-                    ],
-                });
-            }
-            else {
-                ShowNotification("Error", result.data);
-            }
-        },
-        error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
-        }
-    });
-}
+
+
+
 
 
 

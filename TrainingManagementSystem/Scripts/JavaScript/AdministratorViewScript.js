@@ -25,41 +25,8 @@ function AddDisplaPrerequisite() {
     GetPrerequisiteList(rowCount)
     rowCount += 1;
 }
-function CloseTrainingCreationForm() {
-    document.getElementById("screenOverlay").style.visibility = "hidden";
-    document.getElementById("submitTrainingDetailsBtn").style.visibility = "hidden";
-    const elements = document.querySelectorAll('[name="PrerequisiteField"]');
-    elements.forEach(function (element) {
-        element.remove();
-    });
-}
-function DisplayTrainingForm(isAdding, trainingId) {
-    if (isAdding) {
-        document.getElementById("trainingFormId").textContent = "Training creation";
-        document.getElementById("trainingTitleId").value = null;
-        document.getElementById("trainingDepartmentId").value = null;
-        document.getElementById("trainingStartDateId").value = null;
-        document.getElementById("trainingEndDateId").value = null;
-        document.getElementById("trainingDeadLineId").value = null;
-        document.getElementById("trainingSeatAvailableId").value = null;
-        document.getElementById("trainingShortDescriptionId").value = null;
-        document.getElementById("trainingLongDescriptionId").value = null;
-        document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "RegisterTraining()");
-        document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
-        document.getElementById("submitTrainingDetailsBtn").textContent = "Register";
-    }
-    else {
-        document.getElementById("trainingFormId").textContent = "Training update";
-        document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
-        document.getElementById("submitTrainingDetailsBtn").textContent = "Update";
-        FillTrainingDetail(trainingId);
-    }
-    document.getElementById("screenOverlay").style.visibility = "visible";
-}
-function ConvertToDateString(timestamp) {
-    let dateTimeObject = new Date(Number((timestamp).match(/\d+/)[0]));
-    return dateTimeObject.toISOString().slice(0, 19).replace("T", " ");
-}
+
+//#region ComboboxList
 function GetDepartmentList() {
     $.ajax({
         type: "GET",
@@ -106,9 +73,50 @@ function GetPrerequisiteList(rowId) {
         }
     });
 };
+//#endregion
+
+//#region Form
 function OpenTrainingCreationForm() {
     let overlay = document.getElementById("screenOverlay");
     overlay.style.visibility = "visible";
+};
+function CloseTrainingCreationForm() {
+    document.getElementById("screenOverlay").style.visibility = "hidden";
+    document.getElementById("submitTrainingDetailsBtn").style.visibility = "hidden";
+    const elements = document.querySelectorAll('[name="PrerequisiteField"]');
+    elements.forEach(function (element) {
+        element.remove();
+    });
+}
+function FillTrainingDetail(trainingId) {
+    $.ajax({
+        type: "GET",
+        url: "/Training/GetTraining",
+        data: { trainingId: trainingId },
+        dataType: 'json',
+        success: function (result) {
+            let training = result.data;
+            if (message = 'success') {
+
+                document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "UpdateTraining(" + training.TrainingId + ");");
+                document.getElementById("trainingTitleId").value = training.Title;
+                document.getElementById("trainingDepartmentId").value = training.DepartmentId;
+                document.getElementById("trainingStartDateId").value = ConvertToDateString(training.StartDate);
+                document.getElementById("trainingEndDateId").value = ConvertToDateString(training.EndDate);
+                document.getElementById("trainingDeadLineId").value = ConvertToDateString(training.Deadline).split(" ")[0];
+                document.getElementById("trainingSeatAvailableId").value = training.SeatNumber;
+                document.getElementById("trainingShortDescriptionId").value = training.ShortDescription;
+                document.getElementById("trainingLongDescriptionId").value = training.LongDescription;
+                UpdateDisplayPrerequisite(training.TrainingId);
+            }
+            else {
+                ShowNotification('Error', "Some error has been encountered while loading the training details");
+            }
+        },
+        error: function () {
+            ShowNotification('Error', "Some error has been encountered")
+        }
+    });
 };
 function RegisterTraining() {
     let data = {
@@ -141,6 +149,69 @@ function RegisterTraining() {
     CloseTrainingCreationForm();
     GetTrainingList();
 };
+function UpdateTraining(trainingId) {
+    let data = {
+        TrainingId: trainingId,
+        Title: document.getElementById("trainingTitleId").value,
+        DepartmentId: document.getElementById("trainingDepartmentId").value,
+        SeatNumber: document.getElementById("trainingSeatAvailableId").value,
+        Deadline: document.getElementById("trainingDeadLineId").value,
+        StartDate: document.getElementById("trainingStartDateId").value,
+        EndDate: document.getElementById("trainingEndDateId").value,
+        ShortDescription: document.getElementById("trainingShortDescriptionId").value,
+        LongDescription: document.getElementById("trainingLongDescriptionId").value
+    };
+    $.ajax({
+        type: "POST",
+        url: "/Training/UpdateTraining",
+        data: data,
+        dataType: 'json',
+        success: function () {
+            if (mesage = 'success') {
+                ShowNotification('Success', "Training has been successfully updated");
+            }
+            else {
+                ShowNotification('Error', "Some error has been encountered while registering the training");
+            }
+        },
+        error: function () {
+            ShowNotification('Error', "Some error has been encountered")
+        }
+    });
+    CloseTrainingCreationForm();
+    GetTrainingList();
+}
+
+function DisplayTrainingForm(isAdding, trainingId) {
+    if (isAdding) {
+        document.getElementById("trainingFormId").textContent = "Training creation";
+        document.getElementById("trainingTitleId").value = null;
+        document.getElementById("trainingDepartmentId").value = null;
+        document.getElementById("trainingStartDateId").value = null;
+        document.getElementById("trainingEndDateId").value = null;
+        document.getElementById("trainingDeadLineId").value = null;
+        document.getElementById("trainingSeatAvailableId").value = null;
+        document.getElementById("trainingShortDescriptionId").value = null;
+        document.getElementById("trainingLongDescriptionId").value = null;
+        document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "RegisterTraining()");
+        document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
+        document.getElementById("submitTrainingDetailsBtn").textContent = "Register";
+    }
+    else {
+        document.getElementById("trainingFormId").textContent = "Training update";
+        document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
+        document.getElementById("submitTrainingDetailsBtn").textContent = "Update";
+        FillTrainingDetail(trainingId);
+    }
+    document.getElementById("screenOverlay").style.visibility = "visible";
+}
+function ConvertToDateString(timestamp) {
+    let dateTimeObject = new Date(Number((timestamp).match(/\d+/)[0]));
+    return dateTimeObject.toISOString().slice(0, 19).replace("T", " ");
+}
+//#endregion
+
+//#region DataTable
 function GetTrainingList() {
     $.ajax({
         type: "GET",
@@ -189,126 +260,67 @@ function GetTrainingList() {
         },
     });
 };
-function FillTrainingDetail(trainingId) {
-    $.ajax({
-        type: "GET",
-        url: "/Training/GetTraining",
-        data: { trainingId: trainingId },
-        dataType: 'json',
-        success: function (result) {
-            let training = result.data;
-            if (message = 'success') {
+//#endregion
 
-                document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "UpdateTraining(" + training.TrainingId + ");");
-                document.getElementById("trainingTitleId").value = training.Title;
-                document.getElementById("trainingDepartmentId").value = training.DepartmentId;
-                document.getElementById("trainingStartDateId").value = ConvertToDateString(training.StartDate);
-                document.getElementById("trainingEndDateId").value = ConvertToDateString(training.EndDate);
-                document.getElementById("trainingDeadLineId").value = ConvertToDateString(training.Deadline).split(" ")[0];
-                document.getElementById("trainingSeatAvailableId").value = training.SeatNumber;
-                document.getElementById("trainingShortDescriptionId").value = training.ShortDescription;
-                document.getElementById("trainingLongDescriptionId").value = training.LongDescription;
-                UpdateDisplayPrerequisite(training.TrainingId);
-            }
-            else {
-                ShowNotification('Error', "Some error has been encountered while loading the training details");
-            }
-        },
-        error: function () {
-            ShowNotification('Error', "Some error has been encountered")
-        }
-    });
-};
-function UpdateTraining(trainingId) {
-    let data = {
-        TrainingId: trainingId,
-        Title: document.getElementById("trainingTitleId").value,
-        DepartmentId: document.getElementById("trainingDepartmentId").value,
-        SeatNumber: document.getElementById("trainingSeatAvailableId").value,
-        Deadline: document.getElementById("trainingDeadLineId").value,
-        StartDate: document.getElementById("trainingStartDateId").value,
-        EndDate: document.getElementById("trainingEndDateId").value,
-        ShortDescription: document.getElementById("trainingShortDescriptionId").value,
-        LongDescription: document.getElementById("trainingLongDescriptionId").value
-    };
-    $.ajax({
-        type: "POST",
-        url: "/Training/UpdateTraining",
-        data: data,
-        dataType: 'json',
-        success: function () {
-            if (mesage = 'success') {
-                ShowNotification('Success', "Training has been successfully updated");
-            }
-            else {
-                ShowNotification('Error', "Some error has been encountered while registering the training");
-            }
-        },
-        error: function () {
-            ShowNotification('Error', "Some error has been encountered")
-        }
-    });
-    CloseTrainingCreationForm();
-    GetTrainingList();
-}
-
-function RemoveDisplayPrerequisite(rowId) {
-    document.getElementById("trainingPrerequisiteDetailId-" + rowId).remove();
-    document.getElementById("removePrerequisiteBtnId-" + rowId).remove();
-}
-function UpdateDisplayPrerequisite(trainingId) {
-    $.ajax({
-        type: "GET",
-        url: "/Prerequisite/GetPrerequisite",
-        data: { trainingId: trainingId },
-        success: function (result) {
-            if (result.message == "success") {
-                
-                result.data.forEach(function (row)
-                {
-                  AddDisplaPrerequisite()
-                  let combobox = document.getElementById("trainingPrerequisiteDetailId-" + (rowCount - 1));
-                  combobox.value = row.PrerequisiteId;
-                })
-            }
-            else {
-                ShowNotification("Error", result.data);
-            }
-        },
-        error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
-        }
-    });
-}
-function AddPrerequisite() {
-    $.ajax({
-        type: "POST",
-        url: "/Training/UpdateTraining",
-        data: data,
-        dataType: 'json',
-        success: function () {
-            if (mesage = 'success') {
-                ShowNotification('Success', "Prerequisite has been successfully registered");
-            }
-            else {
-                ShowNotification('Error', "Some error has been encountered while registering the prerequisite");
-            }
-        },
-        error: function () {
-            ShowNotification('Error', "Some error has been encountered")
-        }
-    });
-    CloseTrainingCreationForm();
-    GetTrainingList();
-}
-function TrainingTableToggle() {
-    table = document.getElementById("TrainingTableId_wrapper");
-    image = document.getElementById("trainingTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = 'table';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
+//#region Prerequisite
+    function RemoveDisplayPrerequisite(rowId) {
+        document.getElementById("trainingPrerequisiteDetailId-" + rowId).remove();
+        document.getElementById("removePrerequisiteBtnId-" + rowId).remove();
     }
-}
+    function UpdateDisplayPrerequisite(trainingId) {
+        $.ajax({
+            type: "GET",
+            url: "/Prerequisite/GetPrerequisite",
+            data: { trainingId: trainingId },
+            success: function (result) {
+                if (result.message == "success") {
+
+                    result.data.forEach(function (row) {
+                        AddDisplaPrerequisite()
+                        let combobox = document.getElementById("trainingPrerequisiteDetailId-" + (rowCount - 1));
+                        combobox.value = row.PrerequisiteId;
+                    })
+                }
+                else {
+                    ShowNotification("Error", result.data);
+                }
+            },
+            error: function (error) {
+                ShowNotification("Error", "Communication has been interupted");
+            }
+        });
+    }
+    function AddPrerequisite() {
+        $.ajax({
+            type: "POST",
+            url: "/Training/UpdateTraining",
+            data: data,
+            dataType: 'json',
+            success: function () {
+                if (mesage = 'success') {
+                    ShowNotification('Success', "Prerequisite has been successfully registered");
+                }
+                else {
+                    ShowNotification('Error', "Some error has been encountered while registering the prerequisite");
+                }
+            },
+            error: function () {
+                ShowNotification('Error', "Some error has been encountered")
+            }
+        });
+        CloseTrainingCreationForm();
+        GetTrainingList();
+    }
+    function TrainingTableToggle() {
+        table = document.getElementById("TrainingTableId_wrapper");
+        image = document.getElementById("trainingTableArrowId");
+        if (table.style.display == 'none') {
+            table.style.display = 'table';
+            image.style.transform = "scaleY(-1)";
+        } else {
+            table.style.display = 'none';
+            image.style.transform = "scaleY(1)";
+        }
+    }
+//#endregion 
+

@@ -27,9 +27,20 @@ namespace DAL.Repository.PrerequisiteRepositories
         public Result<Prerequisite> GetPrequisite(int trainingId)
         {
             List<SqlParameter> parameters = new List<SqlParameter>();
-            string query = $@"SELECT * FROM {tableName} WHERE {primaryKey} IN (SELECT {primaryKey} FROM TrainingPrerequisite WHERE TRAININGID = @TRAININGID) ;";
+            string query = $@"SELECT * FROM PREREQUISITE WHERE PREREQUISITEID IN (SELECT PREREQUISITEID FROM TrainingPrerequisite WHERE TRAININGID = @TRAININGID) ;";
             parameters.Add(new SqlParameter("@TRAININGID", trainingId));
             return _dataBaseUtil.ExecuteQuery(query, parameters);
+        }
+        public Result<int> GetPrerequisiteIdByEmployee(int accountId)
+        {
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            string query = $@"SELECT * FROM PREREQUISITE WHERE PREREQUISITEID IN (SELECT PREREQUISITEID FROM REQUIREDFILES WHERE ACCOUNTID = @ACCOUNTID) ;";
+            parameters.Add(new SqlParameter("@ACCOUNTID", accountId));
+            Result<Prerequisite> prerequisiteResult = _dataBaseUtil.ExecuteQuery(query, parameters);
+            Result<int> result = new Result<int>();
+            result.Data = prerequisiteResult.Data.Select(prerequisites => prerequisites.PrerequisiteId).ToList();
+            result.Success = true;
+            return result;  
         }
     }
 }

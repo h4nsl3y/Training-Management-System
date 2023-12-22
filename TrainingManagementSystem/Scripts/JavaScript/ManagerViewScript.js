@@ -1,27 +1,7 @@
 ﻿$(document).ready(
     GetEnrollment()
 )
-function CloseTextArea() {
-    let overlay = document.getElementById("commentContainerId");
-    overlay.style.visibility = "hidden";
-}
-function GetDocument(prerequisiteId, employeeId) {
-    $.ajax({
-        type: "GET",
-        url: "/RequiredFile/GetFile",
-        data: { prerequisiteId: prerequisiteId, accountId: employeeId },
-        xhrFields: {
-            responseType: 'blob' 
-        },
-        success: function (result) {
-            let url = URL.createObjectURL(result);
-            window.open(url, '_blank');
-        },
-        error: function () {
-            ShowNotification("Error, File could not be load");
-        }
-    });
-}
+//#region DataTable
 function GetEnrollment() {
     $.ajax({
         type: "GET",
@@ -58,6 +38,7 @@ function GetEnrollment() {
         },
     });
 };
+
 
 function GetRequestByEmployee(requestAccountId) {
     $.ajax({
@@ -120,10 +101,37 @@ function GetRequestByEmployee(requestAccountId) {
         },
     });
 };
+//#endregion
+
+//#region  Overlay
+function CloseTextArea() {
+    let overlay = document.getElementById("commentContainerId");
+    overlay.style.visibility = "hidden";
+}
 function HideRequest() {
     let overlay = document.getElementById("screenOverlay");
     overlay.style.visibility = "hidden";
 }
+function GetDocument(prerequisiteId, employeeId) {
+    $.ajax({
+        type: "GET",
+        url: "/RequiredFile/GetFile",
+        data: { prerequisiteId: prerequisiteId, accountId: employeeId },
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (result) {
+            let url = URL.createObjectURL(result);
+            window.open(url, '_blank');
+        },
+        error: function () {
+            ShowNotification("Error, File could not be load");
+        }
+    });
+}
+//#endregion
+
+//#region ManagerOption
 function UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId) {
     let data = { enrollmentId: requestEnrollmentId, state: requestState }
     $.ajax({
@@ -170,4 +178,5 @@ function SubmitRejectionReason(requestEnrollmentId, requestState, requestEmploye
         },
     });
 }
+//#endregion
 

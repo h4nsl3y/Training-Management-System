@@ -10,5 +10,6 @@ namespace DAL.Repository.PrerequisiteRepositories
     public interface IPrerequisiteRepository
     {
         Result<Prerequisite> GetPrequisite(int trainingId);
+        Result<int> GetPrerequisiteIdByEmployee(int accountId);
     }
 }

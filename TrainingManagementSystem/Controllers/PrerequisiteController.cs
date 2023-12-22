@@ -26,6 +26,14 @@ namespace TrainingManagementSystem.Controllers
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
         }
         [HttpGet]
+        public JsonResult GetAllPrerequisite()
+        {
+            Result<Prerequisite> prerequisiteResult = _genericBusinessLogic.GetAll();
+            return (prerequisiteResult.Success) ?
+                Json(new { message = "success", data = prerequisiteResult.Data }, JsonRequestBehavior.AllowGet) :
+                Json(new { message = "Failed", data = prerequisiteResult.Message }, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
         public JsonResult GetPrerequisite(int trainingId)
         {
             Result<Prerequisite> prerequisiteResult = _prerequisiteBusinessLogic.GetPrequisite(trainingId);
@@ -34,12 +42,12 @@ namespace TrainingManagementSystem.Controllers
                 Json(new { message = "Failed", data = prerequisiteResult.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetAllPrerequisite()
+        public JsonResult GetPrerequisiteFile()
         {
-            Result<Prerequisite> prerequisiteResult = _genericBusinessLogic.GetAll();
-            return (prerequisiteResult.Success) ?
-                Json(new { message = "success", data = prerequisiteResult.Data }, JsonRequestBehavior.AllowGet) :
-                Json(new { message = "Failed", data = prerequisiteResult.Message }, JsonRequestBehavior.AllowGet);
+            Result<int> result = _prerequisiteBusinessLogic.GetPrerequisiteIdByEmployee((int)Session["AccountId"]);
+            return (result.Success) ?
+                Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
+                Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult AddPrerequisite(Prerequisite prerequisite)

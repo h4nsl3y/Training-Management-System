@@ -10,5 +10,6 @@ namespace BLL.PrerequisiteBusinesslogics
     public interface IPrerequisiteBusinessLogic
     {
         Result<Prerequisite> GetPrequisite(int trainingid);
+        Result<int> GetPrerequisiteIdByEmployee(int accountId);
     }
 }
