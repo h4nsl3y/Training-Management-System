@@ -54,7 +54,6 @@ function GetDepartmentList() {
 
 
 function GetEnrolledTrainingList(stateList) {
-    console.log(stateList);
     $.ajax({
         type: 'GET',
         url: "/Enrollment/GetAllEnrollmentByEmployee",
@@ -354,7 +353,9 @@ function UploadFile(prerequisiteId) {
             if (fileObject.size <= (allowedFileSize * 1024 * 1024)) {
                 fileObject.name = prerequisiteId
                 formData.append('file', fileObject);
-                formData.append('prerequisiteId', prerequisiteId)
+                formData.append('prerequisiteId', prerequisiteId);
+
+                GetPrerequisiteFiles();
             }
             else { ShowNotification("Error", "File size is not supported ! maximum size is 10 MB"); uploadFlag = false; }
         }
@@ -427,7 +428,6 @@ function Upload(prerequisiteId) {
                 let trainingDepartment = document.getElementById("detailDepartmentPriority");
                 let trainingDescription = document.getElementById("detailDescription");
                 let trainingDate = document.getElementById("detailDate");
-                let trainingDeadline = new Date(Number((training.Deadline).match(/\d+/)[0]));
 
                 trainingTitle.textContent = "";
                 trainingId.textContent = "";
@@ -438,7 +438,7 @@ function Upload(prerequisiteId) {
                 let enrollButton = document.getElementById("enrollBtn");
                 let uploadForm = document.getElementById("upload-form-container");
                 enrollButton.style.visibility = "hidden";
-                uploadForm.style.visibility = "hidden";
+                uploadForm.style.visibility = "visible";
 
                 overlay.style.visibility = "visible";
 
