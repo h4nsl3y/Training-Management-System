@@ -401,6 +401,11 @@ function DepartmentTableToggle() {
         image.style.transform = "scaleY(1)";
     }
 }
-//#endregion 
+//#endregion
 
 //#endregion
+
+
+function setTrainingPrerequisite() {
+
+}
