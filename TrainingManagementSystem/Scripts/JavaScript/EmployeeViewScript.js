@@ -3,6 +3,9 @@
     GetDepartmentList(),
     GetPrerequisiteFiles()
 )
+//GLOBAL VARIABLE
+var index = 0;
+
 //#region DataTable
 function GetUnenrolledTrainingList() {
     $.ajax({
@@ -173,7 +176,7 @@ function GetAllPrerequisite(setPrerequisite) {
     });
 }
 
-
+//#region TableToggle
 function TrainingTableToggle() {
     let table = document.getElementById("trainingTableId_wrapper");
     let image = document.getElementById("trainingTableArrowId");
@@ -216,6 +219,8 @@ function PrerequisiteTableToggle() {
 }
 //#endregion
 
+//#endregion
+
 
 
 //#region FormTraining
@@ -243,30 +248,28 @@ function DisplayTrainingDetails(training, displayButton) {
     let trainingDate = document.getElementById("detailDate");
     let trainingDeadline = new Date(Number((training.Deadline).match(/\d+/)[0]));
 
-    trainingTitle.textContent = "Title : " + trainingTitle;
+    trainingTitle.textContent = "Title : " + training.Title;
     trainingId.textContent = "Id : " + training.TrainingId;
     trainingDepartment.textContent = "Priority to department : " + training.DepartmentId;
     trainingDescription.textContent = "Description : " + training.LongDescription;
     trainingDate.textContent = "Application deadline : " + trainingDeadline;
 
+    btnElement = document.getElementById("enrollBtn");
+    btnElement.setAttribute("onclick", "CheckValidEnrollment(" + training.TrainingId + ")");
+
     GetTrainingPrerequisite(training.TrainingId)
-    let enrollButton = document.getElementById("enrollBtn");
     let uploadForm = document.getElementById("upload-form-container");
 
     if (displayButton) {
-        enrollButton.style.visibility = "visible";
+        btnElement.style.visibility = "visible";
         uploadForm.style.visibility = "visible";
     }
     else {
-        enrollButton.style.visibility = "hidden";
+        btnElement.style.visibility = "hidden";
         uploadForm.style.visibility = "hidden";
     }
     overlay.style.visibility = "visible";
 }
-
-
-
-
 function GetTrainingPrerequisite(trainingId) { 
     $.ajax({
         type: "GET",
@@ -292,29 +295,74 @@ function GetTrainingPrerequisite(trainingId) {
         }
     });
 }
-
-
-
-
-
-
-function Enroll() {
-    let textId = document.getElementById("detailId").textContent
-    let Id = textId.split(" ")[2]
-
+function CheckValidEnrollment(trainingId) {
     $.ajax({
-        type: "POST",
-        url: "/Enrollment/RegisterEnrollment",
-        data: { trainingId: Id },
+        type: "GET",
+        url: "/Prerequisite/GetPrerequisiteByTraining",
+        data: { trainingId: trainingId, accountId: 0 },
         dataType: 'json',
         success: function (result) {
             if (result.message == "success") {
+                if (result.data.length == 0) {
+                    Enroll(trainingId);
+                }
+                else {
+                    let prerequisites = result.data
+                    let prerequisiteIdList = []
+                    prerequisites.forEach(function (prerequisite) {
+                        prerequisiteIdList.push(prerequisite.PrerequisiteId)
+                    })
+                    CheckPrerequisiteFiles(prerequisiteIdList, trainingId)
+                }
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+}
+function CheckPrerequisiteFiles(prerequisiteIdList, trainingId) {
+    let IsValid = true;
+    prerequisiteIdList.forEach(function (prerequisiteId) {
+        $.ajax({
+            type: "GET",
+            url: "RequiredFile/IsFilePresent",
+            data: { prerequisiteId: prerequisiteId },
+            success: function (result) {
+                if (result.message == "success") {
+                    if (result.data != true) {
+                        IsValid = false;
+                    }
+                }
+            },
+            error: function (error) {
+                ShowNotification("Error", "Communication has been interupted");
+            }
+        });
+    });
+    if (IsValid) {
+        Enroll(trainingId);
+    }
+}
+function Enroll(trainingId) {
+    let textId = document.getElementById("detailId").textContent
+    let Id = textId.split(" ")[2]
+    $.ajax({
+        type: "POST",
+        url: "/Enrollment/RegisterEnrollment",
+        data: { trainingId: trainingId },
+        dataType: 'json',
+        success: function (result) {
+            if (result.message == "success") {
+                GetUnenrolledTrainingList();
+                GetDepartmentList();
                 ShowNotification("Success", "Successfully enrolled")
                 let overlay = document.getElementById("screenOverlay");
                 let enrollButton = document.getElementById("enrollBtn");
                 let uploadForm = document.getElementById("upload-form-container");
-                GetUnenrolledTrainingList();
-                GetEnrolledTrainingList();
                 uploadForm.style.visibility = "hidden";
                 enrollButton.style.visibility = "hidden";
                 overlay.style.visibility = "hidden";
@@ -330,7 +378,6 @@ function Enroll() {
 }
 //#endregion FormTraining
 
-
 //#region commonForm
 function HideDetail() {
     let overlay = document.getElementById("screenOverlay");
@@ -340,7 +387,7 @@ function HideDetail() {
     uploadForm.style.visibility = "hidden";
     enrollButton.style.visibility = "hidden";
 };
-function UploadFile(prerequisiteId) {
+function UploadFile(prerequisiteId , update) {
     let uploadFlag = true;
     let allowedFileType = "application/pdf";
     let allowedFileSize = 10;
@@ -362,12 +409,18 @@ function UploadFile(prerequisiteId) {
         else { ShowNotification("Error", "File type is not supported ! please select a file from the following format : PDF"); uploadFlag = false; };
     });
     if (uploadFlag) {
-        FileUpload(formData);
+        if (update) {
+            FileUpdate(formData);
+        }
+        else {
+            FileUpload(formData);
+        } 
     }
 }
 //#endregion
-function FileUpload(fileData) {
 
+//#region FileManagement
+function FileUpload(fileData) {
     $.ajax({
         type: 'POST',
         url: "/RequiredFile/UploadFile",
@@ -376,9 +429,11 @@ function FileUpload(fileData) {
         contentType: false,
         success: function (result) {
             if (result.message == "success") {
-                ShowNotification("Success", "File uploaded successfully");
+                ShowNotification("Success", "File update successfully");
                 document.getElementById('uploadFormId').style.backgroundColor = '#a1ffa4';
                 document.getElementById('uploadBtn').style.visibility = 'hidden';
+                GetPrerequisiteFiles();
+                HideDetail()
             }
             else { ShowNotification("Error", result.data); }
         },
@@ -387,7 +442,28 @@ function FileUpload(fileData) {
         }
     });
 }
-
+function FileUpdate(fileData) {
+    $.ajax({
+        type: 'POST',
+        url: "/RequiredFile/UpdateFile",
+        data: fileData,
+        processData: false,
+        contentType: false,
+        success: function (result) {
+            if (result.message == "success") {
+                ShowNotification("Success", "File uploaded successfully");
+                document.getElementById('uploadFormId').style.backgroundColor = '#a1ffa4';
+                document.getElementById('uploadBtn').style.visibility = 'hidden';
+                GetPrerequisiteFiles();
+                HideDetail()
+            }
+            else { ShowNotification("Error", result.data); }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Failed to upload file");
+        }
+    });
+}
 function GetDocument(prerequisiteId) {
     $.ajax({
         type: "GET",
@@ -405,11 +481,55 @@ function GetDocument(prerequisiteId) {
         }
     });
 }
+function Update(prerequisiteId) {
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetPrerequisite",
+        data: { prerequisiteId: prerequisiteId },
+        dataType: 'json',
+        success: function (result) {
+            if (result.message == "success") {
+                let fileForm = $('#uploadFormId');
+                fileForm.empty();
+                let prerequisites = result.data
+
+                let overlay = document.getElementById("screenOverlay");
+                let trainingTitle = document.getElementById("detailTitle");
+                let trainingId = document.getElementById("detailId")
+                let trainingDepartment = document.getElementById("detailDepartmentPriority");
+                let trainingDescription = document.getElementById("detailDescription");
+                let trainingDate = document.getElementById("detailDate");
+
+                trainingTitle.textContent = "";
+                trainingId.textContent = "";
+                trainingDepartment.textContent = "";
+                trainingDescription.textContent = "";
+                trainingDate.textContent = "";
+
+                let enrollButton = document.getElementById("enrollBtn");
+                let uploadForm = document.getElementById("upload-form-container");
+                enrollButton.style.visibility = "hidden";
+                uploadForm.style.visibility = "visible";
+
+                overlay.style.visibility = "visible";
 
 
-
-
-
+                prerequisites.forEach(function (prerequisite) {
+                    let row = "<label for='uploadFileId" + prerequisite.PrerequisiteId + "'> " + prerequisite.PrerequisiteDescription + " </label><br>";
+                    row += "<input type='file' name='file' id='uploadFileId" + prerequisite.PrerequisiteId + "' />";
+                    row += "<input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(" + prerequisite.PrerequisiteId + ",true)'><br>";
+                    fileForm.append(row);
+                })
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+}
 function Upload(prerequisiteId) {
     $.ajax({
         type: "GET",
@@ -446,7 +566,7 @@ function Upload(prerequisiteId) {
                 prerequisites.forEach(function (prerequisite) {
                     let row = "<label for='uploadFileId" + prerequisite.PrerequisiteId + "'> " + prerequisite.PrerequisiteDescription + " </label><br>";
                     row += "<input type='file' name='file' id='uploadFileId" + prerequisite.PrerequisiteId + "' />";
-                    row += "<input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(" + prerequisite.PrerequisiteId + ")'><br>";
+                    row += "<input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(" + prerequisite.PrerequisiteId + ", false)'><br>";
                     fileForm.append(row);
                 })
             }
@@ -459,3 +579,4 @@ function Upload(prerequisiteId) {
         }
     });
 }
+//#endregion

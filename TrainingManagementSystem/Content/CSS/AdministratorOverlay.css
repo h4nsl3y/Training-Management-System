@@ -44,7 +44,7 @@ h2 {
     border: none;
     color: white;
 }
-training-creation-form {
+.creation-form {
     margin: 5px;
     display: flex;
     flex-wrap: wrap;
@@ -102,6 +102,10 @@ table.dataTable.compact {
 }
 .split-area {
     width: 100%;
-    display: inline-grid;
-    grid-auto-columns: 50% 50%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+.prerequisite-form{
+    width:80%;
+    margin: 0px 10%;
 }

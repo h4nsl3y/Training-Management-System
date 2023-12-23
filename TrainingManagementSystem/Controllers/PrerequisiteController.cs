@@ -60,9 +60,10 @@ namespace TrainingManagementSystem.Controllers
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult AddPrerequisite(Prerequisite prerequisite)
+        public ActionResult AddPrerequisite(string prerequisiteDescription)
         {
-            Result<bool> result = _genericBusinessLogic.Add(prerequisite);
+            Prerequisite newPrerequisite = new Prerequisite { PrerequisiteDescription = prerequisiteDescription};
+            Result<bool> result = _genericBusinessLogic.Add(newPrerequisite);
             return (result.Success) ?
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);

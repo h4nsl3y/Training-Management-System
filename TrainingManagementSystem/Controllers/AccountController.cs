@@ -39,7 +39,7 @@ namespace TrainingManagementSystem.Controllers
             Result<bool> boolResult = _accountBusinessLogic.Authenticated(account.Email, account.Password);
             if (boolResult.Success)
             {
-                if (boolResult.Data[0])
+                if (boolResult.Data.Any() && boolResult.Data[0])
                 {
                     Result<Account> _accountResult = _accountBusinessLogic.GetByEmail(account.Email);
                     if (_accountResult.Success)

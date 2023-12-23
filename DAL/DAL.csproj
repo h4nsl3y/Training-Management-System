@@ -92,6 +92,8 @@
     <Compile Include="Repository\GenericRepositories\IGenericRepository.cs" />
     <Compile Include="Repository\PrerequisiteRepositories\PrerequisiteRepository.cs" />
     <Compile Include="Repository\PrerequisiteRepositories\IPrerequisiteRepository.cs" />
+    <Compile Include="Repository\RequiredFileRepositories\IRequiredFilesRepository.cs" />
+    <Compile Include="Repository\RequiredFileRepositories\RequiredFilesRepository.cs" />
     <Compile Include="Repository\TrainingRepositories\ITrainingRepository.cs" />
     <Compile Include="Repository\TrainingRepositories\TrainingRepository.cs" />
     <Compile Include="Repository\ViewModelRepositories\IViewModelRepository.cs" />

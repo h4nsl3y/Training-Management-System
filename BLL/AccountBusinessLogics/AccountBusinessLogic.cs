@@ -60,7 +60,9 @@ namespace BLL.AccountBusinessLogics
                     Result<bool> booleanResult = new Result<bool> { Success = true, Data = { authenticateFlag } };
                     return booleanResult;
                 }
-                else { return _resultBoolError; }
+                else { 
+                    return new Result<bool> { Success=false, Message = "No account linked to this email adddress"}; 
+                }
                 
             }
             catch (Exception exception)

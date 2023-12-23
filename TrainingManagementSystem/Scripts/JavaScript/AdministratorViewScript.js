@@ -1,10 +1,11 @@
 ﻿$(document).ready(
     GetDepartmentList(),
-    GetTrainingList()
+    GetTrainingList(),
+    GetPrerequisiteDataList()
 )
 // GLOBAL VARIABLES
 let rowCount = 0
-function AddDisplaPrerequisite() {
+function AddDisplayPrerequisite() {
     let body = document.getElementById("prerequisiteRowId");
 
     let comboBoxElement = document.createElement("select");
@@ -76,6 +77,8 @@ function GetPrerequisiteList(rowId) {
 //#endregion
 
 //#region Form
+
+//#region Training
 function OpenTrainingCreationForm() {
     let overlay = document.getElementById("screenOverlay");
     overlay.style.visibility = "visible";
@@ -183,8 +186,14 @@ function UpdateTraining(trainingId) {
 }
 
 function DisplayTrainingForm(isAdding, trainingId) {
+
+    let trainingForm = document.getElementById("trainingFormId");
+    let prerequisiteForm = document.getElementById("prerequisiteFormId");
+    trainingForm.style.display = "";
+    prerequisiteForm.style.display = "none";
+
     if (isAdding) {
-        document.getElementById("trainingFormId").textContent = "Training creation";
+        document.getElementById("trainingFormTitleId").textContent = "Training creation";
         document.getElementById("trainingTitleId").value = null;
         document.getElementById("trainingDepartmentId").value = null;
         document.getElementById("trainingStartDateId").value = null;
@@ -209,6 +218,74 @@ function ConvertToDateString(timestamp) {
     let dateTimeObject = new Date(Number((timestamp).match(/\d+/)[0]));
     return dateTimeObject.toISOString().slice(0, 19).replace("T", " ");
 }
+//#endregion
+
+//#region Prerequisite
+function DisplayPrerequisiteForm() {
+    let trainingForm = document.getElementById("trainingFormId");
+    let prerequisiteForm = document.getElementById("prerequisiteFormId");
+    trainingForm.style.display = "none";
+    prerequisiteForm.style.display = "";
+
+
+    document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "RegisterPrerequisite()");
+    document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
+    document.getElementById("submitTrainingDetailsBtn").textContent = "Register";
+    document.getElementById("screenOverlay").style.visibility = "visible";
+}
+
+function RemoveDisplayPrerequisite(rowId) {
+    document.getElementById("trainingPrerequisiteDetailId-" + rowId).remove();
+    document.getElementById("removePrerequisiteBtnId-" + rowId).remove();
+}
+function UpdateDisplayPrerequisite(trainingId) {
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetPrerequisiteByTraining",
+        data: { trainingId: trainingId },
+        success: function (result) {
+            if (result.message == "success") {
+
+                result.data.forEach(function (row) {
+                    AddDisplayPrerequisite()
+                    let combobox = document.getElementById("trainingPrerequisiteDetailId-" + (rowCount - 1));
+                    combobox.value = row.PrerequisiteId;
+                })
+            }
+            else {
+                ShowNotification("Error", result.data);
+            }
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+}
+function RegisterPrerequisite() {
+    let data = { prerequisiteDescription: document.getElementById("prerequisiteDescriptionId").value}
+    $.ajax({
+        type: "POST",
+        url: "/Prerequisite/AddPrerequisite",
+        data: data,
+        dataType: 'json',
+        success: function () {
+            if (mesage = 'success') {
+                ShowNotification('Success', "Prerequisite has been successfully registered");
+                GetPrerequisiteDataList();
+            }
+            else {
+                ShowNotification('Error', "Some error has been encountered while registering the prerequisite");
+            }
+        },
+        error: function () {
+            ShowNotification('Error', "Some error has been encountered")
+        }
+    });
+    CloseTrainingCreationForm();
+    GetTrainingList();
+}
+//#endregion
+
 //#endregion
 
 //#region DataTable
@@ -260,67 +337,70 @@ function GetTrainingList() {
         },
     });
 };
-//#endregion
 
-//#region Prerequisite
-    function RemoveDisplayPrerequisite(rowId) {
-        document.getElementById("trainingPrerequisiteDetailId-" + rowId).remove();
-        document.getElementById("removePrerequisiteBtnId-" + rowId).remove();
-    }
-    function UpdateDisplayPrerequisite(trainingId) {
-        $.ajax({
-            type: "GET",
-            url: "/Prerequisite/GetPrerequisite",
-            data: { trainingId: trainingId },
-            success: function (result) {
-                if (result.message == "success") {
-
-                    result.data.forEach(function (row) {
-                        AddDisplaPrerequisite()
-                        let combobox = document.getElementById("trainingPrerequisiteDetailId-" + (rowCount - 1));
-                        combobox.value = row.PrerequisiteId;
-                    })
+function GetPrerequisiteDataList() {
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetAllPrerequisite",
+        success: function (result) {
+            if (result.message == "success") {
+                if ($.fn.DataTable.isDataTable('#PrerequisiteTableId')) {
+                    $('#PrerequisiteTableId').DataTable().destroy();
                 }
-                else {
-                    ShowNotification("Error", result.data);
-                }
-            },
-            error: function (error) {
-                ShowNotification("Error", "Communication has been interupted");
+                $('#PrerequisiteTableId').DataTable({
+                    "data": result.data,
+                    "columns": [
+                        { "data": "PrerequisiteDescription" },
+                    ],
+                });
             }
-        });
-    }
-    function AddPrerequisite() {
-        $.ajax({
-            type: "POST",
-            url: "/Training/UpdateTraining",
-            data: data,
-            dataType: 'json',
-            success: function () {
-                if (mesage = 'success') {
-                    ShowNotification('Success', "Prerequisite has been successfully registered");
-                }
-                else {
-                    ShowNotification('Error', "Some error has been encountered while registering the prerequisite");
-                }
-            },
-            error: function () {
-                ShowNotification('Error', "Some error has been encountered")
+            else {
+                ShowNotification("Error", result.data);
             }
-        });
-        CloseTrainingCreationForm();
-        GetTrainingList();
-    }
-    function TrainingTableToggle() {
-        table = document.getElementById("TrainingTableId_wrapper");
-        image = document.getElementById("trainingTableArrowId");
-        if (table.style.display == 'none') {
-            table.style.display = 'table';
-            image.style.transform = "scaleY(-1)";
-        } else {
-            table.style.display = 'none';
-            image.style.transform = "scaleY(1)";
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
         }
+    });
+};
+
+//#region TableToggle
+
+function TrainingTableToggle() {
+    table = document.getElementById("TrainingTableId_wrapper");
+    image = document.getElementById("trainingTableArrowId");
+    if (table.style.display == 'none') {
+        table.style.display = '';
+        image.style.transform = "scaleY(-1)";
+    } else {
+        table.style.display = 'none';
+        image.style.transform = "scaleY(1)";
     }
+}
+
+function PrerequisitTeableToggle() {
+    table = document.getElementById("PrerequisiteTableId_wrapper");
+    image = document.getElementById("prerequisiteTableArrowId");
+    if (table.style.display == 'none') {
+        table.style.display = '';
+        image.style.transform = "scaleY(-1)";
+    } else {
+        table.style.display = 'none';
+        image.style.transform = "scaleY(1)";
+    }
+}
+
+function DepartmentTableToggle() {
+    table = document.getElementById("trainingTableArrowId_wrapper");
+    image = document.getElementById("departmentTableArrowId");
+    if (table.style.display == 'none') {
+        table.style.display = '';
+        image.style.transform = "scaleY(-1)";
+    } else {
+        table.style.display = 'none';
+        image.style.transform = "scaleY(1)";
+    }
+}
 //#endregion 
 
+//#endregion

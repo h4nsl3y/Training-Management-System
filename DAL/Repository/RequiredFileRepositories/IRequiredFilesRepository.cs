@@ -1,17 +1,14 @@
 ﻿using DAL.Entity;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
-namespace BLL.RequiredFileBusinessLogics
+namespace DAL.Repository.RequiredFileRepositories
 {
-    public interface IRequiredFileBusinessLogic
+    public interface IRequiredFilesRepository
     {
-        byte[] GetFileData(string path);
         Result<bool> UpdateFile(int prerequisiteId, int accountId, Dictionary<string, object> values);
     }
 }

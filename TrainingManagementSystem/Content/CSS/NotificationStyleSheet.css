@@ -1,11 +1,11 @@
 ﻿.notification-container {
-    position: absolute;
+    position: fixed;
     z-index: 5;
     width: 16%;
     min-width: 50px;
     text-align: center;
-    top: 5px;
-    margin: 0px 42%;
+    top: 85vh;
+    right : 2%;
     visibility: hidden;
 }
 .notification-container > p {

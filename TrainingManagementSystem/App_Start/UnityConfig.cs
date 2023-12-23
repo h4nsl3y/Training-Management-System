@@ -9,6 +9,7 @@ using DAL.Logger;
 using DAL.Repository.AccountRepositories;
 using DAL.Repository.GenericRepositories;
 using DAL.Repository.PrerequisiteRepositories;
+using DAL.Repository.RequiredFileRepositories;
 using DAL.Repository.TrainingRepositories;
 using DAL.Repository.ViewModelRepositories;
 using System;
@@ -65,6 +66,7 @@ namespace TrainingManagementSystem
             container.RegisterType(typeof(IViewModelRepository<>), typeof(ViewModelRepository<>));
 
             container.RegisterType(typeof(IGenericBusinessLogic<>), typeof(GenericBusinessLogic<>));
+            container.RegisterType<IRequiredFilesRepository,RequiredFilesRepository>();
             container.RegisterType<IAccountBusinesslogic,AccountBusinessLogic>();
             container.RegisterType<ITrainingBusinesslogic,TrainingBusinesslogic>();
             container.RegisterType<IPrerequisiteBusinessLogic,PrequisiteBusinessLogic>();

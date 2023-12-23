@@ -44,7 +44,7 @@ function CheckTextField() {
     if (confirmPassword != password) { passwordFlag = true };
 
     if (emptyFlag) {
-        EEmptyNotificationText += "are mandatory";
+        EmptyNotificationText += "are mandatory";
         document.getElementById("notificationText").innerHTML = EmptyNotificationText;
     }
     else if (invalidFlag) {
