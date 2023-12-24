@@ -74,6 +74,12 @@ namespace TrainingManagementSystem.Controllers
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
-
+        public ActionResult SetPrerequisite(int prerequisiteId, string title)
+        {
+            Result<bool> result = _trainingBusinessLogic.SetPrerequisite(prerequisiteId, title);
+            return (result.Success) ?
+                Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
+                Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

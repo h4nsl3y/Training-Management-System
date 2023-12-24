@@ -39,5 +39,13 @@ namespace DAL.Repository.TrainingRepositories
             parameters.Add(new SqlParameter("@ACCOUNTID", accountId));
             return _dataBaseUtil.ExecuteQuery(query, parameters);
         }
+        public Result<bool> SetPrerequisite(int prerequisiteId, string title)
+        {
+            string query = @"INSERT INTO TRAININGPREREQUISITE (TRAININGID , PREREQUISITEID) VALUES ((SELECT TRAININGID FROM TRAINING WHERE TITLE = @TITLE) , @PREREQUISITEID) ;";
+            List<SqlParameter> parameters = new List<SqlParameter>();
+            parameters.Add(new SqlParameter("@TITLE", title));
+            parameters.Add(new SqlParameter("@PREREQUISITEID", prerequisiteId));
+            return _dataBaseUtil.AffectedRows(query, parameters);
+        }
     }
 }

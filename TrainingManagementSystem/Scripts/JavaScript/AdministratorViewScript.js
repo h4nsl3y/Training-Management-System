@@ -23,7 +23,7 @@ function AddDisplayPrerequisite() {
 
     body.appendChild(comboBoxElement);
     body.appendChild(buttonElement);
-    GetPrerequisiteList(rowCount)
+    GetPrerequisiteList(rowCount);
     rowCount += 1;
 }
 
@@ -132,6 +132,7 @@ function RegisterTraining() {
         ShortDescription: document.getElementById("trainingShortDescriptionId").value,
         LongDescription: document.getElementById("trainingLongDescriptionId").value
     };
+    setTrainingPrerequisite(document.getElementById("trainingTitleId").value);
     $.ajax({
         type: "POST",
         url: "/Training/RegisterTraining",
@@ -406,6 +407,30 @@ function DepartmentTableToggle() {
 //#endregion
 
 
-function setTrainingPrerequisite() {
+function setTrainingPrerequisite(trainingTitle) {
+    let prerequisiteIds = document.querySelectorAll('select[name="PrerequisiteField"]');
+    prerequisiteIds.forEach(prerequisiteId => {
+        console.log(prerequisiteId.value); 
 
+        data = { prerequisiteId: prerequisiteId.value, title: trainingTitle };
+
+
+        $.ajax({
+            type: "GET",
+            url: "/Training/SetPrerequisite",
+            data: data,
+            success: function (result) {
+                if (result.message == "success") {
+                    console.log("success");
+                }
+                else {
+                    ShowNotification("Error", result.data);
+                }
+            },
+            error: function (error) {
+                ShowNotification("Error", "Communication has been interupted");
+            }
+        });
+
+    });
 }

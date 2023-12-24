@@ -101,8 +101,8 @@ namespace TrainingManagementSystem.Controllers
             conditions.Add("ACCOUNTID", accountId);
             Result<RequiredFiles> requiredFileResult = _genericBusinessLogic.Get(conditions);
             return (requiredFileResult.Success) ?
-                        Json(new { message = "success", data = (requiredFileResult.Data.FirstOrDefault() != null) }) :
-                        Json(new { message = "failed", data = "Some error encountered while uploading file" });
+                        Json(new { message = "success", data = (requiredFileResult.Data.FirstOrDefault() != null) }, JsonRequestBehavior.AllowGet) :
+                        Json(new { message = "failed", data = "Some error encountered while uploading file" }, JsonRequestBehavior.AllowGet);
 
         }
     }

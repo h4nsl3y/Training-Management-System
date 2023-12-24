@@ -329,12 +329,17 @@ function CheckPrerequisiteFiles(prerequisiteIdList, trainingId) {
     prerequisiteIdList.forEach(function (prerequisiteId) {
         $.ajax({
             type: "GET",
-            url: "RequiredFile/IsFilePresent",
+            url: "/RequiredFile/IsFilePresent",
             data: { prerequisiteId: prerequisiteId },
             success: function (result) {
                 if (result.message == "success") {
                     if (result.data != true) {
                         IsValid = false;
+                    }
+                    if (IsValid) {
+                        Enroll(trainingId);
+                    } else {
+                        ShowNotification("Error", "File(s) are missing for this training");
                     }
                 }
             },
@@ -343,9 +348,6 @@ function CheckPrerequisiteFiles(prerequisiteIdList, trainingId) {
             }
         });
     });
-    if (IsValid) {
-        Enroll(trainingId);
-    }
 }
 function Enroll(trainingId) {
     let textId = document.getElementById("detailId").textContent

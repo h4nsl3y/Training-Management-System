@@ -11,5 +11,6 @@ namespace BLL.TrainingBusinessLogics
     {
         Result<Training> GetEnrolled(int accountId);
         Result<Training> GetUnenrolled(int accountId);
+        Result<bool> SetPrerequisite(int prerequisiteId, string title);
     }
 }
