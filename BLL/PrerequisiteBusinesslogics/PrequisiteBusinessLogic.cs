@@ -33,7 +33,7 @@ namespace BLL.PrerequisiteBusinesslogics
         {
             try
             {
-                return _prerequisiteRepository.GetPrequisite(trainingid);
+                return _prerequisiteRepository.GetPrequisiteAsync(trainingid);
             }
             catch (Exception exception)
             {

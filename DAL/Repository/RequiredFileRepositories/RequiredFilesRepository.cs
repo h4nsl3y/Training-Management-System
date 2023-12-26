@@ -23,7 +23,7 @@ namespace DAL.Repository.RequiredFileRepositories
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
             tableName = typeof(RequiredFiles).Name;
         }
-        public Result<bool> UpdateFile(int prerequisiteId, int accountId, Dictionary<string, object> values)
+        public async Task<Result<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values)
         {
             string query = "UPDATE REQUIREDFILES SET ";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -39,10 +39,7 @@ namespace DAL.Repository.RequiredFileRepositories
             parameters.Add(new SqlParameter("@PREREQUISITEID", prerequisiteId));
             parameters.Add(new SqlParameter("@ACCOUNTID", accountId));
 
-            Result<bool> result = _dataBaseUtil.AffectedRows(query, parameters);
-/*            result.Success = true;
-            result.Data.Add(true);*/
-            return result;
+            return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
         }
     }
 }

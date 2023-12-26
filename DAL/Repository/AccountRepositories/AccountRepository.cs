@@ -28,50 +28,62 @@ namespace DAL.Repository.AccountRepositories
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
             tableName = typeof(Account).Name;
         }
-        public Result<bool> Add (Account account)
+        public async Task<Result<bool>> AddAsync (Account account)
         {
             string insertAccount = $@"INSERT INTO {tableName}
                                      (FIRSTNAME, OTHERNAME, LASTNAME, NATIONALIDENTIFICATIONNUMBER, MOBILENUMBER, EMAIL, MANAGERID, DEPARTMENTID, PASSWORD)
                                VALUES(@FIRSTNAME,@OTHERNAME,@LASTNAME,@NATIONALIDENTIFICATIONNUMBER,@MOBILENUMBER,@EMAIL,@MANAGERID,@DEPARTMENTID,@PASSWORD);";
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@FIRSTNAME", isDataNull(account.FirstName)));
-            parameters.Add(new SqlParameter("@OTHERNAME", isDataNull(account.OtherName)));
-            parameters.Add(new SqlParameter("@LASTNAME", isDataNull(account.LastName)));
-            parameters.Add(new SqlParameter("@NATIONALIDENTIFICATIONNUMBER", isDataNull(account.NationalIdentificationNumber)));
-            parameters.Add(new SqlParameter("@MOBILENUMBER", isDataNull(account.MobileNumber)));
-            parameters.Add(new SqlParameter("@EMAIL", isDataNull(account.Email)));
-            parameters.Add(new SqlParameter("@MANAGERID", isDataNull(account.ManagerId)));
-            parameters.Add(new SqlParameter("@DEPARTMENTID", isDataNull(account.DepartmentId)));
-            parameters.Add(new SqlParameter("@PASSWORD", isDataNull(account.Password)));
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@FIRSTNAME",IsDataNull(account.FirstName)),
+                new SqlParameter("@OTHERNAME", IsDataNull(account.OtherName)),
+                new SqlParameter("@LASTNAME", IsDataNull(account.LastName)),
+                new SqlParameter("@NATIONALIDENTIFICATIONNUMBER", IsDataNull(account.NationalIdentificationNumber)),
+                new SqlParameter("@MOBILENUMBER", IsDataNull(account.MobileNumber)),
+                new SqlParameter("@EMAIL", IsDataNull(account.Email)),
+                new SqlParameter("@MANAGERID", IsDataNull(account.ManagerId)),
+                new SqlParameter("@DEPARTMENTID", IsDataNull(account.DepartmentId)),
+                new SqlParameter("@PASSWORD", IsDataNull(account.Password))
+        };
+            
            
-            Result<bool> insertAccountResult = _dataBaseUtil.AffectedRows(insertAccount, parameters);
-            Result<bool> insertRoleResult = SetRole(account.Email, account.RoleId);
+            Result<bool> insertAccountResult = await Task.Run(() => _dataBaseUtil.AffectedRowsAsync(insertAccount, parameters));
+            Result<bool> insertRoleResult = await Task.Run(() => SetRoleAsync(account.Email, account.RoleId));
 
-            Result<bool> result = new Result<bool>();
-            result.Success = true;
-            result.Data.Add(true);
-            return result;
+            return (insertAccountResult.Success == true && insertRoleResult.Success == true) ?
+                new Result<bool>() { Data = { true }, Success = true } :
+                new Result<bool>() { Data = { false }, Success = false };
         }
-        public Result<bool> SetRole(string email, int roleId)
+        public async Task<Result<Account>> AuthenticateAsync(string email)
         {
-            string query = @"INSERT INTO ACCOUNTROLE(ACCOUNTID, ROLEID) VALUES((SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL), @ROLEID);";
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@EMAIL", email));
-            parameters.Add(new SqlParameter("@ROLEID", roleId));
-            return _dataBaseUtil.AffectedRows(query, parameters);
+            string query = $@"SELECT PASSWORD FROM ACCOUNT WHERE EMAIL = @EMAIL";
+
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter($"@EMAIL", email) };
+            return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
-
-
-
-
-        public Result<Account> Get(Dictionary<string, object> conditions = null)
+        public async Task<Result<bool>> DuplicatedAsync(Dictionary<string, object> conditions)
         {
-            string query = $@"SELECT {tableName}.ACCOUNTID,
+            Result<bool> duplicatedresult = new Result<bool>();
+            foreach (var condition in conditions)
+            {
+                string query = $@"SELECT TOP  1 * FROM {tableName} 
+                                  WHERE {condition.Key} = @{condition.Key} ;";
+                List<SqlParameter> parameters = new List<SqlParameter>();
+                parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
+                Result<Account> queryResult = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+                duplicatedresult.Data.Add(queryResult.Data.Count > 0);
+                duplicatedresult.Success = queryResult.Success;
+            }
+            return duplicatedresult;
+        }
+        public async Task<Result<Account>> GetAsync(Dictionary<string, object> conditions = null)
+        {
+            string query = $@"SELECT ACCOUNT.ACCOUNTID,
                             ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
                             ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
                             ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID,
                             ACCOUNT.PASSWORD, ACCOUNTROLE.ROLEID
-                            FROM {tableName} 
+                            FROM ACCOUNT
                             INNER JOIN ACCOUNTROLE
                             ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -86,21 +98,18 @@ namespace DAL.Repository.AccountRepositories
                 query = query.Substring(0, query.Length - 5);
             }
             query += " ;";
-            Result<Account> queryResult = (conditions == null) ?
-                                        _dataBaseUtil.ExecuteQuery(query) :
-                                        _dataBaseUtil.ExecuteQuery(query, parameters);
-            Result<Account> result = new Result<Account>();
-            result.Data.Add(queryResult.Data.FirstOrDefault());
-            result.Success = true;
-            return result;
+            Result<Account> queryResult =  (conditions == null) ?
+                                        await _dataBaseUtil.ExecuteQueryAsync(query) :
+                                        await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            return new Result<Account>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
         }
-        public Result<Account> GetAll(Dictionary<string, object> conditions = null)
+        public async Task<Result<Account>> GetAllAsync(Dictionary<string, object> conditions = null)
         {
-            string query = $@"SELECT {tableName}.ACCOUNTID,
+            string query = $@"SELECT ACCOUNT.ACCOUNTID,
                             ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
                             ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
                             ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID, ACCOUNTROLE.ROLEID
-                            FROM {tableName} 
+                            FROM ACCOUNT 
                             INNER JOIN ACCOUNTROLE
                             ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -116,43 +125,30 @@ namespace DAL.Repository.AccountRepositories
             }
             query += " ;";
             return (conditions == null) ?
-                _dataBaseUtil.ExecuteQuery(query) :
-                _dataBaseUtil.ExecuteQuery(query, parameters);
+                await _dataBaseUtil.ExecuteQueryAsync(query) :
+                await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
-        public Result<bool> Duplicated(Dictionary<string, object> conditions)
+        public async Task<Result<Account>> GetActiveRequestEmployeeAsync(int managerId)
         {
-            Result<bool> duplicatedresult = new Result<bool>();
-            foreach (var condition in conditions)
-            {
-                string query = $@"SELECT TOP  1 * FROM {tableName} 
-                                  WHERE {condition.Key} = @{condition.Key} ;";
-                List<SqlParameter> parameters = new List<SqlParameter>();
-                parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
-                Result<Account> queryResult = _dataBaseUtil.ExecuteQuery(query, parameters);
-                duplicatedresult.Data.Add(  queryResult.Data.Count > 0);
-                duplicatedresult.Success = queryResult.Success;
-            }
-            return duplicatedresult;
-        }
-        public Result<Account> GetActiveRequestEmployee(int managerId)
-        {
-            List<SqlParameter> parameters = new List<SqlParameter>();
             string query = $@"SELECT 
-                            {tableName}.ACCOUNTID,
-                            {tableName}.FIRSTNAME, {tableName}.OTHERNAME, {tableName}.LASTNAME, 
-                            {tableName}.NATIONALIDENTIFICATIONNUMBER, {tableName}.MOBILENUMBER, 
-                            {tableName}.EMAIL, {tableName}.MANAGERID, {tableName}.DEPARTMENTID, ACCOUNTROLE.ROLEID
-                            FROM {tableName} 
+                            ACCOUNT.ACCOUNTID,
+                            ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
+                            ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
+                            ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID, ACCOUNTROLE.ROLEID
+                            FROM ACCOUNT 
                             INNER JOIN ACCOUNTROLE
-                            ON ACCOUNTROLE.ACCOUNTID = {tableName}.{primaryKey} 
-                            WHERE MANAGERID = @MANAGERID AND {tableName}.{primaryKey} 
+                            ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID 
+                            WHERE MANAGERID = @MANAGERID AND ACCOUNT.ACCOUNTID
                             IN (SELECT DISTINCT ACCOUNTID FROM ENROLLMENT WHERE STATEID = @STATEID )";
-            parameters.Add(new SqlParameter($"@MANAGERID", managerId));
-            parameters.Add(new SqlParameter($"@STATEID", EnrollmentStateEnum.Waiting_For_Approval ));
-            Result<Account> result = _dataBaseUtil.ExecuteQuery(query,parameters);
-            return result;
+
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter($"@MANAGERID", managerId),
+                new SqlParameter($"@STATEID", EnrollmentStateEnum.Waiting_For_Approval )
+            };
+            return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
-        public Result<Account> GetLastRegisteredAccount()
+        public async Task<Result<Account>> GetLastRegisteredAccountAsync()
         {
             string query = $@"SELECT TOP 1 
                             ACCOUNT.ACCOUNTID,
@@ -163,30 +159,29 @@ namespace DAL.Repository.AccountRepositories
                             INNER JOIN ACCOUNTROLE
                             ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID
                             ORDER BY {primaryKey} DESC; ";
-            Result<Account> result = _dataBaseUtil.ExecuteQuery(query);
+            Result<Account> result = await _dataBaseUtil.ExecuteQueryAsync(query);
             result.Data = new List<Account>() { result.Data.FirstOrDefault() }; 
             return result;
         }
-        public Result<Account> GetManagerList()
+        public async Task<Result<Account>> GetManagerListAsync()
         {
-            List<SqlParameter> parameters = new List<SqlParameter>();
+            
             string query = $@"SELECT *FROM ACCOUNT INNER JOIN ACCOUNTROLE 
                               ON ACCOUNT.ACCOUNTID = ACCOUNTROLE.ACCOUNTID WHERE ACCOUNTROLE.ROLEID = @ROLEID";
-            parameters.Add(new SqlParameter($"@ROLEID", RoleEnum.Manager));
-            Result<Account> result = _dataBaseUtil.ExecuteQuery(query,parameters);
-            return result;
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter($"@ROLEID", RoleEnum.Manager) };
+            return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
-        public Result<Account> Authenticate (string email)
+        public async Task<Result<bool>> SetRoleAsync(string email, int roleId)
         {
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            string query = $@"SELECT PASSWORD FROM ACCOUNT WHERE EMAIL = @EMAIL";
-            parameters.Add(new SqlParameter($"@EMAIL", email));
-            Result<Account> result = _dataBaseUtil.ExecuteQuery(query, parameters);
-            return result;
+            string query = @"INSERT INTO ACCOUNTROLE(ACCOUNTID, ROLEID) VALUES((SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL), @ROLEID);";
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@EMAIL", email),
+                new SqlParameter("@ROLEID", roleId)
+            };
+            return await Task.Run(() => _dataBaseUtil.AffectedRowsAsync(query, parameters));
         }
-        public object isDataNull(object value)
-        {
-            return (value == null) ? DBNull.Value : value;
-        }
+
+        private object IsDataNull(object value) => (value == null) ? DBNull.Value : value;
     }
 }

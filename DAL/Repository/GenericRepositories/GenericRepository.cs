@@ -22,7 +22,7 @@ namespace DAL.Repository.GenericRepositories
         {
             _dataBaseUtil = dataBaseUtil;
         }
-        public Result<bool> Add(T entity)
+        public async Task<Result<bool>> AddAsync(T entity)
         {
             string query = $"INSERT INTO {typeof(T).Name} (";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -43,9 +43,9 @@ namespace DAL.Repository.GenericRepositories
             }
             query = query.Substring(0, query.Length - 1);
             query += ") ;";
-            return _dataBaseUtil.AffectedRows(query, parameters);
+            return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
         }
-        public Result<bool> Delete(T entity)
+        public async Task<Result<bool>> DeleteAsync(T entity)
         {
             string query = $"DELETE FROM  {typeof(T).Name} WHERE ";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -53,22 +53,18 @@ namespace DAL.Repository.GenericRepositories
             PropertyInfo primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault();
             query += $"{primaryKey.Name} = @{primaryKey.Name}";
             parameters.Add(new SqlParameter($"@{primaryKey.Name}", primaryKey.GetValue(entity)));
-            return _dataBaseUtil.AffectedRows(query, parameters);
+            return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
         }
-        public Result<T> Get(Dictionary<string, object> conditions)
+        public async Task<Result<T>> GetAsync(Dictionary<string, object> conditions)
         {
-            Result<T> queryResult = GetData(conditions);
-            Result<T> result = new Result<T>();
-            result.Success = queryResult.Success;
-            result.Data.Add(queryResult.Data.FirstOrDefault() );
-
-            return result;
+            Result<T> queryResult = await GetDataAsync(conditions);
+            return new Result<T>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
         }
-        public Result<T> GetAll(Dictionary<string, object> conditions = null)
+        public async Task<Result<T>> GetAllAsync(Dictionary<string, object> conditions = null)
         {
-            return (conditions==null) ? GetData() : GetData(conditions);
+            return (conditions==null) ? await GetDataAsync() :await  GetDataAsync(conditions);
         }
-        public Result<bool> Update(int Id, Dictionary<string, object> conditions)
+        public async Task<Result<bool>> UpdateAsync(int Id, Dictionary<string, object> conditions)
         {
             string query = $"UPDATE {typeof(T).Name} SET ";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -84,9 +80,9 @@ namespace DAL.Repository.GenericRepositories
 
             query += $" WHERE {primaryKey.Name} = @{primaryKey.Name}";
             parameters.Add(new SqlParameter($"@{primaryKey.Name}", Id));
-            return _dataBaseUtil.AffectedRows(query, parameters);
+            return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
         }
-        private Result<T> GetData(Dictionary<string, object> conditions = null)
+        private async Task<Result<T>> GetDataAsync(Dictionary<string, object> conditions = null)
         {
             string query = "SELECT ";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -109,8 +105,8 @@ namespace DAL.Repository.GenericRepositories
             }
             query += " ;";
             return (conditions == null) ?
-                _dataBaseUtil.ExecuteQuery(query) :
-                _dataBaseUtil.ExecuteQuery(query, parameters);
+                await _dataBaseUtil.ExecuteQueryAsync(query) :
+                await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
     }
 }

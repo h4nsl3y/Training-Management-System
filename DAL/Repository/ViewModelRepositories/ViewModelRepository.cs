@@ -17,16 +17,19 @@ namespace DAL.Repository.ViewModelRepositories
         { 
             _dataBaseUtil = dataBaseUtil;
         }
-        public Result<T> GetTrainingEnrollmentView(int accountId)
+        public async Task<Result<T>> GetTrainingEnrollmentView(int accountId)
         {
-            List<SqlParameter> parameters = new List<SqlParameter>();
             string query = $@"SELECT * FROM TRAINING
                             INNER JOIN ENROLLMENT ON TRAINING.TRAININGID = ENROLLMENT.TRAININGID
                             LEFT OUTER JOIN TRAININGPREREQUISITE ON TRAININGPREREQUISITE.TRAININGID =  TRAINING.TRAININGID
                             WHERE ENROLLMENT.ACCOUNTID = @ACCOUNTID AND ENROLLMENT.STATEID = @STATEID;";
-            parameters.Add(new SqlParameter("@ACCOUNTID", accountId));
-            parameters.Add(new SqlParameter("@STATEID", EnrollmentStateEnum.Waiting_For_Approval));
-            Result<T> result = _dataBaseUtil.ExecuteQuery(query,parameters);
+
+            List<SqlParameter> parameters = new List<SqlParameter>() 
+            {
+                new SqlParameter("@ACCOUNTID", accountId),
+                new SqlParameter("@STATEID", EnrollmentStateEnum.Waiting_For_Approval)
+            };
+            Result<T> result = await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
             return result;
         }
     }

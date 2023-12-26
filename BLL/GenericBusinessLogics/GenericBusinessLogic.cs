@@ -26,7 +26,7 @@ namespace BLL.GenericBusinessLogics
         {
             try
             {
-                return _genericRepository.Add(entity);
+                return _genericRepository.AddAsync(entity);
             }
             catch(Exception exception) 
             {
@@ -38,7 +38,7 @@ namespace BLL.GenericBusinessLogics
         {
             try
             {
-                return _genericRepository.Delete(entity);
+                return _genericRepository.DeleteAsync(entity);
             }
             catch(Exception exception) 
             {
@@ -75,7 +75,7 @@ namespace BLL.GenericBusinessLogics
         {
             try
             {
-                return _genericRepository.Update(Id, conditions);
+                return _genericRepository.UpdateAsync(Id, conditions);
             }
             catch(Exception exception) 
             {

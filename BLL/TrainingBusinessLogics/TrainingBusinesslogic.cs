@@ -26,7 +26,7 @@ namespace BLL.TrainingBusinessLogics
         {
             try
             {
-                return _trainingRepository.Getenrolled(accountId);
+                return _trainingRepository.GetenrolledAsync(accountId);
             }
             catch (Exception exception)
             {
@@ -50,7 +50,7 @@ namespace BLL.TrainingBusinessLogics
         {
             try
             {
-                return _trainingRepository.SetPrerequisite(prerequisiteId, title);
+                return _trainingRepository.SetPrerequisiteAsync(prerequisiteId, title);
             }
             catch (Exception exception)
             {
