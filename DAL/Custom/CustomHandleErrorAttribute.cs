@@ -19,19 +19,10 @@ namespace DAL.Custom
         public override void OnException(ExceptionContext filterContext)
         {
             base.OnException(filterContext);
-
-            var errorGuid = Guid.NewGuid();
-            filterContext.Controller.ViewData["ErrorGuid"] = errorGuid;
-
             _logger.Log(filterContext.Exception);
 
-            filterContext.ExceptionHandled = true;
             filterContext.HttpContext.Response.StatusCode = 500;
-            filterContext.Result = new ViewResult()
-            {
-                ViewName = "Error",
-                TempData = filterContext.Controller.TempData
-            };
+            filterContext.ExceptionHandled = true;
         }
     }
 }

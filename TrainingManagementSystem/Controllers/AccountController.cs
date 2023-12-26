@@ -25,14 +25,8 @@ namespace TrainingManagementSystem.Controllers
             PropertyInfo[] properties = typeof(Account).GetProperties();
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
         }
-        public ActionResult LogInPage()
-        {
-            return View();
-        }
-        public ActionResult RegisterPage()
-        {
-            return View();
-        }
+        public ActionResult LogInPage() => View();
+        public ActionResult RegisterPage() => View();
         [HttpPost]
         public ActionResult AuthenticateUser(Account account)
         {
@@ -146,8 +140,7 @@ namespace TrainingManagementSystem.Controllers
         [HttpGet]
         public JsonResult GetEmployeeEnrolled()
         {
-            int managerId = (int)Session["AccountId"];
-            Result<Account> accountResult = _accountBusinessLogic.GetActiveRequestEmployee(managerId);
+            Result<Account> accountResult = _accountBusinessLogic.GetActiveRequestEmployee((int)Session["AccountId"]);
             return (accountResult.Success) ?
                 Json(new { message = "success", data = accountResult.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);

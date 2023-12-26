@@ -10,7 +10,7 @@ namespace DAL.DataBaseUtils
 {
     public interface IDataBaseUtil<T>
     {
-        Result<T> ExecuteQuery(string query, List<SqlParameter> parameters = null);
-        Result<bool> AffectedRows(string query, List<SqlParameter> parameters = null);
+        Task<Result<T>> ExecuteQueryAsync(string query, List<SqlParameter> parameters = null);
+        Task<Result<bool>> AffectedRowsAsync(string query, List<SqlParameter> parameters = null);
     }
 }

@@ -26,6 +26,7 @@ function LoginUser() {
             }
         },
         error: function (error) {
+            console.log(error)
             ShowNotification("Error", "Communication has been interupted") ;
         }
     });

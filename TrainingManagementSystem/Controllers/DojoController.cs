@@ -9,9 +9,6 @@ namespace TrainingManagementSystem.Controllers
     public class DojoController : Controller
     {
         // GET: Dojo
-        public ActionResult loginTest()
-        {
-            return View();
-        }
+        public ActionResult loginTest() => View();
     }
 }

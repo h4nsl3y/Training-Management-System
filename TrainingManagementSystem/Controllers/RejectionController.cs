@@ -20,8 +20,7 @@ namespace TrainingManagementSystem.Controllers
         [HttpPost]
         public ActionResult SetRejectionComment(int enrollmentId, string comment)
         {
-            Rejection rejection = new Rejection() { EnrollmentId = enrollmentId, Comment = comment };
-            Result<bool> result = _genericBusinessLogic.Add(rejection);
+            Result<bool> result = _genericBusinessLogic.Add(new Rejection() { EnrollmentId = enrollmentId, Comment = comment });
             return (result.Success) ?
                Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                Json(new { message = "failed", data = result.Message }, JsonRequestBehavior.AllowGet);

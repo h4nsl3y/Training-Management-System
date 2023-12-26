@@ -89,8 +89,6 @@ namespace TrainingManagementSystem.Controllers
             RequiredFiles myFile = requiredFileResult.Data.FirstOrDefault();
             byte[] fileByte = myFile.FileData;
             string fileType = myFile.FileType;
-            string filename = myFile.FileName;
-
             return File(fileByte, fileType);
         }
         public JsonResult IsFilePresent(int prerequisiteId)

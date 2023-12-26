@@ -18,6 +18,7 @@ namespace BLL.PrerequisiteBusinesslogics
         private readonly IPrerequisiteRepository _prerequisiteRepository;
         private readonly ILogger _logger;
         private Result<Prerequisite> _resultError;
+        Result<int> _errorResult;
         public PrequisiteBusinessLogic(IPrerequisiteRepository prerequisiteRepository, 
                                         IGenericRepository<Prerequisite> genericRepository,
                                         ILogger logger)
@@ -26,6 +27,7 @@ namespace BLL.PrerequisiteBusinesslogics
             _prerequisiteRepository = prerequisiteRepository;
             _logger = logger;
             _resultError = new Result<Prerequisite> { Success = false, Message = "an Error has been encounter" };
+            _errorResult = new Result<int> { Success = false, Message = "an Error has been encounter" };
         }
         public Result<Prerequisite> GetPrequisite(int trainingid)
         {
@@ -43,14 +45,12 @@ namespace BLL.PrerequisiteBusinesslogics
         {
             try
             {
-                Result<int> result = _prerequisiteRepository.GetPrerequisiteIdByEmployee(accountId); 
-                return result;
+                return _prerequisiteRepository.GetPrerequisiteIdByEmployee(accountId); 
             }
             catch (Exception exception)
             {
                 _logger.Log(exception);
-                Result<int> errorResult = new Result<int> { Success = false, Message = "an Error has been encounter" };
-                return errorResult;
+                return _errorResult;
             }
         }
     }

@@ -30,11 +30,8 @@ namespace BLL.RequiredFileBusinessLogics
             _resultBoolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
         }
 
-        public byte[] GetFileData(string path) 
-        {
-            byte[] binaryData = File.ReadAllBytes(path);
-            return binaryData;
-        }
+        public byte[] GetFileData(string path) => File.ReadAllBytes(path);
+
         public Result<bool> UpdateFile(int prerequisiteId, int accountId, Dictionary<string, object> values)
         {
             try

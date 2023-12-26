@@ -15,27 +15,25 @@ namespace DAL.DataBaseUtils
     public class DataBaseUtil<T> : IDataBaseUtil<T> where T : class
     {
         private readonly string _connString;
-        private readonly ILogger _logger;
         private SqlConnection _connection;
-        public DataBaseUtil(ILogger logger)
+        public DataBaseUtil()
         {
-            _logger = logger;
             _connString = ConfigurationManager.AppSettings["ConnectionString"];
         }
-        public Result<T> ExecuteQuery(string query, List<SqlParameter> parameters = null)
+        public async Task<Result<T>> ExecuteQueryAsync(string query, List<SqlParameter> parameters = null)
         {
             Result<T> result = new Result<T>();
             List<T> objectList = new List<T>();
             try
             {
-                Connect();
+                await ConnectAsync();
                 using (SqlCommand sqlCommand = new SqlCommand(query, _connection))
                 {
                     if (parameters != null) { sqlCommand.Parameters.AddRange(parameters.ToArray()); }
                     SqlDataReader reader = sqlCommand.ExecuteReader();
                     while (reader.Read())
                     {
-                        T entity = MapObject(reader);
+                        T entity = await MapObjectAsync(reader);
                         objectList.Add(entity);
                     }
                     reader.Close();
@@ -46,9 +44,7 @@ namespace DAL.DataBaseUtils
             }
             catch (Exception exception)
             {
-                _logger.Log(exception);
-                result.Success = false;
-                result.Message = "No account has been find";
+                throw;
             }
             finally
             {
@@ -56,12 +52,12 @@ namespace DAL.DataBaseUtils
             }
             return result;
         }
-        public Result<bool> AffectedRows(string query, List<SqlParameter> parameters = null)
+        public async Task<Result<bool>> AffectedRowsAsync(string query, List<SqlParameter> parameters = null)
         {
             Result<bool> result = new Result<bool>();
             try
             {
-                Connect();
+                await ConnectAsync();
                 using (SqlCommand sqlCommand = new SqlCommand(query, _connection))
                 {
                     if (parameters != null) 
@@ -73,9 +69,7 @@ namespace DAL.DataBaseUtils
             }
             catch (Exception exception)
             {
-                _logger.Log(exception);
-                result.Success = false;
-                result.Message = "Server encountered an error";
+                throw;
             }
             finally
             {
@@ -83,19 +77,18 @@ namespace DAL.DataBaseUtils
             }
             return result;        
         }
-        private void Connect()
+        private async Task ConnectAsync()
         {
             try
             {
                 if (_connection == null || _connection.State != ConnectionState.Open)
                 {
                     _connection = new SqlConnection(_connString);
-                    _connection.Open();
+                    await _connection.OpenAsync();//Open();
                 }
             }
             catch(Exception exception) 
             {
-                _logger.Log(exception);
                 throw;
             }
         }
@@ -106,7 +99,7 @@ namespace DAL.DataBaseUtils
                 _connection.Close();
             }
         }
-        private T MapObject(IDataReader reader)
+        private async Task<T> MapObjectAsync(IDataReader reader)
         {
             Type type = typeof(T);
             T objectInstance = Activator.CreateInstance<T>();
