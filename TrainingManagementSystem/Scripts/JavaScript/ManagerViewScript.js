@@ -20,9 +20,9 @@ function GetEnrollment() {
                             }
                         },
                         {
-                            "data": "AccountId",
-                            render: function (data) {
-                                return "<button class='item-button' id='detailBtn' onclick='GetRequestByEmployee(" + data + ")'> See Requests</button>";
+                            //"data": "AccountId",
+                            render: function (data, type, row) {
+                                return "<button class='item-button' id='detailBtn' onclick='GetRequestByEmployee(" + row.AccountId + " , " + row.Email + ")'> See Requests</button>";
                             }
                         }
                     ],
@@ -40,7 +40,7 @@ function GetEnrollment() {
 };
 
 
-function GetRequestByEmployee(requestAccountId) {
+function GetRequestByEmployee(requestAccountId,requestAccountEmail) {
     $.ajax({
         type: "GET",
         url: "/ViewModel/GetTrainingEnrollmentViewModel",
@@ -84,7 +84,7 @@ function GetRequestByEmployee(requestAccountId) {
                         {
                             "data": "EnrollmentId",
                             render: function (data) {
-                                return "<button class='item-button' id='detailBtn' onclick='RejectRequest(" + data + ", " + reject + " , " + requestAccountId + ")'>Reject</button>";
+                                return "<button class='item-button' id='detailBtn' onclick='RejectRequest(" + data + ", " + reject + " , " + requestAccountId + " , " + requestAccountEmail + ")'>Reject</button>";
                             }
                         }
                     ],
@@ -153,17 +153,17 @@ function UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId)
         },
     });
 };
-function RejectRequest(requestEnrollmentId, requestState, requestEmployeeId) {
+function RejectRequest(requestEnrollmentId, requestState, requestEmployeeId, requestAccountEmail) {
     let overlay = document.getElementById("commentContainerId");
     overlay.style.visibility = "visible";
-    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", "SubmitRejectionReason(" + requestEnrollmentId + " , " + requestState + " , "  + requestEmployeeId + ");");
+    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", "SubmitRejectionReason(" + requestEnrollmentId + " , " + requestState + " , " + requestEmployeeId + " , " + requestAccountEmail + ");");
 };
-function SubmitRejectionReason(requestEnrollmentId, requestState, requestEmployeeId) {
+function SubmitRejectionReason(requestEnrollmentId, requestState, requestEmployeeId, requestAccountEmail) {
     let rejectionComment = document.getElementById("rejectionReasonid").value;
     $.ajax({
         type: "POST",
         url: "/Rejection/SetRejectionComment",
-        data: { enrollmentId: requestEnrollmentId, comment: rejectionComment },
+        data: { enrollmentId: requestEnrollmentId, email: requestAccountEmail,comment: rejectionComment },
         success: function (result) {
             if (result.message == "success") {
                 UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,6 @@ namespace BLL.RejectionBusinessLogics
 {
     public interface IRejectionBusinessLogic
     {
+        Task<Result<bool>> RegisterRejection(int enrollmentId, string email, string comment);
     }
 }
