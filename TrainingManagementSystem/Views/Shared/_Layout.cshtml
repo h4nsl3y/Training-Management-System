@@ -1,31 +1,38 @@
 ﻿@{
-    string fullName;
-    string initial;
-    if (ViewBag.Othername != null)
+    string fullName = "";
+    string initial ="";
+    if(ViewBag.FirstName!= null && ViewBag.LastName!= null)
     {
-        fullName = ViewBag.FirstName + " " + ViewBag.OtherName + " " + ViewBag.LastName;
+        if (ViewBag.Othername != null)
+        {
+            fullName = ViewBag.FirstName + " " + ViewBag.OtherName + " " + ViewBag.LastName;
+        }
+        else
+        {
+            fullName = ViewBag.FirstName + " " + ViewBag.LastName;
+        }
+        initial = ViewBag.FirstName.Substring(0, 1) + ViewBag.LastName.Substring(0, 1);
     }
-    else
-    {
-        fullName = ViewBag.FirstName + " " + ViewBag.LastName;
-    }
-    initial = ViewBag.FirstName.Substring(0, 1) + ViewBag.LastName.Substring(0, 1);
+
 }
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="stylesheet" href="~/Content/CSS/UserViewStyleSheet.css"/>
+    <link rel="stylesheet" href="~/Content/CSS/UserViewStyleSheet.css" />
     <link rel="stylesheet" href="~/Content/CSS/NotificationStyleSheet.css" />
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="~/Scripts/JavaScript/NotificationScript.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
     <script src="~/Scripts/JavaScript/LogOutScript.js"></script>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
-    <link href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <!-- Data Table CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+    <!-- Data Table JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src='https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'></script>
+    <!--Lodash JS-->
+    <script type="text/JavaScript" src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
 
 
 </head>

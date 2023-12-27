@@ -29,11 +29,11 @@ namespace BLL.PrerequisiteBusinesslogics
             _resultError = new Result<Prerequisite> { Success = false, Message = "an Error has been encounter" };
             _errorResult = new Result<int> { Success = false, Message = "an Error has been encounter" };
         }
-        public Result<Prerequisite> GetPrequisite(int trainingid)
+        public async Task<Result<Prerequisite>> GetPrequisiteAsync(int trainingid)
         {
             try
             {
-                return _prerequisiteRepository.GetPrequisiteAsync(trainingid);
+                return await _prerequisiteRepository.GetPrequisiteAsync(trainingid);
             }
             catch (Exception exception)
             {
@@ -41,11 +41,11 @@ namespace BLL.PrerequisiteBusinesslogics
                 return _resultError;
             }
         }
-        public Result<int> GetPrerequisiteIdByEmployee(int accountId)
+        public async Task<Result<int>> GetPrerequisiteIdByEmployee(int accountId)
         {
             try
             {
-                return _prerequisiteRepository.GetPrerequisiteIdByEmployee(accountId); 
+                return await _prerequisiteRepository.GetPrerequisiteIdByEmployee(accountId); 
             }
             catch (Exception exception)
             {

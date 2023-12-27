@@ -46,10 +46,12 @@ function CheckTextField() {
     if (emptyFlag) {
         EmptyNotificationText += "are mandatory";
         document.getElementById("notificationText").innerHTML = EmptyNotificationText;
+        document.getElementById("notificationText").style.visibility = "visible";
     }
     else if (invalidFlag) {
         InvalidNotificationText += "are invalid";
         document.getElementById("notificationText").innerHTML = InvalidNotificationText;
+        document.getElementById("notificationText").style.visibility = "visible";
     }
     else if (passwordFlag) {
         document.getElementById("notificationText").innerHTML = "Passwords does not correspond!";

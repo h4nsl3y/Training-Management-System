@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -24,41 +25,42 @@ namespace TrainingManagementSystem.Controllers
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
         }
         [HttpPost]
-        public JsonResult RegisterTraining(Training training)
+        public async Task<JsonResult> RegisterTraining(Training training)
         {
-            Result<bool> result = _genericBusinessLogic.Add(training);
+            Result<bool> result = await _genericBusinessLogic.AddAsync(training);
             return result.Success ?
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetTraining(int trainingId)
+        public async Task<JsonResult> GetTraining(int trainingId)
         {
             Dictionary<string, object> conditions = new Dictionary<string, object>();
             conditions.Add(primaryKey, trainingId);
-            Result<Training> result = _genericBusinessLogic.Get(conditions);
+            Result<Training> result = await _genericBusinessLogic.GetAsync(conditions);
             return result.Success ?
                Json(new { message = "success", data = result.Data.FirstOrDefault() }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetAllTraining()
+        public async Task<JsonResult> GetAllTraining()
         {
-            Result<Training> result = _genericBusinessLogic.GetAll();
+            Result<Training> result = await _genericBusinessLogic.GetAllAsync();
             return (result.Success) ?
                Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
-        [HttpGet]
-        public JsonResult GetUnenrolledTraining()
+        [HttpGet] 
+        public async Task<JsonResult> GetUnenrolledTraining()
         {
             int accountId = (int)Session["AccountId"];
-            Result<Training> result = _trainingBusinessLogic.GetUnenrolled(accountId);
+            Result<Training> result = await _trainingBusinessLogic.GetUnenrolledAsync(accountId);
             return (result.Success) ?
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message}, JsonRequestBehavior.AllowGet);
         }
-        public JsonResult UpdateTraining(Training training)
+        [HttpPost]
+        public async Task<JsonResult> UpdateTraining(Training training)
         {
             Dictionary<string, object> values = new Dictionary<string, object>();
             values.Add("Title", training.Title);
@@ -69,14 +71,15 @@ namespace TrainingManagementSystem.Controllers
             values.Add("EndDate", training.EndDate);
             values.Add("ShortDescription", training.ShortDescription);
             values.Add("LongDescription", training.LongDescription);
-            Result<bool> result = _genericBusinessLogic.Update(training.TrainingId,values);
+            Result<bool> result = await _genericBusinessLogic.UpdateAsync(training.TrainingId,values);
             return result.Success ?
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
-        public ActionResult SetPrerequisite(int prerequisiteId, string title)
+        [HttpPost]
+        public async Task<JsonResult> SetPrerequisite(int prerequisiteId, string title)
         {
-            Result<bool> result = _trainingBusinessLogic.SetPrerequisite(prerequisiteId, title);
+            Result<bool> result = await _trainingBusinessLogic.SetPrerequisiteAsync(prerequisiteId, title);
             return (result.Success) ?
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);

@@ -23,11 +23,11 @@ namespace BLL.ViewModelsBusinessLogics
             _resultError = new Result<T> { Success = false, Message = "an Error has been encounter" };
             _resultBoolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
         }
-        public Result<T> GetTrainingEnrollmentView(int accountId)
+        public async Task<Result<T>> GetTrainingEnrollmentView(int accountId)
         {
             try
             {
-                return _viewModelRepository.GetTrainingEnrollmentView(accountId);
+                return await _viewModelRepository.GetTrainingEnrollmentView(accountId);
             }
             catch (Exception exception)
             {

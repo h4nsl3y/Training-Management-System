@@ -4,6 +4,7 @@ using DAL.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using TrainingManagementSystem.ViewModels;
@@ -18,11 +19,11 @@ namespace TrainingManagementSystem.Controllers
             _genericBusinessLogic = genericBusinessLogic;
         }
         [HttpPost]
-        public ActionResult SetRejectionComment(int enrollmentId, string comment)
+        public async Task<ActionResult> SetRejectionComment(int enrollmentId, string comment)
         {
-            Result<bool> result = _genericBusinessLogic.Add(new Rejection() { EnrollmentId = enrollmentId, Comment = comment });
+            Result<bool> result = await _genericBusinessLogic.AddAsync(new Rejection() { EnrollmentId = enrollmentId, Comment = comment });
             return (result.Success) ?
-               Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
+               Json(new { message = "success"}, JsonRequestBehavior.AllowGet) :
                Json(new { message = "failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
     }

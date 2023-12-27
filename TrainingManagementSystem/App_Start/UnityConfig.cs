@@ -1,12 +1,16 @@
 using BLL.AccountBusinessLogics;
+using BLL.Email;
+using BLL.EnrollmentBusinesslogics;
 using BLL.GenericBusinessLogics;
 using BLL.PrerequisiteBusinesslogics;
+using BLL.RejectionBusinessLogics;
 using BLL.RequiredFileBusinessLogics;
 using BLL.TrainingBusinessLogics;
 using BLL.ViewModelsBusinessLogics;
 using DAL.DataBaseUtils;
 using DAL.Logger;
 using DAL.Repository.AccountRepositories;
+using DAL.Repository.EnrollmentRepositories;
 using DAL.Repository.GenericRepositories;
 using DAL.Repository.PrerequisiteRepositories;
 using DAL.Repository.RequiredFileRepositories;
@@ -63,6 +67,7 @@ namespace TrainingManagementSystem
             container.RegisterType<IAccountRepository, AccountRepository>();
             container.RegisterType<ITrainingRepository, TrainingRepository>();
             container.RegisterType<IPrerequisiteRepository,PrerequisiteRepository>();
+            container.RegisterType<IEnrollmentRepository, EnrollmentRepository>();
             container.RegisterType(typeof(IViewModelRepository<>), typeof(ViewModelRepository<>));
 
             container.RegisterType(typeof(IGenericBusinessLogic<>), typeof(GenericBusinessLogic<>));
@@ -71,7 +76,11 @@ namespace TrainingManagementSystem
             container.RegisterType<ITrainingBusinesslogic,TrainingBusinesslogic>();
             container.RegisterType<IPrerequisiteBusinessLogic,PrequisiteBusinessLogic>();
             container.RegisterType<IRequiredFileBusinessLogic,RequiredFileBusinessLogic>();
+            container.RegisterType<IEnrollmentBusinessLogic, EnrollmentBusinesslogic>();
+            container.RegisterType<IRejectionBusinessLogic, RejectionBusinessLogic>();
+            container.RegisterType<IEmail, Email>();
             container.RegisterType(typeof(IViewModelBusinesslogic<>), typeof(ViewModelBusinessLogic<>));
+
         }
     }
 }

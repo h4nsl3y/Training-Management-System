@@ -1,10 +1,12 @@
 ﻿$(document).ready(
-    GetUnenrolledTrainingList(),
     GetDepartmentList(),
+    GetUnenrolledTrainingList(),
+    GetStateList(),
     GetPrerequisiteFiles()
 )
 //GLOBAL VARIABLE
 var index = 0;
+var departmentList = [] ;
 
 //#region DataTable
 function GetUnenrolledTrainingList() {
@@ -20,7 +22,6 @@ function GetUnenrolledTrainingList() {
                 $('#trainingTableId').DataTable({
                     "data": result.data,
                     "columns": [
-                        { "data": "TrainingId" },
                         { "data": "Title" },
                         { "data": "Title" },
                         { "data": "SeatNumber" },
@@ -42,7 +43,7 @@ function GetUnenrolledTrainingList() {
         }
     });
 }
-function GetDepartmentList() {
+function GetStateList() {
     $.ajax({
         type: "GET",
         url: "/State/GetStateList",
@@ -54,22 +55,32 @@ function GetDepartmentList() {
         }
     });
 };
-
-
+function GetDepartmentList() {
+    $.ajax({
+        type: "GET",
+        url: "/Department/GetDepartmentList",
+        success: function (result) {
+            result.data.forEach((department) =>  departmentList.push(department));
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
+    });
+};
 function GetEnrolledTrainingList(stateList) {
     $.ajax({
         type: 'GET',
         url: "/Enrollment/GetAllEnrollmentByEmployee",
+        data: { email: "none" },
         dataType: 'json',
         success: function (result) {
-            if (result.message = "success") {
+            if (result.message == "success") {
                 if ($.fn.DataTable.isDataTable('#enrollmentTableId')) {
                     $('#enrollmentTableId').DataTable().destroy();
                 }
                 $('#enrollmentTableId').DataTable({
                     "data": result.data,
                     "columns": [
-                        { "data": "TrainingId" },
                         {
                             "data": "SubmissionDate",
                             render: function (data) {
@@ -79,8 +90,8 @@ function GetEnrolledTrainingList(stateList) {
                         {
                             "data": "StateId",
                             render: function (data) {
-                                
-                                return stateList[data - 1].StateDefinition;
+                                let state = _.find(stateList, { StateId: data })
+                                return state.StateDefinition;
                             }
                         },
                         {
@@ -221,8 +232,6 @@ function PrerequisiteTableToggle() {
 
 //#endregion
 
-
-
 //#region FormTraining
 function GetTrainingDetail(id, displayButton) {
     $.ajax({
@@ -243,14 +252,17 @@ function DisplayTrainingDetails(training, displayButton) {
     let overlay = document.getElementById("screenOverlay");
     let trainingTitle = document.getElementById("detailTitle");
     let trainingId = document.getElementById("detailId")
-    let trainingDepartment = document.getElementById("detailDepartmentPriority");
+
+    let trainingDepartment = document.getElementById("detailDepartmentPriority")
     let trainingDescription = document.getElementById("detailDescription");
     let trainingDate = document.getElementById("detailDate");
     let trainingDeadline = new Date(Number((training.Deadline).match(/\d+/)[0]));
 
     trainingTitle.textContent = "Title : " + training.Title;
-    trainingId.textContent = "Id : " + training.TrainingId;
-    trainingDepartment.textContent = "Priority to department : " + training.DepartmentId;
+//    trainingId.textContent = "Id : " + training.TrainingId;
+
+    let department = _.find(departmentList, { DepartmentId: training.DepartmentId })
+    trainingDepartment.textContent = "Priority to department : " + department.DepartmentName;
     trainingDescription.textContent = "Description : " + training.LongDescription;
     trainingDate.textContent = "Application deadline : " + trainingDeadline;
 
@@ -360,7 +372,7 @@ function Enroll(trainingId) {
         success: function (result) {
             if (result.message == "success") {
                 GetUnenrolledTrainingList();
-                GetDepartmentList();
+                GetStateList();
                 ShowNotification("Success", "Successfully enrolled")
                 let overlay = document.getElementById("screenOverlay");
                 let enrollButton = document.getElementById("enrollBtn");

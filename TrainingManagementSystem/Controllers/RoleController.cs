@@ -3,6 +3,7 @@ using DAL.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -16,9 +17,9 @@ namespace TrainingManagementSystem.Controllers
             _genericBusinessLogic = genericBusinessLogic;
         }
         [HttpGet]
-        public JsonResult GetRoleList()
+        public async Task<JsonResult> GetRoleList()
         {
-            Result<Role> accountResult = _genericBusinessLogic.GetAll();
+            Result<Role> accountResult = await _genericBusinessLogic.GetAllAsync();
             return (accountResult.Success) ?
                Json(new { message = "success", data = accountResult.Data }, JsonRequestBehavior.AllowGet) :
                Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repository.PrerequisiteRepositories
 {
-    public class PrerequisiteRepository : IPrerequisiteRepository
+    public class PrerequisiteRepository : RepositoryService, IPrerequisiteRepository
     {
         private readonly IDataBaseUtil<Prerequisite> _dataBaseUtil;
         private readonly string primaryKey;

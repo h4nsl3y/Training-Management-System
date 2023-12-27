@@ -17,6 +17,7 @@
   "homepage": "https://github.com/h4nsl3y/TrainingManagementSystem#readme",
   "devDependencies": {
     "gulp": "^4.0.2",
+    "gulp-stylus": "^3.0.1",
     "gulp-typescript": "^6.0.0-alpha.1"
   },
   "dependencies": {

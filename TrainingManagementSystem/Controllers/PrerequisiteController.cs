@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -17,53 +18,51 @@ namespace TrainingManagementSystem.Controllers
     {
         private readonly IGenericBusinessLogic<Prerequisite> _genericBusinessLogic;
         private readonly IPrerequisiteBusinessLogic _prerequisiteBusinessLogic;
-        private readonly string primaryKey;
         public PrerequisiteController(IGenericBusinessLogic<Prerequisite> genericBusinessLogic, IPrerequisiteBusinessLogic prerequisiteBusinessLogic)
         {
             _genericBusinessLogic = genericBusinessLogic;
             _prerequisiteBusinessLogic = prerequisiteBusinessLogic;
             PropertyInfo[] properties = typeof(Account).GetProperties();
-            primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
         }
         [HttpGet]
-        public JsonResult GetAllPrerequisite()
+        public async Task<JsonResult> GetAllPrerequisite()
         {
-            Result<Prerequisite> prerequisiteResult = _genericBusinessLogic.GetAll();
+            Result<Prerequisite> prerequisiteResult = await _genericBusinessLogic.GetAllAsync();
             return (prerequisiteResult.Success) ?
                 Json(new { message = "success", data = prerequisiteResult.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = prerequisiteResult.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetPrerequisite(int prerequisiteId)
+        public async Task<JsonResult> GetPrerequisite(int prerequisiteId)
         {
             Dictionary<string, object> conditions = new Dictionary<string, object>();
             conditions.Add("PREREQUISITEID", prerequisiteId);
-            Result<Prerequisite> prerequisiteResult = _genericBusinessLogic.Get(conditions);
+            Result<Prerequisite> prerequisiteResult = await _genericBusinessLogic.GetAsync(conditions);
             return (prerequisiteResult.Success) ?
                 Json(new { message = "success", data = prerequisiteResult.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = prerequisiteResult.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetPrerequisiteByTraining(int trainingId)
+        public async Task<JsonResult> GetPrerequisiteByTraining(int trainingId)
         {
-            Result<Prerequisite> prerequisiteResult = _prerequisiteBusinessLogic.GetPrequisite(trainingId);
+            Result<Prerequisite> prerequisiteResult = await _prerequisiteBusinessLogic.GetPrequisiteAsync(trainingId);
             return (prerequisiteResult.Success) ?
                 Json(new { message = "success", data = prerequisiteResult.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = prerequisiteResult.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetPrerequisiteFile()
+        public async Task<JsonResult> GetPrerequisiteFile()
         {
-            Result<int> result = _prerequisiteBusinessLogic.GetPrerequisiteIdByEmployee((int)Session["AccountId"]);
+            Result<int> result = await _prerequisiteBusinessLogic.GetPrerequisiteIdByEmployee((int)Session["AccountId"]);
             return (result.Success) ?
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult AddPrerequisite(string prerequisiteDescription)
+        public async Task<JsonResult> AddPrerequisite(string prerequisiteDescription)
         {
             Prerequisite newPrerequisite = new Prerequisite { PrerequisiteDescription = prerequisiteDescription};
-            Result<bool> result = _genericBusinessLogic.Add(newPrerequisite);
+            Result<bool> result = await _genericBusinessLogic.AddAsync(newPrerequisite);
             return (result.Success) ?
                 Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = result.Message }, JsonRequestBehavior.AllowGet);

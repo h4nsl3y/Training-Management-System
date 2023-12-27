@@ -14,19 +14,16 @@ namespace DAL.Repository.TrainingRepositories
     public class TrainingRepository : ITrainingRepository
     {
         private readonly IDataBaseUtil<Training> _dataBaseUtil;
-        private readonly string primaryKey;
-        private readonly string tableName;
         public TrainingRepository(IDataBaseUtil<Training> dataBaseUtil)
         {
             _dataBaseUtil = dataBaseUtil;
-            tableName = typeof(Training).Name;
-            PropertyInfo[] properties = typeof(Training).GetProperties();
-            primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
         }
         public async Task<Result<Training>> GetenrolledTrainingListAsync(int accountId)
         {
-            string query =   @"SELECT * FROM TRAINING WHERE TRAININGID IN 
-                             ( SELECT TRAININGID FROM ENROLLMENT WHERE ACCOUNTID = @ACCOUNTID) ;";
+            string query =   @"SELECT * FROM TRAINING WHERE 
+                               ENDDATE > GETDATE() AND
+                                TRAININGID IN 
+                             ( SELECT TRAININGID FROM ENROLLMENT WHERE ACCOUNTID = @ACCOUNTID ) ;";
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@ACCOUNTID", accountId)
@@ -35,8 +32,10 @@ namespace DAL.Repository.TrainingRepositories
         }
         public async Task<Result<Training>> GetUnenrolleTrainingListdAsync(int accountId)
         { 
-            string query =  @"SELECT * FROM TRAINING WHERE TRAININGID NOT IN 
-                            ( SELECT TRAININGID FROM ENROLLMENT WHERE ACCOUNTID = @ACCOUNTID) ;";
+            string query =  @"SELECT * FROM TRAINING WHERE 
+                              DEADLINE > GETDATE() AND
+                              TRAININGID NOT IN 
+                             (SELECT TRAININGID FROM ENROLLMENT WHERE ACCOUNTID = @ACCOUNTID) ;";
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@ACCOUNTID", accountId)

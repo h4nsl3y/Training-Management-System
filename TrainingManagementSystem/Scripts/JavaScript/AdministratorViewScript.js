@@ -5,6 +5,8 @@
 )
 // GLOBAL VARIABLES
 let rowCount = 0
+
+//#region ComboboxList
 function AddDisplayPrerequisite() {
     let body = document.getElementById("prerequisiteRowId");
 
@@ -26,8 +28,6 @@ function AddDisplayPrerequisite() {
     GetPrerequisiteList(rowCount);
     rowCount += 1;
 }
-
-//#region ComboboxList
 function GetDepartmentList() {
     $.ajax({
         type: "GET",
@@ -100,6 +100,12 @@ function FillTrainingDetail(trainingId) {
         success: function (result) {
             let training = result.data;
             if (message = 'success') {
+
+                document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "RegisterTraining()");
+                document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
+                document.getElementById("submitTrainingDetailsBtn").textContent = "Register";
+
+
 
                 document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "UpdateTraining(" + training.TrainingId + ");");
                 document.getElementById("trainingTitleId").value = training.Title;
@@ -185,7 +191,6 @@ function UpdateTraining(trainingId) {
     CloseTrainingCreationForm();
     GetTrainingList();
 }
-
 function DisplayTrainingForm(isAdding, trainingId) {
 
     let trainingForm = document.getElementById("trainingFormId");
@@ -208,7 +213,7 @@ function DisplayTrainingForm(isAdding, trainingId) {
         document.getElementById("submitTrainingDetailsBtn").textContent = "Register";
     }
     else {
-        document.getElementById("trainingFormId").textContent = "Training update";
+        document.getElementById("trainingFormTitleId").textContent = "Training update";
         document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
         document.getElementById("submitTrainingDetailsBtn").textContent = "Update";
         FillTrainingDetail(trainingId);
@@ -227,7 +232,6 @@ function DisplayPrerequisiteForm() {
     let prerequisiteForm = document.getElementById("prerequisiteFormId");
     trainingForm.style.display = "none";
     prerequisiteForm.style.display = "";
-
 
     document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "RegisterPrerequisite()");
     document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
@@ -338,7 +342,6 @@ function GetTrainingList() {
         },
     });
 };
-
 function GetPrerequisiteDataList() {
     $.ajax({
         type: "GET",
@@ -379,7 +382,7 @@ function TrainingTableToggle() {
     }
 }
 
-function PrerequisitTeableToggle() {
+function PrerequisiteTableToggle() {
     table = document.getElementById("PrerequisiteTableId_wrapper");
     image = document.getElementById("prerequisiteTableArrowId");
     if (table.style.display == 'none') {
@@ -405,7 +408,6 @@ function DepartmentTableToggle() {
 //#endregion
 
 //#endregion
-
 
 function setTrainingPrerequisite(trainingTitle) {
     let prerequisiteIds = document.querySelectorAll('select[name="PrerequisiteField"]');
@@ -434,3 +436,7 @@ function setTrainingPrerequisite(trainingTitle) {
 
     });
 }
+
+//#region
+
+//#endRegion

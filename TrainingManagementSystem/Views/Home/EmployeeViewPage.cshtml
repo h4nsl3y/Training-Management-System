@@ -12,10 +12,9 @@
             <button class="item-button" onclick="TrainingTableToggle()"><image class="arrow" id="trainingTableArrowId" src="~/Content/image/Arrow.png"></button>
         </div>
         <div class="container-list" id="containerUnenrolledListId">
-            <table class="list-item" id="trainingTableId">
+            <table class="list-item display compact" width="100%" id="trainingTableId">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Title</th>
                         <th>Date</th>
                         <th>Available seats</th>
@@ -32,10 +31,9 @@
             <button class="item-button" onclick="EnrollmentTableToggle()"><image class="arrow" id="enrollmentTableArrowId" src="~/Content/image/Arrow.png"></button>
         </div>
         <div class="container-list" id="containerEnrolledListId">
-            <table class="list-item" id="enrollmentTableId">
+            <table class="list-item display compact" id="enrollmentTableId">
                 <thead>
                     <tr>
-                        <th>ID</th>
                         <th>Submission date</th>
                         <th>Status</th>
                         <th>Option</th>
@@ -50,7 +48,7 @@
             <button class="item-button" onclick="PrerequisiteTableToggle()"><image class="arrow" id="prerequisiteTableArrowId" src="~/Content/image/Arrow.png"></button>
         </div>
         <div class="container-list" id="containerEnrolledListId">
-            <table class="list-item" id="prerequisiteTableId">
+            <table class="list-item display compact" id="prerequisiteTableId">
                 <thead>
                     <tr>
                         <th>Prerequisite</th>
@@ -66,7 +64,6 @@
     <div class="display-content">
         <div class="text-content">
             <p id="detailTitle">Title :</p>
-            <p id="detailId">Training ID :</p>
             <p id="detailDepartmentPriority">Priority to :</p>
             <p id="detailDescription">Description : </p>
             <p id="detailDate">Date : </p>
@@ -80,7 +77,6 @@
                 <button class="item-button-overlay" id="enrollBtn" name="enrollButton" >Enroll</button>
                 <button class="item-button-overlay" id="closeDetailsBtn" onclick="HideDetail()">Close</button>
             </div>
-
         </div>
     </div>
 </div>

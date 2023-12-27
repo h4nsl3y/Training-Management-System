@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -28,14 +29,14 @@ namespace TrainingManagementSystem.Controllers
         public ActionResult LogInPage() => View();
         public ActionResult RegisterPage() => View();
         [HttpPost]
-        public ActionResult AuthenticateUser(Account account)
+        public async Task<ActionResult> AuthenticateUser(Account account)
         {
-            Result<bool> boolResult = _accountBusinessLogic.Authenticated(account.Email, account.Password);
+            Result<bool> boolResult = await _accountBusinessLogic.AuthenticatedAsync(account.Email, account.Password);
             if (boolResult.Success)
             {
                 if (boolResult.Data.Any() && boolResult.Data[0])
                 {
-                    Result<Account> _accountResult = _accountBusinessLogic.GetByEmail(account.Email);
+                    Result<Account> _accountResult = await _accountBusinessLogic.GetByEmailAsync(account.Email);
                     if (_accountResult.Success)
                     {
                         Account user = _accountResult.Data.FirstOrDefault();
@@ -55,19 +56,19 @@ namespace TrainingManagementSystem.Controllers
             else { return Json(new { message = "Failure", data = boolResult.Message }); }
         }
         [HttpGet]
-        public JsonResult GetAccount(int accountId)
+        public async Task<JsonResult> GetAccount(int accountId)
         {
             Dictionary<string, object> conditions = new Dictionary<string, object>();
             conditions.Add(primaryKey, accountId);
-            Result<Account> accountResult = _accountBusinessLogic.Get(conditions);
+            Result<Account> accountResult = await _accountBusinessLogic.GetAccountAsync(conditions);
             return  (accountResult.Success) ?
                 Json(new { message = "success", data = accountResult.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetAllAccount()
+        public async Task<JsonResult> GetAllAccount()
         {
-            Result<Account> accountResult = _accountBusinessLogic.GetAll();
+            Result<Account> accountResult = await _accountBusinessLogic.GetAllAccountAsync();
             return (accountResult.Success) ?
                 Json(new { message = "success", data = accountResult.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);
@@ -80,9 +81,9 @@ namespace TrainingManagementSystem.Controllers
             return Json(new { message = "Success" });
         }
         [HttpPost]
-        public JsonResult RegisterUser(Account newAccount)
+        public async Task<JsonResult> RegisterUser(Account newAccount)
         {
-            Result<bool> duplicatedResult = _accountBusinessLogic.Duplicated(newAccount.Email, newAccount.NationalIdentificationNumber, newAccount.MobileNumber);
+            Result<bool> duplicatedResult = await _accountBusinessLogic.DuplicatedAsync(newAccount.Email, newAccount.NationalIdentificationNumber, newAccount.MobileNumber);
             if (duplicatedResult.Data.Any(item => item == true))
             {
                 string duplicateMessage = "The field(s) : ";
@@ -95,11 +96,11 @@ namespace TrainingManagementSystem.Controllers
             }
             else
             {
-                newAccount.Password = _accountBusinessLogic.Encrypt(newAccount.Password);
-                Result<bool> addResult = _accountBusinessLogic.Add(newAccount);
+                newAccount.Password = await Task.Run(() =>_accountBusinessLogic.Encrypt(newAccount.Password));
+                Result<bool> addResult = await _accountBusinessLogic.AddAccountAsync(newAccount);
                 if (addResult.Success)
                 {
-                    Result<Account> accountResult = _accountBusinessLogic.GetLastRegisteredAccount();
+                    Result<Account> accountResult = await _accountBusinessLogic.GetByEmailAsync(newAccount.Email);
                     if (accountResult.Success)
                     {
                         Account user = accountResult.Data.FirstOrDefault();
@@ -133,35 +134,25 @@ namespace TrainingManagementSystem.Controllers
                     return RedirectToRoute(new { controller = "Home", action = "AdministratorViewPage" });
                 default:
                     return RedirectToRoute(new { controller = "Error", action = "NotFound" });
-
             }
 
         }
         [HttpGet]
-        public JsonResult GetEmployeeEnrolled()
+        public async Task<JsonResult> GetEmployeeEnrolled()
         {
-            Result<Account> accountResult = _accountBusinessLogic.GetActiveRequestEmployee((int)Session["AccountId"]);
+            Result<Account> accountResult = await _accountBusinessLogic.GetActiveRequestEmployeeAsync((int)Session["AccountId"]);
             return (accountResult.Success) ?
                 Json(new { message = "success", data = accountResult.Data }, JsonRequestBehavior.AllowGet) :
                 Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public JsonResult GetManagerList()
+        public async Task<JsonResult> GetManagerList()
         {
-            Result<Account> accountResult = _accountBusinessLogic.GetManagerList();
-            if (accountResult.Success)
-            {
-                var managerNames = accountResult.Data.Select(manager => new
-                {
-                    Fullname = $"{manager.FirstName} {manager.OtherName} {manager.LastName}",
-                    Value = manager.AccountId
-                }).ToList();
-                return Json(new { message = "success", data = managerNames }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);
-            }
+            Result<Account> accountResult = await _accountBusinessLogic.GetManagerListAsync();
+            var managerNames = accountResult.Data.Select(manager => new {Fullname = $"{manager.FirstName} {manager.OtherName} {manager.LastName}",Value = manager.AccountId}).ToList();
+            return  (accountResult.Success) ?
+                Json(new { message = "success", data = managerNames }, JsonRequestBehavior.AllowGet):
+                Json(new { message = "Failed", data = accountResult.Data }, JsonRequestBehavior.AllowGet);
         }
     }
 }

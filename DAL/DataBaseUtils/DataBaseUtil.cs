@@ -30,10 +30,10 @@ namespace DAL.DataBaseUtils
                 using (SqlCommand sqlCommand = new SqlCommand(query, _connection))
                 {
                     if (parameters != null) { sqlCommand.Parameters.AddRange(parameters.ToArray()); }
-                    SqlDataReader reader = sqlCommand.ExecuteReader();
+                    SqlDataReader reader = await sqlCommand.ExecuteReaderAsync();
                     while (reader.Read())
                     {
-                        T entity = await MapObjectAsync(reader);
+                        T entity = await Task.Run(() => MapObject(reader));
                         objectList.Add(entity);
                     }
                     reader.Close();
@@ -54,7 +54,7 @@ namespace DAL.DataBaseUtils
         }
         public async Task<Result<bool>> AffectedRowsAsync(string query, List<SqlParameter> parameters = null)
         {
-            Result<bool> result = new Result<bool>();
+            Result<bool> result;
             try
             {
                 await ConnectAsync();
@@ -62,9 +62,8 @@ namespace DAL.DataBaseUtils
                 {
                     if (parameters != null) 
                     { sqlCommand.Parameters.AddRange(parameters.ToArray()); }
-                    bool flag = sqlCommand.ExecuteNonQuery() > 0;
-                    result.Data.Add(flag);
-                    result.Success = true;
+                    int affectedrows = await sqlCommand.ExecuteNonQueryAsync();
+                    result = new Result<bool>() { Success = true, Data = { affectedrows > 0 } };
                 }
             }
             catch (Exception exception)
@@ -99,7 +98,7 @@ namespace DAL.DataBaseUtils
                 _connection.Close();
             }
         }
-        private async Task<T> MapObjectAsync(IDataReader reader)
+        private T MapObject(IDataReader reader)
         {
             Type type = typeof(T);
             T objectInstance = Activator.CreateInstance<T>();

@@ -22,7 +22,9 @@ function LoginUser() {
                 window.location.href = '/Account/RedirectToView'; 
             }
             else {
-                document.getElementById("notificationText").innerHTML = result.data;
+                notificationElement = document.getElementById("notificationText");
+                notificationElement.innerHTML = result.data;
+                notificationElement.style.visibility = 'visible';
             }
         },
         error: function (error) {

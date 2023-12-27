@@ -4,6 +4,7 @@ using DAL.Repository.GenericRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,11 +23,11 @@ namespace BLL.GenericBusinessLogics
             _resultError = new Result<T> { Success = false, Message = "an Error has been encounter" };
             _resultBoolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
         }
-        public Result<bool> Add(T entity)
+        public async Task<Result<bool>> AddAsync(T entity)
         {
             try
             {
-                return _genericRepository.AddAsync(entity);
+                return await _genericRepository.AddAsync(entity);
             }
             catch(Exception exception) 
             {
@@ -34,11 +35,11 @@ namespace BLL.GenericBusinessLogics
                 return _resultBoolError;
             }
         }
-        public Result<bool> Delete(T entity)
+        public async Task<Result<bool>> DeleteAsync(T entity)
         {
             try
             {
-                return _genericRepository.DeleteAsync(entity);
+                return await _genericRepository.DeleteAsync(entity);
             }
             catch(Exception exception) 
             {
@@ -46,11 +47,11 @@ namespace BLL.GenericBusinessLogics
                 return _resultBoolError;
             }
         }
-        public Result<T> Get(Dictionary<string, object> conditions)
+        public async Task<Result<T>> GetAsync(Dictionary<string, object> conditions)
         {
             try
             {
-                return _genericRepository.Get(conditions);
+                return await _genericRepository.GetAsync(conditions);
             }
             catch (Exception exception)
             {
@@ -58,11 +59,11 @@ namespace BLL.GenericBusinessLogics
                 return _resultError;
             }
         }
-        public Result<T> GetAll(Dictionary<string, object> conditions = null)
+        public async Task<Result<T>> GetAllAsync(Dictionary<string, object> conditions = null)
         {
             try
             {
-                return _genericRepository.GetAll(conditions);
+                return await _genericRepository.GetAllAsync(conditions);
             }
             catch (Exception exception)
             {
@@ -71,11 +72,11 @@ namespace BLL.GenericBusinessLogics
             }
            
         }
-        public Result<bool> Update(int Id, Dictionary<string, object> conditions)
+        public async Task<Result<bool>> UpdateAsync(int Id, Dictionary<string, object> conditions)
         {
             try
             {
-                return _genericRepository.UpdateAsync(Id, conditions);
+                return await _genericRepository.UpdateAsync(Id, conditions);
             }
             catch(Exception exception) 
             {

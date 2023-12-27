@@ -16,7 +16,7 @@ using System.Web.Helpers;
 
 namespace DAL.Repository.AccountRepositories
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository : RepositoryService, IAccountRepository
     {
         private readonly DataBaseUtil<Account> _dataBaseUtil;
         private readonly string primaryKey;
@@ -35,15 +35,15 @@ namespace DAL.Repository.AccountRepositories
                                VALUES(@FIRSTNAME,@OTHERNAME,@LASTNAME,@NATIONALIDENTIFICATIONNUMBER,@MOBILENUMBER,@EMAIL,@MANAGERID,@DEPARTMENTID,@PASSWORD);";
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
-                new SqlParameter("@FIRSTNAME",IsDataNull(account.FirstName)),
-                new SqlParameter("@OTHERNAME", IsDataNull(account.OtherName)),
-                new SqlParameter("@LASTNAME", IsDataNull(account.LastName)),
-                new SqlParameter("@NATIONALIDENTIFICATIONNUMBER", IsDataNull(account.NationalIdentificationNumber)),
-                new SqlParameter("@MOBILENUMBER", IsDataNull(account.MobileNumber)),
-                new SqlParameter("@EMAIL", IsDataNull(account.Email)),
-                new SqlParameter("@MANAGERID", IsDataNull(account.ManagerId)),
-                new SqlParameter("@DEPARTMENTID", IsDataNull(account.DepartmentId)),
-                new SqlParameter("@PASSWORD", IsDataNull(account.Password))
+                new SqlParameter("@FIRSTNAME",GetPropertyValue(account.FirstName)),
+                new SqlParameter("@OTHERNAME", GetPropertyValue(account.OtherName)),
+                new SqlParameter("@LASTNAME", GetPropertyValue(account.LastName)),
+                new SqlParameter("@NATIONALIDENTIFICATIONNUMBER", GetPropertyValue(account.NationalIdentificationNumber)),
+                new SqlParameter("@MOBILENUMBER", GetPropertyValue(account.MobileNumber)),
+                new SqlParameter("@EMAIL", GetPropertyValue(account.Email)),
+                new SqlParameter("@MANAGERID", GetPropertyValue(account.ManagerId)),
+                new SqlParameter("@DEPARTMENTID", GetPropertyValue(account.DepartmentId)),
+                new SqlParameter("@PASSWORD", GetPropertyValue(account.Password))
         };
             
            
@@ -148,21 +148,6 @@ namespace DAL.Repository.AccountRepositories
             };
             return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
-        public async Task<Result<Account>> GetLastRegisteredAccountAsync()
-        {
-            string query = $@"SELECT TOP 1 
-                            ACCOUNT.ACCOUNTID,
-                            ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
-                            ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
-                            ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID, ACCOUNTROLE.ROLEID
-                            FROM {tableName} 
-                            INNER JOIN ACCOUNTROLE
-                            ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID
-                            ORDER BY {primaryKey} DESC; ";
-            Result<Account> result = await _dataBaseUtil.ExecuteQueryAsync(query);
-            result.Data = new List<Account>() { result.Data.FirstOrDefault() }; 
-            return result;
-        }
         public async Task<Result<Account>> GetManagerListAsync()
         {
             
@@ -181,7 +166,5 @@ namespace DAL.Repository.AccountRepositories
             };
             return await Task.Run(() => _dataBaseUtil.AffectedRowsAsync(query, parameters));
         }
-
-        private object IsDataNull(object value) => (value == null) ? DBNull.Value : value;
     }
 }

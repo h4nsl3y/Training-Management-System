@@ -3,6 +3,7 @@ using DAL.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using TrainingManagementSystem.ViewModels;
@@ -21,11 +22,11 @@ namespace TrainingManagementSystem.Controllers
             _boolResult = new Result<bool>();
         }
         [HttpGet]
-        public JsonResult GetTrainingEnrollmentViewModel(int accountId)
+        public async Task<JsonResult> GetTrainingEnrollmentViewModel(int accountId)
         {
             Dictionary<string, object> conditions = new Dictionary<string, object>();
             conditions.Add("AccountId", accountId);
-            _viewModelResult = _viewModelBusinesslogic.GetTrainingEnrollmentView(accountId);
+            _viewModelResult = await _viewModelBusinesslogic.GetTrainingEnrollmentView(accountId);
             return (_viewModelResult.Success) ?
                Json(new { message = "success", data = _viewModelResult.Data }, JsonRequestBehavior.AllowGet) :
                Json(new { message = "Failed", data = _viewModelResult.Message }, JsonRequestBehavior.AllowGet);

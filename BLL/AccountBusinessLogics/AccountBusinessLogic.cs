@@ -23,7 +23,7 @@ namespace BLL.AccountBusinessLogics
         private readonly ILogger _logger;
         private Result<Account> _resultError;
         private Result<bool> _resultBoolError;
-        public AccountBusinessLogic(IGenericRepository<Account> genericRepository,IAccountRepository accountRepository, ILogger logger)
+        public AccountBusinessLogic(IGenericRepository<Account> genericRepository, IAccountRepository accountRepository, ILogger logger)
         {
             _genericRepository = genericRepository;
             _accountRepository = accountRepository;
@@ -31,11 +31,11 @@ namespace BLL.AccountBusinessLogics
             _resultError = new Result<Account> { Success = false, Message = "an Error has been encounter" };
             _resultBoolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
         }
-        public Result<bool> Add(Account account)
+        public async Task<Result<bool>> AddAccountAsync(Account account)
         {
             try
             {
-                return _accountRepository.Add(account);
+                return await _accountRepository.AddAsync(account);
             }
             catch (Exception exception)
             {
@@ -43,7 +43,7 @@ namespace BLL.AccountBusinessLogics
                 return _resultBoolError;
             }
         }
-        public Result<bool> Authenticated(string email, string password)
+        public async Task<Result<bool>> AuthenticatedAsync(string email, string password)
         {
             try
             {
@@ -51,19 +51,17 @@ namespace BLL.AccountBusinessLogics
                 {
                     {"EMAIL", email }
                 };
-                Result<Account> result = _accountRepository.Get(conditions);
+                Result<Account> result = await _accountRepository.GetAsync(conditions);
                 if (result.Success && result.Data.First() != null)
                 {
                     object passwordHash = result.Data.FirstOrDefault().Password;
                     bool authenticateFlag = BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash.ToString());
 
-                    Result<bool> booleanResult = new Result<bool> { Success = true, Data = { authenticateFlag } };
-                    return booleanResult;
+                    return new Result<bool> { Success = true, Data = { authenticateFlag } };
                 }
-                else { 
-                    return new Result<bool> { Success=false, Message = "No account linked to this email adddress"}; 
+                else {
+                    return new Result<bool> { Success = false, Message = "No account linked to this email adddress" };
                 }
-                
             }
             catch (Exception exception)
             {
@@ -71,7 +69,7 @@ namespace BLL.AccountBusinessLogics
                 return _resultBoolError;
             }
         }
-        public Result<bool> Duplicated(string email, string NationalIdentificationNumber, string mobileNumber)
+        public async Task<Result<bool>> DuplicatedAsync(string email, string NationalIdentificationNumber, string mobileNumber)
         {
             try
             {
@@ -81,7 +79,7 @@ namespace BLL.AccountBusinessLogics
                     {"MOBILENUMBER", mobileNumber},
                     {"NATIONALIDENTIFICATIONNUMBER", NationalIdentificationNumber}
                 };
-                return _accountRepository.Duplicated(conditions);
+                return await _accountRepository.DuplicatedAsync(conditions);
             }
             catch (Exception exception)
             {
@@ -93,11 +91,11 @@ namespace BLL.AccountBusinessLogics
         {
             return BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
         }
-        public Result<Account> Get(Dictionary<string, object> conditions = null)
+        public async Task<Result<Account>> GetAccountAsync(Dictionary<string, object> conditions = null)
         {
             try
             {
-                return _accountRepository.Get(conditions);
+                return await _accountRepository.GetAsync(conditions);
             }
             catch (Exception exception)
             {
@@ -105,11 +103,11 @@ namespace BLL.AccountBusinessLogics
                 return _resultError;
             }
         }
-        public Result<Account> GetAll(Dictionary<string, object> conditions = null)
+        public async Task<Result<Account>> GetAllAccountAsync(Dictionary<string, object> conditions = null)
         {
             try
             {
-                return _accountRepository.GetAll(conditions);
+                return await _accountRepository.GetAllAsync(conditions);
             }
             catch (Exception exception)
             {
@@ -118,11 +116,11 @@ namespace BLL.AccountBusinessLogics
             }
 
         }
-        public Result<Account> GetActiveRequestEmployee(int managerId)
+        public async Task<Result<Account>> GetActiveRequestEmployeeAsync(int managerId)
         {
             try
             {
-                return _accountRepository.GetActiveRequestEmployee(managerId);
+                return await _accountRepository.GetActiveRequestEmployeeAsync(managerId);
             }
             catch (Exception exception)
             {
@@ -130,13 +128,13 @@ namespace BLL.AccountBusinessLogics
                 return _resultError;
             }
         }
-        public Result<Account> GetByEmail(string email)
+        public async Task<Result<Account>> GetByEmailAsync(string email)
         {
             try
             {
                 Dictionary<string, object> conditions = new Dictionary<string, object>()
                 {{"EMAIL", email }};
-                return _accountRepository.Get(conditions);
+                return await _accountRepository.GetAsync(conditions);
             }
             catch (Exception exception)
             {
@@ -144,23 +142,11 @@ namespace BLL.AccountBusinessLogics
                 return _resultError;
             }
         }
-        public Result<Account> GetManagerList()
+        public async Task<Result<Account>> GetManagerListAsync()
         {
             try
             {
-                return _accountRepository.GetManagerList();
-            }
-            catch (Exception exception)
-            {
-                _logger.Log(exception);
-                return _resultError;
-            }
-        }
-        public Result<Account> GetLastRegisteredAccount()
-        {
-            try
-            {
-                return _accountRepository.GetLastRegisteredAccount();
+                return await _accountRepository.GetManagerListAsync();
             }
             catch (Exception exception)
             {

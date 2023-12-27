@@ -9,7 +9,7 @@ namespace BLL.PrerequisiteBusinesslogics
 {
     public interface IPrerequisiteBusinessLogic
     {
-        Result<Prerequisite> GetPrequisite(int trainingid);
-        Result<int> GetPrerequisiteIdByEmployee(int accountId);
+        Task<Result<Prerequisite>> GetPrequisiteAsync(int trainingid);
+        Task<Result<int>> GetPrerequisiteIdByEmployee(int accountId);
     }
 }

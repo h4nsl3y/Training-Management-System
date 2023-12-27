@@ -12,6 +12,7 @@ namespace BLL.RequiredFileBusinessLogics
     public interface IRequiredFileBusinessLogic
     {
         byte[] GetFileData(string path);
-        Result<bool> UpdateFile(int prerequisiteId, int accountId, Dictionary<string, object> values);
+        Task<Result<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values);
+        Task<Result<bool>> UploadFileAsync(HttpPostedFileBase file, string path, int accountId, int prerequisiteId);
     }
 }

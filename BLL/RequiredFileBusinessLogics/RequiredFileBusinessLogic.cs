@@ -16,30 +16,51 @@ namespace BLL.RequiredFileBusinessLogics
 {
     public class RequiredFileBusinessLogic : IRequiredFileBusinessLogic
     {
-        private readonly IGenericRepository<Account> _genericRepository;
+        private readonly IGenericRepository<RequiredFiles> _genericRepository;
         private readonly IRequiredFilesRepository _requiredFileRepository;
         private readonly ILogger _logger;
-        private Result<Account> _resultError;
+        private Result<RequiredFiles> _resultError;
         private Result<bool> _resultBoolError;
-        public RequiredFileBusinessLogic(IGenericRepository<Account> genericRepository, IRequiredFilesRepository requiredFileRepository, ILogger logger)
+        public RequiredFileBusinessLogic(IGenericRepository<RequiredFiles> genericRepository, IRequiredFilesRepository requiredFileRepository, ILogger logger)
         {
             _genericRepository = genericRepository;
             _requiredFileRepository = requiredFileRepository;
             _logger = logger;
-            _resultError = new Result<Account> { Success = false, Message = "an Error has been encounter" };
+            _resultError = new Result<RequiredFiles> { Success = false, Message = "an Error has been encounter" };
             _resultBoolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
         }
 
         public byte[] GetFileData(string path) => File.ReadAllBytes(path);
 
-        public Result<bool> UpdateFile(int prerequisiteId, int accountId, Dictionary<string, object> values)
+        public async Task<Result<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values)
         {
             try
             {
-                Result<bool> result = _requiredFileRepository.UpdateFile(prerequisiteId, accountId, values);    
-                return result;
+                return await _requiredFileRepository.UpdateFileAsync(prerequisiteId, accountId, values);
             }
             catch (Exception exception)
+            {
+                _logger.Log(exception);
+                return _resultBoolError;
+            }
+        }
+        public async Task<Result<bool>> UploadFileAsync( HttpPostedFileBase file, string path,int accountId, int prerequisiteId)
+        {
+            try
+            {
+                file.SaveAs(path);
+                byte[] binaryData = GetFileData(path);
+                RequiredFiles requiredFile = new RequiredFiles()
+                {
+                    FileName = Path.GetFileName(file.FileName),
+                    FileType = file.ContentType,
+                    FileData = binaryData,
+                    AccountId = accountId,
+                    PrerequisiteId = prerequisiteId
+                };
+                return await _genericRepository.AddAsync(requiredFile);
+            }
+            catch(Exception exception)
             {
                 _logger.Log(exception);
                 return _resultBoolError;

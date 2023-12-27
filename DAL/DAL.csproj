@@ -88,10 +88,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\AccountRepositories\AccountRepository.cs" />
     <Compile Include="Repository\AccountRepositories\IAccountRepository.cs" />
+    <Compile Include="Repository\EnrollmentRepositories\EnrollmentRepository.cs" />
+    <Compile Include="Repository\EnrollmentRepositories\IEnrollmentRepository.cs" />
     <Compile Include="Repository\GenericRepositories\GenericRepository.cs" />
     <Compile Include="Repository\GenericRepositories\IGenericRepository.cs" />
     <Compile Include="Repository\PrerequisiteRepositories\PrerequisiteRepository.cs" />
     <Compile Include="Repository\PrerequisiteRepositories\IPrerequisiteRepository.cs" />
+    <Compile Include="Repository\RepositoryService.cs" />
     <Compile Include="Repository\RequiredFileRepositories\IRequiredFilesRepository.cs" />
     <Compile Include="Repository\RequiredFileRepositories\RequiredFilesRepository.cs" />
     <Compile Include="Repository\TrainingRepositories\ITrainingRepository.cs" />

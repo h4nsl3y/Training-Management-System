@@ -22,11 +22,11 @@ namespace BLL.TrainingBusinessLogics
             _resultError = new Result<Training> { Success = false, Message = "an Error has been encounter" };
             _resultboolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
         }
-        public Result<Training> GetEnrolled(int accountId)
+        public async Task<Result<Training>> GetEnrolledAsync(int accountId)
         {
             try
             {
-                return _trainingRepository.GetenrolledAsync(accountId);
+                return await _trainingRepository.GetUnenrolleTrainingListdAsync(accountId);
             }
             catch (Exception exception)
             {
@@ -34,11 +34,11 @@ namespace BLL.TrainingBusinessLogics
                 return _resultError;
             }
         }
-        public Result<Training> GetUnenrolled(int accountId)
+        public async Task<Result<Training>> GetUnenrolledAsync(int accountId)
         {
             try
             {
-                return _trainingRepository.GetUnenrolled(accountId);
+                return await _trainingRepository.GetUnenrolleTrainingListdAsync(accountId);
             }
             catch (Exception exception)
             {
@@ -46,11 +46,11 @@ namespace BLL.TrainingBusinessLogics
                 return _resultError;
             }
         }
-        public Result<bool> SetPrerequisite(int prerequisiteId, string title)
+        public async Task<Result<bool>> SetPrerequisiteAsync(int prerequisiteId, string title)
         {
             try
             {
-                return _trainingRepository.SetPrerequisiteAsync(prerequisiteId, title);
+                return await _trainingRepository.SetPrerequisiteAsync(prerequisiteId, title);
             }
             catch (Exception exception)
             {

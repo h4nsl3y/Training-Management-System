@@ -9,6 +9,6 @@ namespace DAL.Repository.ViewModelRepositories
 {
     public interface IViewModelRepository<T>
     {
-        Result<T> GetTrainingEnrollmentView(int accountId);
+        Task<Result<T>> GetTrainingEnrollmentView(int accountId);
     }
 }

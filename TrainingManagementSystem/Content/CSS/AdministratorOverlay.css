@@ -9,11 +9,12 @@
     visibility: hidden;
 }
 .display-content {
-    width: 50%;
+    width : 60%;
+    min-width: 650px;
     display: flex;
     flex-wrap: wrap;
     background-color: white;
-    margin: 100px 25%;
+    margin: 100px 20%;
     justify-content: center;
 }
 .upload-area {

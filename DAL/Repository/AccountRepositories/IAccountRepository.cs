@@ -17,8 +17,8 @@ namespace DAL.Repository.AccountRepositories
         Task<Result<Account>> GetAsync(Dictionary<string, object> conditions = null);
         Task<Result<Account>> GetAllAsync(Dictionary<string, object> conditions = null);
         Task<Result<Account>> GetActiveRequestEmployeeAsync(int managerId);
-        Task<Result<Account>> GetLastRegisteredAccountAsync();
         Task<Result<Account>> GetManagerListAsync();
         Task<Result<bool>> SetRoleAsync(string email, int roleId);
+       /* Task<Result<Account>> GetLastRegisteredAccountAsync();*/
     }
 }
