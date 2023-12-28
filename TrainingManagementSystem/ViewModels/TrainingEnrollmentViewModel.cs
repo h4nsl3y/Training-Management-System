@@ -18,8 +18,9 @@ namespace TrainingManagementSystem.ViewModels
         public string ShortDescription { get; set; }
 
         public int EnrollmentId { get; set; }
-        public int EmployeeId { get; set; }
+        public int AccountId { get; set; }
         public int StateId { get; set; } = 1;
+        public DateTime SubmissionDate { get; set; }
 
         public int PrerequisiteId { get; set; }
     }

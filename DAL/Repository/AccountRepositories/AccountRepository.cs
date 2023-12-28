@@ -28,7 +28,7 @@ namespace DAL.Repository.AccountRepositories
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
             tableName = typeof(Account).Name;
         }
-        public async Task<Result<bool>> AddAsync (Account account)
+        public async Task<Response<bool>> AddAsync (Account account)
         {
             string insertAccount = $@"INSERT INTO {tableName}
                                      (FIRSTNAME, OTHERNAME, LASTNAME, NATIONALIDENTIFICATIONNUMBER, MOBILENUMBER, EMAIL, MANAGERID, DEPARTMENTID, PASSWORD)
@@ -47,36 +47,36 @@ namespace DAL.Repository.AccountRepositories
         };
             
            
-            Result<bool> insertAccountResult = await Task.Run(() => _dataBaseUtil.AffectedRowsAsync(insertAccount, parameters));
-            Result<bool> insertRoleResult = await Task.Run(() => SetRoleAsync(account.Email, account.RoleId));
+            Response<bool> insertAccountResult = await Task.Run(() => _dataBaseUtil.AffectedRowsAsync(insertAccount, parameters));
+            Response<bool> insertRoleResult = await Task.Run(() => SetRoleAsync(account.Email, account.RoleId));
 
             return (insertAccountResult.Success == true && insertRoleResult.Success == true) ?
-                new Result<bool>() { Data = { true }, Success = true } :
-                new Result<bool>() { Data = { false }, Success = false };
+                new Response<bool>() { Data = { true }, Success = true } :
+                new Response<bool>() { Data = { false }, Success = false };
         }
-        public async Task<Result<Account>> AuthenticateAsync(string email)
+        public async Task<Response<Account>> AuthenticateAsync(string email)
         {
             string query = $@"SELECT PASSWORD FROM ACCOUNT WHERE EMAIL = @EMAIL";
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter($"@EMAIL", email) };
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
-        public async Task<Result<bool>> DuplicatedAsync(Dictionary<string, object> conditions)
+        public async Task<Response<bool>> DuplicatedAsync(Dictionary<string, object> conditions)
         {
-            Result<bool> duplicatedresult = new Result<bool>();
+            Response<bool> duplicatedresult = new Response<bool>();
             foreach (var condition in conditions)
             {
                 string query = $@"SELECT TOP  1 * FROM {tableName} 
                                   WHERE {condition.Key} = @{condition.Key} ;";
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
-                Result<Account> queryResult = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+                Response<Account> queryResult = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
                 duplicatedresult.Data.Add(queryResult.Data.Count > 0);
                 duplicatedresult.Success = queryResult.Success;
             }
             return duplicatedresult;
         }
-        public async Task<Result<Account>> GetAsync(Dictionary<string, object> conditions = null)
+        public async Task<Response<Account>> GetAsync(Dictionary<string, object> conditions = null)
         {
             string query = $@"SELECT ACCOUNT.ACCOUNTID,
                             ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
@@ -98,12 +98,12 @@ namespace DAL.Repository.AccountRepositories
                 query = query.Substring(0, query.Length - 5);
             }
             query += " ;";
-            Result<Account> queryResult =  (conditions == null) ?
+            Response<Account> queryResult =  (conditions == null) ?
                                         await _dataBaseUtil.ExecuteQueryAsync(query) :
                                         await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
-            return new Result<Account>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
+            return new Response<Account>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
         }
-        public async Task<Result<Account>> GetAllAsync(Dictionary<string, object> conditions = null)
+        public async Task<Response<Account>> GetAllAsync(Dictionary<string, object> conditions = null)
         {
             string query = $@"SELECT ACCOUNT.ACCOUNTID,
                             ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
@@ -128,7 +128,7 @@ namespace DAL.Repository.AccountRepositories
                 await _dataBaseUtil.ExecuteQueryAsync(query) :
                 await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
-        public async Task<Result<Account>> GetActiveRequestEmployeeAsync(int managerId)
+        public async Task<Response<Account>> GetActiveRequestEmployeeAsync(int managerId)
         {
             string query = $@"SELECT 
                             ACCOUNT.ACCOUNTID,
@@ -148,7 +148,7 @@ namespace DAL.Repository.AccountRepositories
             };
             return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
-        public async Task<Result<Account>> GetManagerListAsync()
+        public async Task<Response<Account>> GetManagerListAsync()
         {
             
             string query = $@"SELECT *FROM ACCOUNT INNER JOIN ACCOUNTROLE 
@@ -156,7 +156,7 @@ namespace DAL.Repository.AccountRepositories
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter($"@ROLEID", RoleEnum.Manager) };
             return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
-        public async Task<Result<bool>> SetRoleAsync(string email, int roleId)
+        public async Task<Response<bool>> SetRoleAsync(string email, int roleId)
         {
             string query = @"INSERT INTO ACCOUNTROLE(ACCOUNTID, ROLEID) VALUES((SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL), @ROLEID);";
             List<SqlParameter> parameters = new List<SqlParameter>()

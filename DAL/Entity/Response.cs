@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace DAL.Entity
 {
-    public class Result<T>
+    public class Response<T>
     {
         public bool Success {  get; set; }
         public string Message {  get; set; }
         public List<T> Data { get; set; }
-        public Result()
+        public Response()
         {
             Data = new List<T>();
         }

@@ -13,16 +13,16 @@ namespace BLL.TrainingBusinessLogics
     {
         private readonly ITrainingRepository _trainingRepository;
         private readonly ILogger _logger;
-        private Result<Training> _resultError;
-        private Result<bool> _resultboolError;
+        private Response<Training> _resultError;
+        private Response<bool> _resultboolError;
         public TrainingBusinesslogic(ITrainingRepository trainingRepository, ILogger logger)
         {
             _trainingRepository = trainingRepository;
             _logger = logger;
-            _resultError = new Result<Training> { Success = false, Message = "an Error has been encounter" };
-            _resultboolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
+            _resultError = new Response<Training> { Success = false, Message = "an Error has been encounter" };
+            _resultboolError = new Response<bool> { Success = false, Message = "an Error has been encounter" };
         }
-        public async Task<Result<Training>> GetEnrolledAsync(int accountId)
+        public async Task<Response<Training>> GetEnrolledAsync(int accountId)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace BLL.TrainingBusinessLogics
                 return _resultError;
             }
         }
-        public async Task<Result<Training>> GetUnenrolledAsync(int accountId)
+        public async Task<Response<Training>> GetUnenrolledAsync(int accountId)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace BLL.TrainingBusinessLogics
                 return _resultError;
             }
         }
-        public async Task<Result<bool>> SetPrerequisiteAsync(int prerequisiteId, string title)
+        public async Task<Response<bool>> SetPrerequisiteAsync(int prerequisiteId, string title)
         {
             try
             {

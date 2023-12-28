@@ -7,22 +7,28 @@ function GetEnrollment() {
         type: "GET",
         url: "/Account/GetEmployeeEnrolled",
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 if ($.fn.DataTable.isDataTable('#employeeEnrollmentTableId')) {
                     $('#employeeEnrollmentTableId').DataTable().destroy();
                 }
                 $('#employeeEnrollmentTableId').DataTable({
-                    "data": result.data,
+                    "data": result.Data,
                     "columns": [
                         {
                             render: function (data, type, row) {
-                                return row.FirstName + ' ' + row.OtherName + ' ' + row.LastName;
+                                if (row.OtherName == null) {
+                                    return row.FirstName + ' ' + row.LastName;
+                                }
+                                else {
+                                    return row.FirstName + ' ' + row.OtherName + ' ' + row.LastName;
+                                }
+                                
                             }
                         },
                         {
-                            //"data": "AccountId",
                             render: function (data, type, row) {
-                                return "<button class='item-button' id='detailBtn' onclick='GetRequestByEmployee(" + row.AccountId + " , " + row.Email + ")'> See Requests</button>";
+                                let emailParameter = JSON.stringify(row.Email)
+                                return `<button class='item-button' id='detailBtn' onclick='GetRequestByEmployee(${row.AccountId},${emailParameter})'> See Requests</button>`;
                             }
                         }
                     ],
@@ -30,7 +36,7 @@ function GetEnrollment() {
                 });
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             };
         },
         error: function () {
@@ -47,14 +53,14 @@ function GetRequestByEmployee(requestAccountId,requestAccountEmail) {
         data: { accountId: requestAccountId },
         dataType: 'json',
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 if ($.fn.DataTable.isDataTable('#requestTableId')) {
                     $('#requestTableId').DataTable().destroy();
                 }
                 let approve = 3;
                 let reject = 2;
                 $('#requestTableId').DataTable({
-                    "data": result.data,
+                    "data": result.Data,
                     "columns": [
                         { "data": "Title" },
                         {
@@ -76,22 +82,37 @@ function GetRequestByEmployee(requestAccountId,requestAccountEmail) {
                             }
                         },
                         {
-                            "data": "EnrollmentId",
-                            render: function (data) {
-                                return "<button class='item-button' id='detailBtn' onclick='UpdatRequestState(" + data + ", " + approve + " , " + requestAccountId + ")'>Approve</button>";
+                            render: function (data, type, row) {
+                                let enrollmentParameter = {
+                                    EnrollmentId: row.EnrollmentId
+                                    , AccountId: row.AccountId
+                                    , TrainingId: row.TrainingId
+                                    , StateId: approve
+                                    , SubmissionDate: row.SubmissionDate
+                                };
+                                enrollmentParameter = JSON.stringify(enrollmentParameter);
+
+                                return `<button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${enrollmentParameter} , ${requestAccountId} )'>Approve</button>`;
                             }
                         },
                         {
-                            "data": "EnrollmentId",
-                            render: function (data) {
-                                return "<button class='item-button' id='detailBtn' onclick='RejectRequest(" + data + ", " + reject + " , " + requestAccountId + " , " + requestAccountEmail + ")'>Reject</button>";
+                            render: function (data, type, row) {
+                                let enrollmentParameter = {
+                                    EnrollmentId: row.EnrollmentId
+                                    , AccountId: row.AccountId
+                                    , TrainingId: row.TrainingId
+                                    , StateId: reject
+                                    , SubmissionDate: row.SubmissionDate
+                                };
+                                enrollmentParameter = JSON.stringify(enrollmentParameter);
+                                return `<button class='item-button' id='detailBtn' onclick='RejectRequest( ${enrollmentParameter} , ${requestAccountId} ,  ${JSON.stringify(requestAccountEmail)} )'>Reject</button>`;
                             }
                         }
                     ],
                 });
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             };
             let overlay = document.getElementById("screenOverlay");
             overlay.style.visibility = "visible";
@@ -132,20 +153,20 @@ function GetDocument(prerequisiteId, employeeId) {
 //#endregion
 
 //#region ManagerOption
-function UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId) {
-    let data = { enrollmentId: requestEnrollmentId, state: requestState }
+function UpdatRequestState(enrollmentParameter, requestEmployeeId ) {
+    let data = { enrollment: enrollmentParameter }  ;
     $.ajax({
         type: "POST",
         url: "/Enrollment/UpdateState",
         data: data,
         dataType: 'json',
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 GetRequestByEmployee(requestEmployeeId)
                 GetEnrollment()
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             };
         },
         error: function () {
@@ -153,24 +174,26 @@ function UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId)
         },
     });
 };
-function RejectRequest(requestEnrollmentId, requestState, requestEmployeeId, requestAccountEmail) {
+function RejectRequest(enrollmentParameter, requestEmployeeId, requestAccountEmail) {
     let overlay = document.getElementById("commentContainerId");
+    enrollmentParameter = JSON.stringify(enrollmentParameter);
     overlay.style.visibility = "visible";
-    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", "SubmitRejectionReason(" + requestEnrollmentId + " , " + requestState + " , " + requestEmployeeId + " , " + requestAccountEmail + ");");
+    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", `SubmitRejectionReason( ${enrollmentParameter} , ${requestEmployeeId} , ${JSON.stringify(requestAccountEmail)} );`);
 };
-function SubmitRejectionReason(requestEnrollmentId, requestState, requestEmployeeId, requestAccountEmail) {
+function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAccountEmail) {
     let rejectionComment = document.getElementById("rejectionReasonid").value;
+    let requestEnrollmentId = enrollmentParameter.EnrollmentId;
     $.ajax({
         type: "POST",
         url: "/Rejection/SetRejectionComment",
         data: { enrollmentId: requestEnrollmentId, email: requestAccountEmail,comment: rejectionComment },
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId);
                 CloseTextArea();
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             };
         },
         error: function (result) {

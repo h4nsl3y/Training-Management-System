@@ -22,7 +22,7 @@ namespace DAL.Repository.GenericRepositories
         {
             _dataBaseUtil = dataBaseUtil;
         }
-        public async Task<Result<bool>> AddAsync(T entity)
+        public async Task<Response<bool>> AddAsync(T entity)
         {
             string query = $"INSERT INTO {typeof(T).Name} (";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -45,7 +45,7 @@ namespace DAL.Repository.GenericRepositories
             query += ") ;";
             return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
         }
-        public async Task<Result<bool>> DeleteAsync(T entity)
+        public async Task<Response<bool>> DeleteAsync(T entity)
         {
             string query = $"DELETE FROM  {typeof(T).Name} WHERE ";
             List<SqlParameter> parameters = new List<SqlParameter>();
@@ -55,34 +55,46 @@ namespace DAL.Repository.GenericRepositories
             parameters.Add(new SqlParameter($"@{primaryKey.Name}", primaryKey.GetValue(entity)));
             return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
         }
-        public async Task<Result<T>> GetAsync(Dictionary<string, object> conditions)
+        public async Task<Response<T>> GetAsync(Dictionary<string, object> conditions)
         {
-            Result<T> queryResult = await GetDataAsync(conditions);
-            return new Result<T>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
+            Response<T> queryResult = await GetDataAsync(conditions);
+            return new Response<T>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
         }
-        public async Task<Result<T>> GetAllAsync(Dictionary<string, object> conditions = null)
+        public async Task<Response<T>> GetAllAsync(Dictionary<string, object> conditions = null)
         {
             return (conditions==null) ? await GetDataAsync() :await  GetDataAsync(conditions);
         }
-        public async Task<Result<bool>> UpdateAsync(int Id, Dictionary<string, object> conditions)
+        public async Task<Response<bool>> UpdateAsync(T entity)//int Id, Dictionary<string, object> conditions)
         {
             string query = $"UPDATE {typeof(T).Name} SET ";
             List<SqlParameter> parameters = new List<SqlParameter>();
             PropertyInfo[] properties = typeof(T).GetProperties();
             PropertyInfo primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault();
             
-            foreach(var condition in conditions)
+/*            foreach(var condition in conditions)
             {
                 query += $"{condition.Key} = @{condition.Key} ,";
                 parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
+            }*/
+
+            foreach (PropertyInfo property in properties.Where(p => !Attribute.IsDefined(p, typeof(KeyAttribute))))
+            {
+                if (property.CanWrite) { query += $"{property.Name}  = @{property.Name},"; }
+                if (property.GetValue(entity) == null)
+                { parameters.Add(new SqlParameter($"@{property.Name}", DBNull.Value)); }
+                else
+                { parameters.Add(new SqlParameter($"@{property.Name}", property.GetValue(entity))); }
             }
             query = query.Substring(0, query.Length - 1);
 
             query += $" WHERE {primaryKey.Name} = @{primaryKey.Name}";
-            parameters.Add(new SqlParameter($"@{primaryKey.Name}", Id));
+            parameters.Add(new SqlParameter($"@{primaryKey.Name}", primaryKey.GetValue(entity)));
+
+
+
             return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
         }
-        private async Task<Result<T>> GetDataAsync(Dictionary<string, object> conditions = null)
+        private async Task<Response<T>> GetDataAsync(Dictionary<string, object> conditions = null)
         {
             string query = "SELECT ";
             List<SqlParameter> parameters = new List<SqlParameter>();

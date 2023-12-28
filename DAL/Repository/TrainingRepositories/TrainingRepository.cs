@@ -18,7 +18,7 @@ namespace DAL.Repository.TrainingRepositories
         {
             _dataBaseUtil = dataBaseUtil;
         }
-        public async Task<Result<Training>> GetenrolledTrainingListAsync(int accountId)
+        public async Task<Response<Training>> GetenrolledTrainingListAsync(int accountId)
         {
             string query =   @"SELECT * FROM TRAINING WHERE 
                                ENDDATE > GETDATE() AND
@@ -30,7 +30,7 @@ namespace DAL.Repository.TrainingRepositories
             };
             return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
-        public async Task<Result<Training>> GetUnenrolleTrainingListdAsync(int accountId)
+        public async Task<Response<Training>> GetUnenrolleTrainingListdAsync(int accountId)
         { 
             string query =  @"SELECT * FROM TRAINING WHERE 
                               DEADLINE > GETDATE() AND
@@ -42,7 +42,7 @@ namespace DAL.Repository.TrainingRepositories
             };
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
-        public async Task<Result<bool>> SetPrerequisiteAsync(int prerequisiteId, string title)
+        public async Task<Response<bool>> SetPrerequisiteAsync(int prerequisiteId, string title)
         {
             string query = @"INSERT INTO TRAININGPREREQUISITE (TRAININGID , PREREQUISITEID) 
                             VALUES ((SELECT TRAININGID FROM TRAINING

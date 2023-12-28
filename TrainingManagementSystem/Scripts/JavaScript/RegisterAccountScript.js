@@ -63,9 +63,9 @@ function GetDepartmentList() {
         type: "GET",
         url: "/Department/GetDepartmentList",
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 let managerCombobox = document.getElementById("DepartmentComboBoxId");
-                result.data.forEach(function (row) {
+                result.Data.forEach(function (row) {
                     let option = document.createElement("option");
                     option.value = row.DepartmentId;
                     option.text = row.DepartmentName;
@@ -73,7 +73,7 @@ function GetDepartmentList() {
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -86,9 +86,9 @@ function GetManagerList() {
         type: "GET",
         url: "/Account/GetManagerList",
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 let managerCombobox = document.getElementById("ManagerComboBoxId");
-                result.data.forEach(function (managerData) {
+                result.Data.forEach(function (managerData) {
                     let option = document.createElement("option");
                     option.value = managerData.Value;
                     option.text = managerData.Fullname;
@@ -96,7 +96,7 @@ function GetManagerList() {
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -109,9 +109,9 @@ function GetRoleList() {
         type: "GET",
         url: "/Role/GetRoleList",
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 let managerCombobox = document.getElementById("RoleComboBoxId");
-                result.data.forEach(function (row) {
+                result.Data.forEach(function (row) {
                     let option = document.createElement("option");
                     option.value = row.RoleId;
                     option.text = row.RoleName;
@@ -119,7 +119,7 @@ function GetRoleList() {
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -172,12 +172,12 @@ function Register() {
         url: "/Account/RegisterUser",
         data: userDetails,
         success: function (result) {
-            if (result.message == "Success") {
+            if (result.Success == true) {
                 ShowNotification("Success", "Successfully registered user")
                 window.location.href = '/Account/RedirectToView';
             }
             else {
-                document.getElementById("notificationText").innerHTML = result.data;
+                document.getElementById("notificationText").innerHTML = result.Data;
             }
         },
         error: function (error) {

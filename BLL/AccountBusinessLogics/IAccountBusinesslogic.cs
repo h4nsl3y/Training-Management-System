@@ -10,14 +10,14 @@ namespace BLL.AccountBusinessLogics
 {
      public interface IAccountBusinesslogic
     {
-        Task<Result<bool>> AddAccountAsync(Account account);
-        Task<Result<bool>> AuthenticatedAsync(string email, string password);
-        Task<Result<bool>> DuplicatedAsync(string email, string NationalIdentificationNumber, string mobileNumber);
+        Task<Response<bool>> AddAccountAsync(Account account);
+        Task<Response<bool>> AuthenticatedAsync(string email, string password);
+        Task<Response<bool>> DuplicatedAsync(string email, string NationalIdentificationNumber, string mobileNumber);
         string Encrypt(string password);
-        Task<Result<Account>> GetAccountAsync(Dictionary<string, object> conditions = null);
-        Task<Result<Account>> GetAllAccountAsync(Dictionary<string, object> conditions = null);
-        Task<Result<Account>> GetActiveRequestEmployeeAsync(int managerId);
-        Task<Result<Account>> GetByEmailAsync(string email);
-        Task<Result<Account>> GetManagerListAsync();
+        Task<Response<Account>> GetAccountAsync(Dictionary<string, object> conditions = null);
+        Task<Response<Account>> GetAllAccountAsync(Dictionary<string, object> conditions = null);
+        Task<Response<Account>> GetActiveRequestEmployeeAsync(int managerId);
+        Task<Response<Account>> GetByEmailAsync(string email);
+        Task<Response<Account>> GetManagerListAsync();
     }
 }

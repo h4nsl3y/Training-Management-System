@@ -13,6 +13,6 @@ namespace DAL.Repository.RequiredFileRepositories
 {
     public interface IRequiredFilesRepository
     {
-        Task<Result<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values);
+        Task<Response<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values);
     }
 }

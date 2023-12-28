@@ -9,6 +9,6 @@ namespace BLL.ViewModelsBusinessLogics
 {
     public interface IViewModelBusinesslogic<T>
     {
-        Task<Result<T>> GetTrainingEnrollmentView(int accountId);
+        Task<Response<T>> GetTrainingEnrollmentView(int accountId);
     }
 }

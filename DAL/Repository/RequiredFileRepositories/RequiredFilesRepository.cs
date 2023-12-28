@@ -23,7 +23,7 @@ namespace DAL.Repository.RequiredFileRepositories
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
             tableName = typeof(RequiredFiles).Name;
         }
-        public async Task<Result<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values)
+        public async Task<Response<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values)
         {
             string query = "UPDATE REQUIREDFILES SET ";
             List<SqlParameter> parameters = new List<SqlParameter>();

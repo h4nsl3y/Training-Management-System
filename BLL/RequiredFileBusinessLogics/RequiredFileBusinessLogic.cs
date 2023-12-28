@@ -19,20 +19,20 @@ namespace BLL.RequiredFileBusinessLogics
         private readonly IGenericRepository<RequiredFiles> _genericRepository;
         private readonly IRequiredFilesRepository _requiredFileRepository;
         private readonly ILogger _logger;
-        private Result<RequiredFiles> _resultError;
-        private Result<bool> _resultBoolError;
+        private Response<RequiredFiles> _resultError;
+        private Response<bool> _resultBoolError;
         public RequiredFileBusinessLogic(IGenericRepository<RequiredFiles> genericRepository, IRequiredFilesRepository requiredFileRepository, ILogger logger)
         {
             _genericRepository = genericRepository;
             _requiredFileRepository = requiredFileRepository;
             _logger = logger;
-            _resultError = new Result<RequiredFiles> { Success = false, Message = "an Error has been encounter" };
-            _resultBoolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
+            _resultError = new Response<RequiredFiles> { Success = false, Message = "an Error has been encounter" };
+            _resultBoolError = new Response<bool> { Success = false, Message = "an Error has been encounter" };
         }
 
         public byte[] GetFileData(string path) => File.ReadAllBytes(path);
 
-        public async Task<Result<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values)
+        public async Task<Response<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace BLL.RequiredFileBusinessLogics
                 return _resultBoolError;
             }
         }
-        public async Task<Result<bool>> UploadFileAsync( HttpPostedFileBase file, string path,int accountId, int prerequisiteId)
+        public async Task<Response<bool>> UploadFileAsync( HttpPostedFileBase file, string path,int accountId, int prerequisiteId)
         {
             try
             {

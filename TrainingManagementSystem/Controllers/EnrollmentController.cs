@@ -1,4 +1,5 @@
-﻿using BLL.EnrollmentBusinesslogics;
+﻿using BLL.Email;
+using BLL.EnrollmentBusinesslogics;
 using BLL.GenericBusinessLogics;
 using DAL.Entity;
 using System;
@@ -12,7 +13,7 @@ namespace TrainingManagementSystem.Controllers
     {
         private readonly IGenericBusinessLogic<Enrollment> _genericBusinessLogic;
         private readonly IEnrollmentBusinessLogic _enrollmentBusinessLogic;
-        private Result<bool> _boolResult;
+        private Response<bool> _boolResult;
         public EnrollmentController(IGenericBusinessLogic<Enrollment> genericBusinessLogic, IEnrollmentBusinessLogic enrollmentBusinessLogic)
         {
             _genericBusinessLogic = genericBusinessLogic;
@@ -21,43 +22,25 @@ namespace TrainingManagementSystem.Controllers
         [HttpGet]
         public async Task<JsonResult> GetEnrollment(int enrollmentId)
         {
-            Dictionary<string, object> conditions = new Dictionary<string, object>();
-            conditions.Add("EnrollmentId", enrollmentId);
-            Result<Enrollment> enrollmentResult = await _genericBusinessLogic.GetAsync(conditions);
-            return (enrollmentResult.Success) ?
-                Json(new { message = "success", data = enrollmentResult.Data }, JsonRequestBehavior.AllowGet) :
-                Json(new { message = "Failed", data = enrollmentResult.Message }, JsonRequestBehavior.AllowGet);
+            Dictionary<string, object> conditions = new Dictionary<string, object>() { { "EnrollmentId", enrollmentId } };
+            return Json(await _genericBusinessLogic.GetAsync(conditions), JsonRequestBehavior.AllowGet) ;
         }
         [HttpGet]
         public async Task<JsonResult> GetAllEnrollmentByEmployee(string email)
         {
             if (email == "none") { email = Session["Email"].ToString(); }
-            Result<Enrollment> enrollmentResult = await _enrollmentBusinessLogic.GetEnrollmentByEmailAsync(email);
-            return (enrollmentResult.Success) ?
-                Json(new { message = "success", data = enrollmentResult.Data }, JsonRequestBehavior.AllowGet) :
-                Json(new { message = "Failed", data = enrollmentResult.Message }, JsonRequestBehavior.AllowGet);
+            return Json(await _enrollmentBusinessLogic.GetEnrollmentByEmailAsync(email), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public async Task<ActionResult> RegisterEnrollment(int trainingId)
         {
-            Enrollment enrollment = new Enrollment();
-            enrollment.TrainingId = trainingId;
-            enrollment.AccountId = (int)Session["AccountId"];
-            enrollment.SubmissionDate = DateTime.Now;
-            _boolResult = await _genericBusinessLogic.AddAsync(enrollment);
-            return (_boolResult.Success) ?
-                Json(new { message = "success" }):
-                Json(new { message = "Failed", data = _boolResult.Message });
+            Enrollment enrollment = new Enrollment() {TrainingId = trainingId,AccountId = (int)Session["AccountId"], SubmissionDate = DateTime.Now};
+            return Json(await _genericBusinessLogic.AddAsync(enrollment), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public async Task<ActionResult> UpdateState(int enrollmentId, int state)
-        {
-            Dictionary<string, object> conditions = new Dictionary<string, object>();
-            conditions.Add("STATEID", state);
-            _boolResult = await _genericBusinessLogic.UpdateAsync(enrollmentId,conditions);
-            return (_boolResult.Success)?
-                 Json(new { message = "success" }) :
-                Json(new { message = "Failed", data = _boolResult.Message });
+        public async Task<ActionResult> UpdateState(Enrollment enrollment) 
+        { 
+            return Json(await _genericBusinessLogic.UpdateAsync(enrollment), JsonRequestBehavior.AllowGet);      
         }
     }
 }

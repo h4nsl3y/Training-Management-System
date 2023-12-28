@@ -9,6 +9,6 @@ namespace BLL.EnrollmentBusinesslogics
 {
     public interface IEnrollmentBusinessLogic
     {
-        Task<Result<Enrollment>> GetEnrollmentByEmailAsync(string email);
+        Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email);
         }
 }

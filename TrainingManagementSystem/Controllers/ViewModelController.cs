@@ -13,23 +13,16 @@ namespace TrainingManagementSystem.Controllers
     public class ViewModelController : Controller
     {
         private readonly IViewModelBusinesslogic<TrainingEnrollmentViewModel> _viewModelBusinesslogic;
-        private Result<TrainingEnrollmentViewModel> _viewModelResult;
-        private Result<bool> _boolResult;
+        private Response<TrainingEnrollmentViewModel> _viewModelResult;
+        private Response<bool> _boolResult;
         public ViewModelController(IViewModelBusinesslogic<TrainingEnrollmentViewModel> viewModelBusinesslogic)
         {
             _viewModelBusinesslogic = viewModelBusinesslogic;
-            _viewModelResult = new Result<TrainingEnrollmentViewModel>();
-            _boolResult = new Result<bool>();
+            _viewModelResult = new Response<TrainingEnrollmentViewModel>();
+            _boolResult = new Response<bool>();
         }
         [HttpGet]
-        public async Task<JsonResult> GetTrainingEnrollmentViewModel(int accountId)
-        {
-            Dictionary<string, object> conditions = new Dictionary<string, object>();
-            conditions.Add("AccountId", accountId);
-            _viewModelResult = await _viewModelBusinesslogic.GetTrainingEnrollmentView(accountId);
-            return (_viewModelResult.Success) ?
-               Json(new { message = "success", data = _viewModelResult.Data }, JsonRequestBehavior.AllowGet) :
-               Json(new { message = "Failed", data = _viewModelResult.Message }, JsonRequestBehavior.AllowGet);
-        }
+        public async Task<JsonResult> GetTrainingEnrollmentViewModel(int accountId) 
+            => Json(await _viewModelBusinesslogic.GetTrainingEnrollmentView(accountId), JsonRequestBehavior.AllowGet) ;
     }
 }

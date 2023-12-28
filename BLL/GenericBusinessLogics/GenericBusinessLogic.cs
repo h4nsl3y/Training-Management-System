@@ -14,16 +14,16 @@ namespace BLL.GenericBusinessLogics
     {
         private readonly IGenericRepository<T> _genericRepository;
         private readonly ILogger _logger;
-        private Result<T> _resultError;
-        private Result<bool> _resultBoolError;
+        private Response<T> _resultError;
+        private Response<bool> _resultBoolError;
         public GenericBusinessLogic(IGenericRepository<T> genericRepository, ILogger logger)
         {
             _genericRepository = genericRepository;
             _logger = logger;
-            _resultError = new Result<T> { Success = false, Message = "an Error has been encounter" };
-            _resultBoolError = new Result<bool> { Success = false, Message = "an Error has been encounter" };
+            _resultError = new Response<T> { Success = false, Message = "an Error has been encounter" };
+            _resultBoolError = new Response<bool> { Success = false, Message = "an Error has been encounter" };
         }
-        public async Task<Result<bool>> AddAsync(T entity)
+        public async Task<Response<bool>> AddAsync(T entity)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace BLL.GenericBusinessLogics
                 return _resultBoolError;
             }
         }
-        public async Task<Result<bool>> DeleteAsync(T entity)
+        public async Task<Response<bool>> DeleteAsync(T entity)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace BLL.GenericBusinessLogics
                 return _resultBoolError;
             }
         }
-        public async Task<Result<T>> GetAsync(Dictionary<string, object> conditions)
+        public async Task<Response<T>> GetAsync(Dictionary<string, object> conditions)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace BLL.GenericBusinessLogics
                 return _resultError;
             }
         }
-        public async Task<Result<T>> GetAllAsync(Dictionary<string, object> conditions = null)
+        public async Task<Response<T>> GetAllAsync(Dictionary<string, object> conditions = null)
         {
             try
             {
@@ -72,11 +72,11 @@ namespace BLL.GenericBusinessLogics
             }
            
         }
-        public async Task<Result<bool>> UpdateAsync(int Id, Dictionary<string, object> conditions)
+        public async Task<Response<bool>> UpdateAsync(T entity)
         {
             try
             {
-                return await _genericRepository.UpdateAsync(Id, conditions);
+                return await _genericRepository.UpdateAsync(entity);
             }
             catch(Exception exception) 
             {

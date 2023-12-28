@@ -17,13 +17,13 @@ function LoginUser() {
         url: "/Account/AuthenticateUser",
         data: data,
         success: function (result) {
-            if (result.message == "Success") {
+            if (result.Success == true) {
                 ShowNotification("Success", "sucessfully log in user")
                 window.location.href = '/Account/RedirectToView'; 
             }
             else {
                 notificationElement = document.getElementById("notificationText");
-                notificationElement.innerHTML = result.data;
+                notificationElement.innerHTML = result.Data;
                 notificationElement.style.visibility = 'visible';
             }
         },

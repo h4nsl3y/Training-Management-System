@@ -17,12 +17,6 @@ namespace TrainingManagementSystem.Controllers
             _genericBusinessLogic = genericBusinessLogic;
         }
         [HttpGet]
-        public async Task<JsonResult> GetStateList()
-        {
-            Result<State> result = await _genericBusinessLogic.GetAllAsync();
-            return (result.Success) ?
-               Json(new { message = "success", data = result.Data }, JsonRequestBehavior.AllowGet) :
-               Json(new { message = "failed", data = result.Message }, JsonRequestBehavior.AllowGet);
-        }
+        public async Task<JsonResult> GetStateList() => Json(await _genericBusinessLogic.GetAllAsync(), JsonRequestBehavior.AllowGet) ;
     }
 }

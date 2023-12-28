@@ -9,8 +9,8 @@ namespace BLL.TrainingBusinessLogics
 {
     public interface ITrainingBusinesslogic
     {
-        Task<Result<Training>> GetEnrolledAsync(int accountId);
-        Task<Result<Training>> GetUnenrolledAsync(int accountId);
-        Task<Result<bool>> SetPrerequisiteAsync(int prerequisiteId, string title);
+        Task<Response<Training>> GetEnrolledAsync(int accountId);
+        Task<Response<Training>> GetUnenrolledAsync(int accountId);
+        Task<Response<bool>> SetPrerequisiteAsync(int prerequisiteId, string title);
     }
 }

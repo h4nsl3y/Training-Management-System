@@ -20,9 +20,9 @@ namespace DAL.DataBaseUtils
         {
             _connString = ConfigurationManager.AppSettings["ConnectionString"];
         }
-        public async Task<Result<T>> ExecuteQueryAsync(string query, List<SqlParameter> parameters = null)
+        public async Task<Response<T>> ExecuteQueryAsync(string query, List<SqlParameter> parameters = null)
         {
-            Result<T> result = new Result<T>();
+            Response<T> result = new Response<T>();
             List<T> objectList = new List<T>();
             try
             {
@@ -52,9 +52,9 @@ namespace DAL.DataBaseUtils
             }
             return result;
         }
-        public async Task<Result<bool>> AffectedRowsAsync(string query, List<SqlParameter> parameters = null)
+        public async Task<Response<bool>> AffectedRowsAsync(string query, List<SqlParameter> parameters = null)
         {
-            Result<bool> result;
+            Response<bool> result;
             try
             {
                 await ConnectAsync();
@@ -63,7 +63,7 @@ namespace DAL.DataBaseUtils
                     if (parameters != null) 
                     { sqlCommand.Parameters.AddRange(parameters.ToArray()); }
                     int affectedrows = await sqlCommand.ExecuteNonQueryAsync();
-                    result = new Result<bool>() { Success = true, Data = { affectedrows > 0 } };
+                    result = new Response<bool>() { Success = true, Data = { affectedrows > 0 } };
                 }
             }
             catch (Exception exception)

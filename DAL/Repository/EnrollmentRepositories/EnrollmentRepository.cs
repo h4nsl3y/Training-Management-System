@@ -19,7 +19,7 @@ namespace DAL.Repository.EnrollmentRepositories
             _dataBaseUtil = dataBaseUtil;
         }
 
-        public async Task<Result<Enrollment>> GetEnrollmentByEmailAsync(string email)
+        public async Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email)
         {
             string query = @"SELECT * FROM ENROLLMENT 
                             WHERE ACCOUNTID = (SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL)
@@ -28,7 +28,7 @@ namespace DAL.Repository.EnrollmentRepositories
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
 
-        public async Task<Result<Enrollment>> GetAllEnrollmentByEmail(string email)
+        public async Task<Response<Enrollment>> GetAllEnrollmentByEmail(string email)
         {
             string query = @"SELECT * FROM ENROLLMENT 
                              WHERE ACCOUNTID = (SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL)

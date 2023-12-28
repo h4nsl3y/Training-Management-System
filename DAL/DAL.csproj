@@ -77,7 +77,7 @@
     <Compile Include="Entity\Prerequisite.cs" />
     <Compile Include="Entity\Rejection.cs" />
     <Compile Include="Entity\RequiredFiles.cs" />
-    <Compile Include="Entity\Result.cs" />
+    <Compile Include="Entity\Response.cs" />
     <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\SystemEntity.cs" />
     <Compile Include="Entity\Training.cs" />

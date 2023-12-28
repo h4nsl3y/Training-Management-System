@@ -10,8 +10,8 @@ namespace DAL.Repository.TrainingRepositories
 {
     public interface ITrainingRepository
     {
-        Task<Result<Training>> GetenrolledTrainingListAsync(int accountId);
-        Task<Result<Training>> GetUnenrolleTrainingListdAsync(int accountId); 
-        Task<Result<bool>> SetPrerequisiteAsync(int prerequisiteId, string title);
+        Task<Response<Training>> GetenrolledTrainingListAsync(int accountId);
+        Task<Response<Training>> GetUnenrolleTrainingListdAsync(int accountId); 
+        Task<Response<bool>> SetPrerequisiteAsync(int prerequisiteId, string title);
     }
 }

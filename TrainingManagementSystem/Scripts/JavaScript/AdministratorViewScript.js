@@ -33,9 +33,9 @@ function GetDepartmentList() {
         type: "GET",
         url: "/Department/GetDepartmentList",
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 let combobox = document.getElementById("trainingDepartmentId");
-                result.data.forEach(function (row) {
+                result.Data.forEach(function (row) {
                     let option = document.createElement("option");
                     option.value = row.DepartmentId;
                     option.text = row.DepartmentName;
@@ -43,7 +43,7 @@ function GetDepartmentList() {
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -56,9 +56,9 @@ function GetPrerequisiteList(rowId) {
         type: "GET",
         url: "/Prerequisite/GetAllPrerequisite",
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 let combobox = document.getElementById("trainingPrerequisiteDetailId-" + rowId);
-                result.data.forEach(function (row) {
+                result.Data.forEach(function (row) {
                     let option = document.createElement("option");
                     option.value = row.PrerequisiteId;
                     option.text = row.PrerequisiteDescription;
@@ -66,7 +66,7 @@ function GetPrerequisiteList(rowId) {
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -98,14 +98,12 @@ function FillTrainingDetail(trainingId) {
         data: { trainingId: trainingId },
         dataType: 'json',
         success: function (result) {
-            let training = result.data;
-            if (message = 'success') {
+            if (result.Success == true) {
+                let training = result.Data[0];
 
                 document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "RegisterTraining()");
                 document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
                 document.getElementById("submitTrainingDetailsBtn").textContent = "Register";
-
-
 
                 document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "UpdateTraining(" + training.TrainingId + ");");
                 document.getElementById("trainingTitleId").value = training.Title;
@@ -145,7 +143,7 @@ function RegisterTraining() {
         data: data,
         dataType: 'json',
         success: function () {
-            if (mesage = 'success') {
+            if (mesage == true) {
                 ShowNotification('Success', "Training has been successfully registered");
             }
             else {
@@ -176,8 +174,8 @@ function UpdateTraining(trainingId) {
         url: "/Training/UpdateTraining",
         data: data,
         dataType: 'json',
-        success: function () {
-            if (mesage = 'success') {
+        success: function (result) {
+            if (result.Success == true) {
                 ShowNotification('Success', "Training has been successfully updated");
             }
             else {
@@ -249,16 +247,16 @@ function UpdateDisplayPrerequisite(trainingId) {
         url: "/Prerequisite/GetPrerequisiteByTraining",
         data: { trainingId: trainingId },
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
 
-                result.data.forEach(function (row) {
+                result.Data.forEach(function (row) {
                     AddDisplayPrerequisite()
                     let combobox = document.getElementById("trainingPrerequisiteDetailId-" + (rowCount - 1));
                     combobox.value = row.PrerequisiteId;
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -273,8 +271,8 @@ function RegisterPrerequisite() {
         url: "/Prerequisite/AddPrerequisite",
         data: data,
         dataType: 'json',
-        success: function () {
-            if (mesage = 'success') {
+        success: function (result) {
+            if (result.Success == true) {
                 ShowNotification('Success', "Prerequisite has been successfully registered");
                 GetPrerequisiteDataList();
             }
@@ -299,12 +297,12 @@ function GetTrainingList() {
         type: "GET",
         url: "/Training/GetAllTraining",
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 if ($.fn.DataTable.isDataTable('#TrainingTableId')) {
                     $('#TrainingTableId').DataTable().destroy();
                 }
                 $('#TrainingTableId').DataTable({
-                    "data": result.data,
+                    "data": result.Data,
                     "columns": [
                         { "data": "Title" },
                         { "data": "DepartmentId" },
@@ -334,7 +332,7 @@ function GetTrainingList() {
                 });
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             };
         },
         error: function () {
@@ -347,19 +345,19 @@ function GetPrerequisiteDataList() {
         type: "GET",
         url: "/Prerequisite/GetAllPrerequisite",
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 if ($.fn.DataTable.isDataTable('#PrerequisiteTableId')) {
                     $('#PrerequisiteTableId').DataTable().destroy();
                 }
                 $('#PrerequisiteTableId').DataTable({
-                    "data": result.data,
+                    "data": result.Data,
                     "columns": [
                         { "data": "PrerequisiteDescription" },
                     ],
                 });
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -412,31 +410,23 @@ function DepartmentTableToggle() {
 function setTrainingPrerequisite(trainingTitle) {
     let prerequisiteIds = document.querySelectorAll('select[name="PrerequisiteField"]');
     prerequisiteIds.forEach(prerequisiteId => {
-        console.log(prerequisiteId.value); 
-
         data = { prerequisiteId: prerequisiteId.value, title: trainingTitle };
-
-
         $.ajax({
             type: "GET",
             url: "/Training/SetPrerequisite",
             data: data,
             success: function (result) {
-                if (result.message == "success") {
+                if (result.Success == true) {
                     console.log("success");
                 }
                 else {
-                    ShowNotification("Error", result.data);
+                    ShowNotification("Error", result.Message);
                 }
             },
             error: function (error) {
                 ShowNotification("Error", "Communication has been interupted");
             }
         });
-
     });
 }
 
-//#region
-
-//#endRegion

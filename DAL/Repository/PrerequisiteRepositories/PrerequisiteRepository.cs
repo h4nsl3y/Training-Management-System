@@ -24,7 +24,7 @@ namespace DAL.Repository.PrerequisiteRepositories
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
             tableName = typeof(Prerequisite).Name;
         }
-        public async Task<Result<Prerequisite>> GetPrequisiteAsync(int trainingId)
+        public async Task<Response<Prerequisite>> GetPrequisiteAsync(int trainingId)
         {
             string query = @"SELECT * FROM PREREQUISITE 
                              WHERE PREREQUISITEID IN 
@@ -33,7 +33,7 @@ namespace DAL.Repository.PrerequisiteRepositories
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
-        public async Task<Result<int>> GetPrerequisiteIdByEmployee(int accountId)
+        public async Task<Response<int>> GetPrerequisiteIdByEmployee(int accountId)
         {
             
             string query = @"SELECT * FROM PREREQUISITE 
@@ -41,8 +41,8 @@ namespace DAL.Repository.PrerequisiteRepositories
                                 (SELECT PREREQUISITEID FROM REQUIREDFILES 
                                 WHERE ACCOUNTID = @ACCOUNTID) ;";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ACCOUNTID", accountId) };
-            Result<Prerequisite> prerequisiteResult = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
-            return new Result<int>() { 
+            Response<Prerequisite> prerequisiteResult = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            return new Response<int>() { 
                 Success = true ,
                 Data = prerequisiteResult.Data.Select(prerequisites => prerequisites.PrerequisiteId).ToList()
              };

@@ -10,7 +10,7 @@ namespace DAL.Repository.PrerequisiteRepositories
 {
     public interface IPrerequisiteRepository
     {
-        Task<Result<Prerequisite>> GetPrequisiteAsync(int trainingId);
-        Task<Result<int>> GetPrerequisiteIdByEmployee(int accountId);
+        Task<Response<Prerequisite>> GetPrequisiteAsync(int trainingId);
+        Task<Response<int>> GetPrerequisiteIdByEmployee(int accountId);
     }
 }

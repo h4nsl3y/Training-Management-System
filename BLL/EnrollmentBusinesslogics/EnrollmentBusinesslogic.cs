@@ -21,7 +21,7 @@ namespace BLL.EnrollmentBusinesslogics
             _logger = logger;
         }
 
-        public async Task<Result<Enrollment>> GetEnrollmentByEmailAsync(string email)
+        public async Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace BLL.EnrollmentBusinesslogics
             catch (Exception exception)
             {
                 _logger.Log(exception);
-                return  new Result<Enrollment> { Success = false , Message = "An Error" };
+                return  new Response<Enrollment> { Success = false , Message = "An Error" };
             }
         }
     }

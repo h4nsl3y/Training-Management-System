@@ -43,51 +43,39 @@ namespace TrainingManagementSystem.Controllers
                     values.Add("FILETYPE", file.ContentType);
                     values.Add("FILEDATA", binaryData);
 
-                    Result<bool> boolResult = await _requiredFileSBusinessLogic.UpdateFileAsync(prerequisiteId, accountId , values);
+                    Response<bool> boolResult = await _requiredFileSBusinessLogic.UpdateFileAsync(prerequisiteId, accountId , values);
                     return (boolResult.Success) ?
-                        Json(new { message = "success" }) :
-                        Json(new { message = "failed", data = "Some error encountered while uploading file" });
+                        Json(new { Success = true }) :
+                        Json(new { Success = false, Message = "Some error encountered while uploading file" });
                 }
-                else { return Json(new { message = "failed", data = "Some error encountered while uploading file" }); }
+                else { return Json(new { Success = false, Message = "Some error encountered while uploading file" }); }
             }
-            else { return Json(new { message = "failed", data = "No file has been recieved" }); }
+            else { return Json(new { Success = false, Message = "No file has been recieved" }); }
         }
 
         public async Task<ActionResult> UploadFile(int prerequisiteId, HttpPostedFileBase[] files)
         {
-
             HttpPostedFileBase file = Request.Files[0];
-
             string path = Path.Combine(Server.MapPath("~/data"), "fileData");
-            Result<bool> result = await _requiredFileSBusinessLogic.UploadFileAsync(file, path, (int)Session["AccountId"], prerequisiteId);
-            return (result.Success) ?
-                Json(new { message = "success" }) :
-                Json(new { message = "failed", data = "Some error encountered while uploading file" });
-
+            return  Json(await _requiredFileSBusinessLogic.UploadFileAsync(file, path, (int)Session["AccountId"], prerequisiteId)) ;
         }
 
         public async Task<ActionResult> GetFile(int prerequisiteId, int accountId = 0)
         {
             if (accountId == 0) { accountId = (int)Session["AccountId"]; }
-            Dictionary<string, object> conditions = new Dictionary<string, object>();
-            conditions.Add("PREREQUISITEID", prerequisiteId);
-            conditions.Add("ACCOUNTID", accountId);
-            Result<RequiredFiles> requiredFileResult = await _genericBusinessLogic.GetAsync(conditions);
+            Dictionary<string, object> conditions = new Dictionary<string, object>() { { "PREREQUISITEID", prerequisiteId }, { "ACCOUNTID", accountId } } ;
+            Response<RequiredFiles> requiredFileResult = await _genericBusinessLogic.GetAsync(conditions);
             RequiredFiles myFile = requiredFileResult.Data.FirstOrDefault();
-            byte[] fileByte = myFile.FileData;
-            string fileType = myFile.FileType;
-            return File(fileByte, fileType);
+            return File(myFile.FileData, myFile.FileType);
         }
         public async Task<JsonResult> IsFilePresent(int prerequisiteId)
         {
             int accountId = (int)Session["AccountId"]; 
-            Dictionary<string, object> conditions = new Dictionary<string, object>();
-            conditions.Add("PREREQUISITEID", prerequisiteId);
-            conditions.Add("ACCOUNTID", accountId);
-            Result<RequiredFiles> requiredFileResult = await _genericBusinessLogic.GetAsync(conditions);
+            Dictionary<string, object> conditions = new Dictionary<string, object>() { { "PREREQUISITEID", prerequisiteId }, { "ACCOUNTID", accountId } };
+            Response<RequiredFiles> requiredFileResult = await _genericBusinessLogic.GetAsync(conditions);
             return (requiredFileResult.Success) ?
-                        Json(new { message = "success", data = (requiredFileResult.Data.FirstOrDefault() != null) }, JsonRequestBehavior.AllowGet) :
-                        Json(new { message = "failed", data = "Some error encountered while uploading file" }, JsonRequestBehavior.AllowGet);
+                        Json(new { Success = true, Data = (requiredFileResult.Data.FirstOrDefault() != null) }, JsonRequestBehavior.AllowGet) :
+                        Json(new { Success = false, Message = "Some error encountered while uploading file" }, JsonRequestBehavior.AllowGet);
 
         }
     }

@@ -15,12 +15,12 @@ function GetUnenrolledTrainingList() {
         url: "/Training/GetUnenrolledTraining",
         dataType: 'json',
         success: function (result) {
-            if (result.message = "success") {
+            if (result.Success == true) {
                 if ($.fn.DataTable.isDataTable('#trainingTableId')) {
                     $('#trainingTableId').DataTable().destroy();
                 }
                 $('#trainingTableId').DataTable({
-                    "data": result.data,
+                    "data": result.Data,
                     "columns": [
                         { "data": "Title" },
                         { "data": "Title" },
@@ -36,7 +36,7 @@ function GetUnenrolledTrainingList() {
                     ],
                 });
             }
-            else { ShowNotification("Error", result.data); }
+            else { ShowNotification("Error", result.Message); }
         },
         error: function (error) {
             ShowNotification("Error", "Communication has been interupted");
@@ -48,7 +48,7 @@ function GetStateList() {
         type: "GET",
         url: "/State/GetStateList",
         success: function (result) {
-            GetEnrolledTrainingList(result.data);
+            GetEnrolledTrainingList(result.Data);
         },
         error: function (error) {
             ShowNotification("Error", "Communication has been interupted");
@@ -60,7 +60,7 @@ function GetDepartmentList() {
         type: "GET",
         url: "/Department/GetDepartmentList",
         success: function (result) {
-            result.data.forEach((department) =>  departmentList.push(department));
+            result.Data.forEach((department) =>  departmentList.push(department));
         },
         error: function (error) {
             ShowNotification("Error", "Communication has been interupted");
@@ -74,12 +74,12 @@ function GetEnrolledTrainingList(stateList) {
         data: { email: "none" },
         dataType: 'json',
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 if ($.fn.DataTable.isDataTable('#enrollmentTableId')) {
                     $('#enrollmentTableId').DataTable().destroy();
                 }
                 $('#enrollmentTableId').DataTable({
-                    "data": result.data,
+                    "data": result.Data,
                     "columns": [
                         {
                             "data": "SubmissionDate",
@@ -120,18 +120,16 @@ function GetEnrolledTrainingList(stateList) {
         }
     });
 };
-
-
 function GetPrerequisiteFiles() {
     $.ajax({
         type: "GET",
         url: "/Prerequisite/GetPrerequisiteFile",
         success: function (result) {
-            if (result.message = "success") {
-                GetAllPrerequisite(result.data)
+            if (result.Success == true) {
+                GetAllPrerequisite(result.Data)
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Data);
             }
         },
         error: function (error) {
@@ -144,12 +142,12 @@ function GetAllPrerequisite(setPrerequisite) {
         type: "GET",
         url: "/Prerequisite/GetAllPrerequisite",
         success: function (result) {
-            if (result.message = "success") {
+            if (result.Success == true) {
                 if ($.fn.DataTable.isDataTable('#prerequisiteTableId')) {
                     $('#prerequisiteTableId').DataTable().destroy();
                 }
                 $('#prerequisiteTableId').DataTable({
-                    "data": result.data,
+                    "data": result.Data,
                     "columns": [
                         { "data": "PrerequisiteDescription" },
                         {
@@ -178,7 +176,7 @@ function GetAllPrerequisite(setPrerequisite) {
                 });
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -197,7 +195,6 @@ function TrainingTableToggle() {
         table.style.padding = '0px 10 % !important';
         image.style.transform = "scaleY(-1)";
     } else {
-        console.log(table.style.display);
         table.style.display = 'none';
         image.style.transform = "scaleY(1)";
     }
@@ -220,8 +217,6 @@ function PrerequisiteTableToggle() {
     image = document.getElementById("prerequisiteTableArrowId");
     if (table.style.display == 'none') {
         table.style.display = '';
-        table.style.width = '80 % !important';
-        table.style.padding = '0px 10 % !important';
         image.style.transform = "scaleY(-1)";
     } else {
         table.style.display = 'none';
@@ -240,8 +235,8 @@ function GetTrainingDetail(id, displayButton) {
         data: { trainingid: id },
         dataType: 'json',
         success: function (result) {
-            if (result.message = "success") { DisplayTrainingDetails(result.data, displayButton); }
-            else { ShowNotification(result.data); }
+            if (result.Success == true) { DisplayTrainingDetails(result.Data[0], displayButton); }
+            else { ShowNotification("Error",result.Message); }
         },
         error: function (error) {
             console.log(error);
@@ -251,7 +246,6 @@ function GetTrainingDetail(id, displayButton) {
 function DisplayTrainingDetails(training, displayButton) {
     let overlay = document.getElementById("screenOverlay");
     let trainingTitle = document.getElementById("detailTitle");
-    let trainingId = document.getElementById("detailId")
 
     let trainingDepartment = document.getElementById("detailDepartmentPriority")
     let trainingDescription = document.getElementById("detailDescription");
@@ -259,10 +253,10 @@ function DisplayTrainingDetails(training, displayButton) {
     let trainingDeadline = new Date(Number((training.Deadline).match(/\d+/)[0]));
 
     trainingTitle.textContent = "Title : " + training.Title;
-//    trainingId.textContent = "Id : " + training.TrainingId;
 
     let department = _.find(departmentList, { DepartmentId: training.DepartmentId })
     trainingDepartment.textContent = "Priority to department : " + department.DepartmentName;
+
     trainingDescription.textContent = "Description : " + training.LongDescription;
     trainingDate.textContent = "Application deadline : " + trainingDeadline;
 
@@ -289,17 +283,17 @@ function GetTrainingPrerequisite(trainingId) {
         data: { trainingId: trainingId, accountId: 0 },
         dataType: 'json',
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 let fileForm = $('#uploadFormId');
                 fileForm.empty();
-                let prerequisites = result.data
+                let prerequisites = result.Data;
                 prerequisites.forEach(function (prerequisite) {
                     let row = "<div>" + prerequisite.PrerequisiteDescription + "<div><br>";
                     fileForm.append(row);
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -314,12 +308,12 @@ function CheckValidEnrollment(trainingId) {
         data: { trainingId: trainingId, accountId: 0 },
         dataType: 'json',
         success: function (result) {
-            if (result.message == "success") {
-                if (result.data.length == 0) {
+            if (result.Success == true) {
+                if (result.Data.length == 0) {
                     Enroll(trainingId);
                 }
                 else {
-                    let prerequisites = result.data
+                    let prerequisites = result.Data
                     let prerequisiteIdList = []
                     prerequisites.forEach(function (prerequisite) {
                         prerequisiteIdList.push(prerequisite.PrerequisiteId)
@@ -328,7 +322,7 @@ function CheckValidEnrollment(trainingId) {
                 }
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -344,8 +338,8 @@ function CheckPrerequisiteFiles(prerequisiteIdList, trainingId) {
             url: "/RequiredFile/IsFilePresent",
             data: { prerequisiteId: prerequisiteId },
             success: function (result) {
-                if (result.message == "success") {
-                    if (result.data != true) {
+                if (result.Success == true) {
+                    if (result.Data != true) {
                         IsValid = false;
                     }
                     if (IsValid) {
@@ -362,15 +356,13 @@ function CheckPrerequisiteFiles(prerequisiteIdList, trainingId) {
     });
 }
 function Enroll(trainingId) {
-    let textId = document.getElementById("detailId").textContent
-    let Id = textId.split(" ")[2]
     $.ajax({
         type: "POST",
         url: "/Enrollment/RegisterEnrollment",
         data: { trainingId: trainingId },
         dataType: 'json',
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 GetUnenrolledTrainingList();
                 GetStateList();
                 ShowNotification("Success", "Successfully enrolled")
@@ -382,7 +374,7 @@ function Enroll(trainingId) {
                 overlay.style.visibility = "hidden";
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -442,14 +434,14 @@ function FileUpload(fileData) {
         processData: false,
         contentType: false,
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 ShowNotification("Success", "File update successfully");
                 document.getElementById('uploadFormId').style.backgroundColor = '#a1ffa4';
                 document.getElementById('uploadBtn').style.visibility = 'hidden';
                 GetPrerequisiteFiles();
                 HideDetail()
             }
-            else { ShowNotification("Error", result.data); }
+            else { ShowNotification("Error", result.Message); }
         },
         error: function (error) {
             ShowNotification("Error", "Failed to upload file");
@@ -464,14 +456,14 @@ function FileUpdate(fileData) {
         processData: false,
         contentType: false,
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 ShowNotification("Success", "File uploaded successfully");
                 document.getElementById('uploadFormId').style.backgroundColor = '#a1ffa4';
                 document.getElementById('uploadBtn').style.visibility = 'hidden';
                 GetPrerequisiteFiles();
                 HideDetail()
             }
-            else { ShowNotification("Error", result.data); }
+            else { ShowNotification("Error", result.Message); }
         },
         error: function (error) {
             ShowNotification("Error", "Failed to upload file");
@@ -502,10 +494,10 @@ function Update(prerequisiteId) {
         data: { prerequisiteId: prerequisiteId },
         dataType: 'json',
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 let fileForm = $('#uploadFormId');
                 fileForm.empty();
-                let prerequisites = result.data
+                let prerequisites = result.Data
 
                 let overlay = document.getElementById("screenOverlay");
                 let trainingTitle = document.getElementById("detailTitle");
@@ -524,9 +516,7 @@ function Update(prerequisiteId) {
                 let uploadForm = document.getElementById("upload-form-container");
                 enrollButton.style.visibility = "hidden";
                 uploadForm.style.visibility = "visible";
-
                 overlay.style.visibility = "visible";
-
 
                 prerequisites.forEach(function (prerequisite) {
                     let row = "<label for='uploadFileId" + prerequisite.PrerequisiteId + "'> " + prerequisite.PrerequisiteDescription + " </label><br>";
@@ -536,7 +526,7 @@ function Update(prerequisiteId) {
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {
@@ -551,10 +541,10 @@ function Upload(prerequisiteId) {
         data: { prerequisiteId: prerequisiteId },
         dataType: 'json',
         success: function (result) {
-            if (result.message == "success") {
+            if (result.Success == true) {
                 let fileForm = $('#uploadFormId');
                 fileForm.empty();
-                let prerequisites = result.data
+                let prerequisites = result.Data;
 
                 let overlay = document.getElementById("screenOverlay");
                 let trainingTitle = document.getElementById("detailTitle");
@@ -576,7 +566,6 @@ function Upload(prerequisiteId) {
 
                 overlay.style.visibility = "visible";
 
-
                 prerequisites.forEach(function (prerequisite) {
                     let row = "<label for='uploadFileId" + prerequisite.PrerequisiteId + "'> " + prerequisite.PrerequisiteDescription + " </label><br>";
                     row += "<input type='file' name='file' id='uploadFileId" + prerequisite.PrerequisiteId + "' />";
@@ -585,7 +574,7 @@ function Upload(prerequisiteId) {
                 })
             }
             else {
-                ShowNotification("Error", result.data);
+                ShowNotification("Error", result.Message);
             }
         },
         error: function (error) {

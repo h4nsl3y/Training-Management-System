@@ -15,6 +15,6 @@ namespace DAL.Entity
         [Required(ErrorMessage = "Training infromation are required. ")]
         public int TrainingId { get; set; }
         public int StateId { get; set; } = 1;
-        public DateTime SubmissionDate { get; set; }
+        public DateTime SubmissionDate { get; set; } = DateTime.Now;
     }
 }

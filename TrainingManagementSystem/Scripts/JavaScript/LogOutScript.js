@@ -3,7 +3,7 @@
         type: 'POST',
         url: "/Account/LogUserOut",
         success: function (result) {
-            if (result.message == "Success") {
+            if (result.Success == true) {
                 window.location.href = '/Account/LogInPage';
             }
             else { ShowNotification("Error", "Failed to log out"); }
