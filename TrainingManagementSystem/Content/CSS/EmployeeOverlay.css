@@ -12,16 +12,19 @@
     width: 40%;
     display: flex;
     flex-wrap: wrap;
-    background-color: rgb(250, 250, 250);
+    background-color: white;
     margin: 200px 30% 0px 30%;
 }
 .upload-area {
     width: 80%;
     margin: 10px 10%;
-    background-color: rgb(240, 240, 240);
+    background-color: white;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+}
+.upload-form {
+    background-color: white;
 }
 .button-content {
     width: 100%;

@@ -436,7 +436,6 @@ function FileUpload(fileData) {
         success: function (result) {
             if (result.Success == true) {
                 ShowNotification("Success", "File update successfully");
-                document.getElementById('uploadFormId').style.backgroundColor = '#a1ffa4';
                 document.getElementById('uploadBtn').style.visibility = 'hidden';
                 GetPrerequisiteFiles();
                 HideDetail()
@@ -501,13 +500,11 @@ function Update(prerequisiteId) {
 
                 let overlay = document.getElementById("screenOverlay");
                 let trainingTitle = document.getElementById("detailTitle");
-                let trainingId = document.getElementById("detailId")
                 let trainingDepartment = document.getElementById("detailDepartmentPriority");
                 let trainingDescription = document.getElementById("detailDescription");
                 let trainingDate = document.getElementById("detailDate");
 
                 trainingTitle.textContent = "";
-                trainingId.textContent = "";
                 trainingDepartment.textContent = "";
                 trainingDescription.textContent = "";
                 trainingDate.textContent = "";
@@ -545,16 +542,13 @@ function Upload(prerequisiteId) {
                 let fileForm = $('#uploadFormId');
                 fileForm.empty();
                 let prerequisites = result.Data;
-
                 let overlay = document.getElementById("screenOverlay");
                 let trainingTitle = document.getElementById("detailTitle");
-                let trainingId = document.getElementById("detailId")
                 let trainingDepartment = document.getElementById("detailDepartmentPriority");
                 let trainingDescription = document.getElementById("detailDescription");
                 let trainingDate = document.getElementById("detailDate");
 
                 trainingTitle.textContent = "";
-                trainingId.textContent = "";
                 trainingDepartment.textContent = "";
                 trainingDescription.textContent = "";
                 trainingDate.textContent = "";

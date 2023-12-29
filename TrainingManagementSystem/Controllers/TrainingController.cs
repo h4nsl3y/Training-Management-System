@@ -43,20 +43,8 @@ namespace TrainingManagementSystem.Controllers
 
         [HttpPost]
         public async Task<JsonResult> UpdateTraining(Training training)
-        {
-/*            Dictionary<string, object> values = new Dictionary<string, object>() 
-            {
-                { "Title", training.Title },
-                { "DepartmentId", training.DepartmentId },
-                { "SeatNumber", training.SeatNumber },
-                { "Deadline", training.Deadline },
-                { "StartDate", training.StartDate },
-                { "EndDate", training.EndDate },
-                { "ShortDescription", training.ShortDescription},
-                { "LongDescription", training.LongDescription },
-            };*/
-            return Json(await _genericBusinessLogic.UpdateAsync(training), JsonRequestBehavior.AllowGet) ;
-        }
+            => Json(await _genericBusinessLogic.UpdateAsync(training), JsonRequestBehavior.AllowGet) ;
+        
         [HttpPost]
         public async Task<JsonResult> SetPrerequisite(int prerequisiteId, string title)
             =>Json(await _trainingBusinessLogic.SetPrerequisiteAsync(prerequisiteId, title), JsonRequestBehavior.AllowGet) ;

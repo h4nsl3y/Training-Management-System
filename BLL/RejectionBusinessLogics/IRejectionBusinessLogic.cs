@@ -9,6 +9,6 @@ namespace BLL.RejectionBusinessLogics
 {
     public interface IRejectionBusinessLogic
     {
-        Task<bool> RegisterRejection(int enrollmentId, string employeeEmail, string comment);
+        Task<Response<bool>> RegisterRejection(int enrollmentId, string employeeEmail, string comment);
     }
 }

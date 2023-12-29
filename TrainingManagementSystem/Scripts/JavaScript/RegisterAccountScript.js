@@ -177,7 +177,9 @@ function Register() {
                 window.location.href = '/Account/RedirectToView';
             }
             else {
-                document.getElementById("notificationText").innerHTML = result.Data;
+                notificationElement = document.getElementById("notificationText");
+                notificationElement.innerHTML = result.Message;
+                notificationElement.style.visibility = 'visible';
             }
         },
         error: function (error) {

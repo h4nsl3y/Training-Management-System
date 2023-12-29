@@ -129,7 +129,10 @@ select {
     visibility: hidden;
     border-radius: 5px;
 }
-
+.display-content {
+    background-color: white;
+    border-radius: 5px;
+}
 .notification {
     color: rgb(255,0,0);
     text-align: center;

@@ -22,18 +22,18 @@ namespace BLL.RejectionBusinessLogics
             _emailService = emailService;
             _logger = logger;
         }
-        public async Task<bool> RegisterRejection(int enrollmentId, string employeeEmail, string comment)
+        public async Task<Response<bool>> RegisterRejection(int enrollmentId, string employeeEmail, string comment)
         {
             try
             {
                 Response<bool> result = await _genericRepository.AddAsync(new Rejection() { EnrollmentId = enrollmentId, Comment = comment });
                // bool emailFlag = await Task.Run(() =>_emailService.SendEmail("Rejection", $"Your request for the training has been rejected due to \n : '{comment}'. ", employeeEmail));
-                return (result.Success /*&& emailFlag*/) ? true : false;
+                return new Response<bool>() { Success = ((result.Success /*&& emailFlag*/) ? true : false) };
             }
             catch(Exception exception)
             {
                 _logger.Log(exception);
-                return false;
+                return new Response<bool>() { Success = false , Message = "Email has not been." };
             }
         }
 

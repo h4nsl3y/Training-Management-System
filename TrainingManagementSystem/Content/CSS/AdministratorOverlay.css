@@ -110,3 +110,14 @@ table.dataTable.compact {
     width:80%;
     margin: 0px 10%;
 }
+#notificationText {
+    background-color: rgb(255, 171, 171);
+    border: 4px solid rgb(255, 100, 100);
+    margin: 10px;
+    visibility: hidden;
+    border-radius: 5px;
+}
+.notification {
+    color: rgb(255,0,0);
+    text-align: center;
+}

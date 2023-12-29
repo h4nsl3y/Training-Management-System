@@ -23,12 +23,11 @@ function LoginUser() {
             }
             else {
                 notificationElement = document.getElementById("notificationText");
-                notificationElement.innerHTML = result.Data;
+                notificationElement.innerHTML = result.Message;
                 notificationElement.style.visibility = 'visible';
             }
         },
         error: function (error) {
-            console.log(error)
             ShowNotification("Error", "Communication has been interupted") ;
         }
     });

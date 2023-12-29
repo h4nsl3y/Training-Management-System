@@ -86,6 +86,8 @@ function OpenTrainingCreationForm() {
 function CloseTrainingCreationForm() {
     document.getElementById("screenOverlay").style.visibility = "hidden";
     document.getElementById("submitTrainingDetailsBtn").style.visibility = "hidden";
+    document.getElementById("notificationText").style.visibility = "hidden";
+    document.getElementById("notificationText").innerHTML = "";
     const elements = document.querySelectorAll('[name="PrerequisiteField"]');
     elements.forEach(function (element) {
         element.remove();
@@ -101,11 +103,10 @@ function FillTrainingDetail(trainingId) {
             if (result.Success == true) {
                 let training = result.Data[0];
 
-                document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "RegisterTraining()");
                 document.getElementById("submitTrainingDetailsBtn").style.visibility = "visible";
-                document.getElementById("submitTrainingDetailsBtn").textContent = "Register";
+                document.getElementById("submitTrainingDetailsBtn").textContent = "Update";
 
-                document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", "UpdateTraining(" + training.TrainingId + ");");
+                document.getElementById("submitTrainingDetailsBtn").setAttribute("onclick", `UpdateTraining( ${training.TrainingId});`);
                 document.getElementById("trainingTitleId").value = training.Title;
                 document.getElementById("trainingDepartmentId").value = training.DepartmentId;
                 document.getElementById("trainingStartDateId").value = ConvertToDateString(training.StartDate);
@@ -136,26 +137,29 @@ function RegisterTraining() {
         ShortDescription: document.getElementById("trainingShortDescriptionId").value,
         LongDescription: document.getElementById("trainingLongDescriptionId").value
     };
-    setTrainingPrerequisite(document.getElementById("trainingTitleId").value);
-    $.ajax({
-        type: "POST",
-        url: "/Training/RegisterTraining",
-        data: data,
-        dataType: 'json',
-        success: function () {
-            if (mesage == true) {
-                ShowNotification('Success', "Training has been successfully registered");
+    if (TrainingFormValidation() == true) {
+        setTrainingPrerequisite(document.getElementById("trainingTitleId").value);
+        $.ajax({
+            type: "POST",
+            url: "/Training/RegisterTraining",
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+                if (result.Success == true) {
+                    ShowNotification('Success', "Training has been successfully registered");
+                }
+                else {
+                    ShowNotification('Error', "Some error has been encountered while registering the training");
+                }
+            },
+            error: function () {
+                ShowNotification('Error', "Some error has been encountered")
             }
-            else {
-                ShowNotification('Error', "Some error has been encountered while registering the training");
-            }
-        },
-        error: function () {
-            ShowNotification('Error', "Some error has been encountered")
-        }
-    });
-    CloseTrainingCreationForm();
-    GetTrainingList();
+        });
+        CloseTrainingCreationForm();
+        GetTrainingList();
+
+    }
 };
 function UpdateTraining(trainingId) {
     let data = {
@@ -169,25 +173,27 @@ function UpdateTraining(trainingId) {
         ShortDescription: document.getElementById("trainingShortDescriptionId").value,
         LongDescription: document.getElementById("trainingLongDescriptionId").value
     };
-    $.ajax({
-        type: "POST",
-        url: "/Training/UpdateTraining",
-        data: data,
-        dataType: 'json',
-        success: function (result) {
-            if (result.Success == true) {
-                ShowNotification('Success', "Training has been successfully updated");
+    if (TrainingFormValidation() == true) {
+        $.ajax({
+            type: "POST",
+            url: "/Training/UpdateTraining",
+            data: data,
+            dataType: 'json',
+            success: function (result) {
+                if (result.Success == true) {
+                    ShowNotification('Success', "Training has been successfully updated");
+                }
+                else {
+                    ShowNotification('Error', "Some error has been encountered while registering the training");
+                }
+            },
+            error: function () {
+                ShowNotification('Error', "Some error has been encountered")
             }
-            else {
-                ShowNotification('Error', "Some error has been encountered while registering the training");
-            }
-        },
-        error: function () {
-            ShowNotification('Error', "Some error has been encountered")
-        }
-    });
-    CloseTrainingCreationForm();
-    GetTrainingList();
+        });
+        CloseTrainingCreationForm();
+        GetTrainingList();
+    }
 }
 function DisplayTrainingForm(isAdding, trainingId) {
 
@@ -221,6 +227,55 @@ function DisplayTrainingForm(isAdding, trainingId) {
 function ConvertToDateString(timestamp) {
     let dateTimeObject = new Date(Number((timestamp).match(/\d+/)[0]));
     return dateTimeObject.toISOString().slice(0, 19).replace("T", " ");
+}
+
+function TrainingFormValidation() {
+    let title = document.getElementById("trainingTitleId").value ;
+    let department = document.getElementById("trainingDepartmentId").value ;
+    let startDate = document.getElementById("trainingStartDateId").value ;
+    let endDate = document.getElementById("trainingEndDateId").value ;
+    let deadline = document.getElementById("trainingDeadLineId").value ;
+    let seatNumber = document.getElementById("trainingSeatAvailableId").value ;
+    let shortDescrition = document.getElementById("trainingShortDescriptionId").value ;
+    let longDescription = document.getElementById("trainingLongDescriptionId").value;
+
+    let emptyNotification = "";
+    if (!title) { emptyNotification += "title " };
+    if (!department) { emptyNotification += "department " };
+    if (!startDate) { emptyNotification += "starting-date " };
+    if (!endDate) { emptyNotification += "ending-date " };
+    if (!deadline) { emptyNotification += "deadline " };
+    if (!seatNumber) { emptyNotification += "title " };
+    if (!shortDescrition) { emptyNotification += "shortDescrition " };
+    if (!longDescription) { emptyNotification += "longDescription " };
+
+    let notification = "";
+
+    if (emptyNotification) {
+        notification = "The following fields are empty :"
+        let emptyFields = emptyNotification.split(" ");
+        emptyFields.forEach((emptyField) => {
+            notification += ` ${emptyField} ,`;
+        });
+        notification = notification.substring(0, notification.length - 1);
+
+        document.getElementById("notificationText").innerHTML = notification;
+        document.getElementById("notificationText").style.visibility = "visible";
+        return false;
+    }
+    else if (new Date(deadline) > new Date(startDate).setHours(0, 0, 0, 0)) {
+        notification = "Starting date is before the deadline !";
+        document.getElementById("notificationText").innerHTML = notification;
+        document.getElementById("notificationText").style.visibility = "visible";
+        return false;
+    }
+    else if (startDate > endDate) {
+        notification = "Ending date is before the StartingDate !";
+        document.getElementById("notificationText").innerHTML = notification;
+        document.getElementById("notificationText").style.visibility = "visible";
+        return false;
+    }
+    else { return true }
 }
 //#endregion
 
@@ -412,12 +467,12 @@ function setTrainingPrerequisite(trainingTitle) {
     prerequisiteIds.forEach(prerequisiteId => {
         data = { prerequisiteId: prerequisiteId.value, title: trainingTitle };
         $.ajax({
-            type: "GET",
+            type: "POST",
             url: "/Training/SetPrerequisite",
             data: data,
             success: function (result) {
                 if (result.Success == true) {
-                    console.log("success");
+                    ShowNotification("Success", "Successfully registered the prerequisite");
                 }
                 else {
                     ShowNotification("Error", result.Message);

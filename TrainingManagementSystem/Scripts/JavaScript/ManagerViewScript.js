@@ -189,7 +189,7 @@ function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAc
         data: { enrollmentId: requestEnrollmentId, email: requestAccountEmail,comment: rejectionComment },
         success: function (result) {
             if (result.Success == true) {
-                UpdatRequestState(requestEnrollmentId, requestState, requestEmployeeId);
+                UpdatRequestState(enrollmentParameter, requestEmployeeId);
                 CloseTextArea();
             }
             else {
