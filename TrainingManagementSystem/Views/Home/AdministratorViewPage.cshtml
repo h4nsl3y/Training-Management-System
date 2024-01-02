@@ -5,8 +5,13 @@
 <link rel="stylesheet" href="~/Content/CSS/AdministratorOverlay.css">
 <script src="~/Scripts/JavaScript/AdministratorViewScript.js"></script>
 
-<div class="List-area">
-    <div class="area-container ">
+<div class="tab-button">
+    <button name="tabButton" class="item-button" onclick="DisplayTab(event, 'trainingTabId')">Available Trainings</button>
+    <button name="tabButton" class="item-button" onclick="DisplayTab(event, 'prerequisiteTabId')">Required files</button>
+</div>
+
+<div class="List-area"  id="baseArea">
+    <div class="area-container" name="tabArea" id="trainingTabId">
         <div class="container-title">
             <h3>Training</h3>
             <button class="item-button" onclick="DisplayTrainingForm(true,0)">Add</button>
@@ -28,38 +33,20 @@
             </table>
         </div>
     </div>
-    <div class="split-area">
-        <div class="area-container">
-            <div class="container-title">
-                <h3>Prerequisite</h3>
-                <button class="item-button" onclick="DisplayPrerequisiteForm(true,0)">Add</button>
-                <button class="item-button" onclick="PrerequisiteTableToggle()"><image class="arrow" id="prerequisiteTableArrowId" src="~/Content/image/Arrow.png"></button>
-            </div>
-            <div class="container-list" id="containerTrainingId">
-                <table class="list-item display compact" id="PrerequisiteTableId">
-                    <thead>
-                        <tr>
-                            <th>Prerequisite Description</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
+    <div class="area-container" name="tabArea" id="prerequisiteTabId">
+        <div class="container-title">
+            <h3>Prerequisite</h3>
+            <button class="item-button" onclick="DisplayPrerequisiteForm(true,0)">Add</button>
+            <button class="item-button" onclick="PrerequisiteTableToggle()"><image class="arrow" id="prerequisiteTableArrowId" src="~/Content/image/Arrow.png"></button>
         </div>
-        <div class="area-container">
-            <div class="container-title">
-                <h3>Department</h3>
-                <button class="item-button" onclick="DisplayDepartmentForm(true,0)">Add</button>
-                <button class="item-button" onclick="DepartmentTableToggle()"><image class="arrow" id="departmentTableArrowId" src="~/Content/image/Arrow.png"></button>
-            </div>
-            <div class="container-list display compact" id="containerTrainingId">
-                <table class="list-item" id="DepartmentTableId">
-                    <thead>
-                        <tr>
-                            <th>Department name</th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
+        <div class="container-list" id="containerTrainingId">
+            <table class="list-item display compact" id="PrerequisiteTableId">
+                <thead>
+                    <tr>
+                        <th>Prerequisite Description</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     </div>
 </div>
@@ -138,7 +125,5 @@
             <button class="item-button" id="submitTrainingDetailsBtn"></button>
             <button class="item-button" id="closeTrainingDetailsBtn" onclick="CloseTrainingCreationForm()">Close</button>
         </div>
-
-
     </div>
 </div>

@@ -47,22 +47,22 @@
     width: 100% !important;
 }
 
+
+.area-container{
+    margin: 0px 0px;
+}
+
 .tab-button {
     display: grid;
     grid-template-columns: 15% 15% 15%;
+    height : 30px;
     margin: 0px 10%;
     transition: 0.3s;
 }
     .tab-button .item-button {
         border-radius: 5px 5px 0px 0px;
-        background-color : rgb(210,210,210);
+        background-color: rgb(210,210,210);
         cursor: pointer;
-        height : 25px;
-        color : black;
+        height: 25px;
+        color: black;
     }
-        .tab-button .item-button:hover {
-            background-color: rgb(240,240,240);
-        }
-.active {
-    background-color: white;
-}

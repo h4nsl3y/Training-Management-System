@@ -1,9 +1,10 @@
-﻿$(document).ready(
+﻿$(window).on('load', function () {
     GetDepartmentList(),
-    GetUnenrolledTrainingList(),
-    GetStateList(),
-    GetPrerequisiteFiles()
-)
+        GetUnenrolledTrainingList(),
+        GetStateList(),
+        GetPrerequisiteFiles(),
+        HideTab()
+});
 //GLOBAL VARIABLE
 var index = 0;
 var departmentList = [] ;
@@ -616,8 +617,24 @@ function DisplayTab(event, tabId) {
     let tabs = document.getElementsByName("tabArea")
     tabs.forEach((tab) => tab.style.display = 'none')
 
+    let tabButtons = document.getElementsByName("tabButton")
+    tabButtons.forEach((tabButton) => tabButton.style.backgroundColor = "#d2d2d2")
+
     let displayTab = document.getElementById(tabId);
     displayTab.style.display = "inherit";
 
-    event.currentTarget.classList.add("active");
+    console.log(displayTab.style.display)
+
+    event.currentTarget.style.backgroundColor = "#ffffff";
 }
+
+function HideTab() {
+    let tabs = document.getElementsByName("tabArea")
+    tabs.forEach((tab) => tab.style.display = 'none')
+
+    tabs[0].style.display = 'inherit';
+
+    let tabButtons = document.getElementsByName("tabButton")
+    tabButtons[0].style.backgroundColor = "#ffffff";
+}
+

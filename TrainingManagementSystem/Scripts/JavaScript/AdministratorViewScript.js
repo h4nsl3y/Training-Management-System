@@ -1,8 +1,9 @@
-﻿$(document).ready(
+﻿$(window).on('load', function () {
     GetDepartmentList(),
-    GetTrainingList(),
-    GetPrerequisiteDataList()
-)
+        GetTrainingList(),
+        GetPrerequisiteDataList(),
+        HideTab()
+});
 // GLOBAL VARIABLES
 let rowCount = 0
 
@@ -485,3 +486,27 @@ function setTrainingPrerequisite(trainingTitle) {
     });
 }
 
+function DisplayTab(event, tabId) {
+    let tabs = document.getElementsByName("tabArea")
+    tabs.forEach((tab) => tab.style.display = 'none')
+
+    let tabButtons = document.getElementsByName("tabButton")
+    tabButtons.forEach((tabButton) => tabButton.style.backgroundColor = "#d2d2d2")
+
+    let displayTab = document.getElementById(tabId);
+    displayTab.style.display = "inherit";
+
+    console.log(displayTab.style.display)
+
+    event.currentTarget.style.backgroundColor = "#ffffff";
+}
+
+function HideTab() {
+    let tabs = document.getElementsByName("tabArea")
+    tabs.forEach((tab) => tab.style.display = 'none')
+
+    tabs[0].style.display = 'inherit';
+
+    let tabButtons = document.getElementsByName("tabButton")
+    tabButtons[0].style.backgroundColor = "#ffffff";
+}

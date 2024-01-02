@@ -67,3 +67,8 @@ request-list {
     border: none;
     color: white;
 }
+
+.area-container {
+    display: inherit;
+    margin: 0px 0px;
+}

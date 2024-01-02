@@ -8,7 +8,7 @@ body .account-area {
   width: 80%;
   min-height: 100px;
   min-width: 800px;
-  margin: 20px 10%;
+  margin: 5px 10%;
   display: grid;
   grid-template-columns: 10% 70% 20%;
 }
@@ -49,12 +49,12 @@ body .account-area .log-out-container .log-out-button {
   margin: 0px 10%;
 }
 .area-container {
-  background-color: #fff;
-  width: 100%;
-  border: 2px solid white;
-  height: fit-content;
-  margin: 1% 0px;
-  border-radius: 10px;
+    background-color: #fff;
+    width: 100%;
+    border: 2px solid white;
+    height: fit-content;
+    margin: 1% 0px;
+    border-radius: 0px 10px 10px  10px;
 }
 .container-title {
   margin: 20px 20px;
@@ -136,3 +136,26 @@ select {
     color: rgb(255,0,0);
     text-align: center;
 }
+
+
+
+.area-container {
+    margin: 0px 0px;
+    display: none;
+}
+
+.tab-button {
+    display: grid;
+    grid-template-columns: 15% 15% 15%;
+    height: 30px;
+    margin: 0px 10%;
+    transition: 0.3s;
+}
+
+    .tab-button .item-button {
+        border-radius: 5px 5px 0px 0px;
+        background-color: rgb(210,210,210);
+        cursor: pointer;
+        height: 25px;
+        color: black;
+    }
