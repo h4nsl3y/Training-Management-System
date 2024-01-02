@@ -95,9 +95,23 @@ function GetEnrolledTrainingList(stateList) {
                             }
                         },
                         {
-                            "data": "TrainingId",
-                            render: function (data) {
-                                return "<button class= 'item-button' id = 'detailBtn' onclick = 'GetTrainingDetail(" + data + ", false)'> Details</button>";
+                            render: function (data, type, row) {
+
+                                let cancelState = 4;
+                                
+                                let enrollmentParameter = {
+                                    EnrollmentId: row.EnrollmentId
+                                    , AccountId: row.AccountId
+                                    , TrainingId: row.TrainingId
+                                    , StateId: cancelState
+                                    , SubmissionDate: row.SubmissionDate
+                                };
+                                enrollmentParameter = JSON.stringify(enrollmentParameter);
+                                let buttons = ` <div>
+                                                    <button class= 'item-button' id = 'detailBtn' onclick = 'GetTrainingDetail(${row.TrainingId}, false)'> Details </button> 
+                                                    <button class= 'item-button' id = 'cancelBtn' onclick = 'UpdateStateToCancel(${enrollmentParameter})'> Cancel </button >
+                                                </div>`
+                                return buttons;
                             }
                         }
                     ],
@@ -185,6 +199,27 @@ function GetAllPrerequisite(setPrerequisite) {
     });
 }
 
+function UpdateStateToCancel(enrollmentParameter) {
+    let data = { enrollment: enrollmentParameter };
+    $.ajax({
+        type: "POST",
+        url: "/Enrollment/UpdateState",
+        data: data,
+        dataType: 'json',
+        success: function (result) {
+            if (result.Success == true) {
+                ShowNotification("Success", "Enrollment request has been cancelled"),
+                GetStateList()
+            }
+            else {
+                ShowNotification("Error", result.Message);
+            };
+        },
+        error: function () {
+            ShowNotification("Error", "Communication has been interupted");
+        },
+    });
+}
 //#region TableToggle
 function TrainingTableToggle() {
     let table = document.getElementById("trainingTableId_wrapper");
@@ -577,3 +612,12 @@ function Upload(prerequisiteId) {
     });
 }
 //#endregion
+function DisplayTab(event, tabId) {
+    let tabs = document.getElementsByName("tabArea")
+    tabs.forEach((tab) => tab.style.display = 'none')
+
+    let displayTab = document.getElementById(tabId);
+    displayTab.style.display = "inherit";
+
+    event.currentTarget.classList.add("active");
+}

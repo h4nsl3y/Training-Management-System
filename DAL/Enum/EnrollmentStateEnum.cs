@@ -10,6 +10,8 @@ namespace DAL.Enum
     {
         Waiting_For_Approval = 1,
 		Rejected = 2,
-    	Approved = 3
+    	Approved = 3,
+        Cancelled = 4,
+        Confirmed = 5
     }
 }

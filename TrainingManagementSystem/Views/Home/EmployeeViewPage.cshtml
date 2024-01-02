@@ -5,8 +5,14 @@
 <script defer src="~/Scripts/JavaScript/EmployeeViewScript.js"></script>
 <link rel="stylesheet" href="~/Content/CSS/EmployeeOverlay.css">
 
+<div class="tab-button">
+    <button class="item-button active" onclick="DisplayTab(event, 'tab1')">Available Trainings</button>
+    <button class="item-button" onclick="DisplayTab(event, 'tab2')">Submitted training request</button>
+    <button class="item-button" onclick="DisplayTab(event, 'tab3')">Required files</button>
+</div>
+
 <div class="List-area">
-    <div class="area-container ">
+    <div class="area-container" name="tabArea" id="tab1">
         <div class="container-title">
             <h3>Available Trainings</h3>
             <button class="item-button" onclick="TrainingTableToggle()"><image class="arrow" id="trainingTableArrowId" src="~/Content/image/Arrow.png"></button>
@@ -25,7 +31,7 @@
             </table>
         </div>
     </div>
-    <div class="area-container ">
+    <div class="area-container" name="tabArea" id="tab2">
         <div class="container-title">
             <h3>Submitted training request</h3>
             <button class="item-button" onclick="EnrollmentTableToggle()"><image class="arrow" id="enrollmentTableArrowId" src="~/Content/image/Arrow.png"></button>
@@ -42,7 +48,7 @@
             </table>
         </div>
     </div>
-    <div class="area-container ">
+    <div class="area-container" name="tabArea" id="tab3">
         <div class="container-title">
             <h3>Required files</h3>
             <button class="item-button" onclick="PrerequisiteTableToggle()"><image class="arrow" id="prerequisiteTableArrowId" src="~/Content/image/Arrow.png"></button>
@@ -74,7 +80,7 @@
         </div>
         <div class="button-content">
             <div class="button-container">
-                <button class="item-button-overlay" id="enrollBtn" name="enrollButton" >Enroll</button>
+                <button class="item-button-overlay" id="enrollBtn" name="enrollButton">Enroll</button>
                 <button class="item-button-overlay" id="closeDetailsBtn" onclick="HideDetail()">Close</button>
             </div>
         </div>
