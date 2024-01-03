@@ -175,6 +175,7 @@
     <Content Include="Content\CSS\ManagerOverlay.css" />
     <Content Include="Content\CSS\NotificationStyleSheet.css" />
     <Content Include="Content\CSS\RegisterStyleSheet.css" />
+    <Content Include="Content\CSS\RoleSelectorStyleSheet.css" />
     <Content Include="Content\CSS\UserViewStyleSheet.css" />
     <Content Include="Content\image\Arrow.png" />
     <Content Include="favicon.ico" />
@@ -12114,6 +12115,7 @@
     <Content Include="Scripts\JavaScript\RegisterAccountScript.js" />
     <Content Include="Scripts\JavaScript\LogInUserScript.js" />
     <Content Include="Scripts\JavaScript\EmployeeViewScript.js" />
+    <Content Include="Scripts\JavaScript\RoleSelectionViewScript.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
     <Content Include="Scripts\jquery-3.4.1.slim.js" />
@@ -12145,6 +12147,7 @@
     <Content Include="Views\Home\AdministratorViewPage.cshtml" />
     <Content Include="tsconfig.json" />
     <Content Include="Views\Dojo\loginTest.cshtml" />
+    <Content Include="Views\Account\RoleSelectionPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

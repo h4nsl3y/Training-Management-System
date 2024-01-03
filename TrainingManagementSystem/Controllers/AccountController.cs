@@ -28,6 +28,11 @@ namespace TrainingManagementSystem.Controllers
         }
         public ActionResult LogInPage() => View();
         public ActionResult RegisterPage() => View();
+        public ActionResult RoleSelectionPage() 
+        {
+            ViewBag.Role = (int)Session["TrueRole"];
+            return View();
+        }
         [HttpPost]
         public async Task<ActionResult> AuthenticateUser(Account account)
         {
@@ -47,6 +52,7 @@ namespace TrainingManagementSystem.Controllers
                         Session["Email"] = user.Email;
                         Session["MobileNumber"] = user.MobileNumber;
                         Session["Role"] = user.RoleId;
+                        Session["TrueRole"] = user.RoleId;
                         return Json(new { Success = true });
                     }
                     else { return Json(new { Success = false, Message = _accountResult.Message }); }
@@ -104,6 +110,7 @@ namespace TrainingManagementSystem.Controllers
                         Session["Email"] = user.Email;
                         Session["MobileNumber"] = user.MobileNumber;
                         Session["Role"] = user.RoleId;
+                        Session["TrueRole"] = user.RoleId;
                         return Json(new { Success = true });
                     }
                     else { return Json(new { Success = false, Message = accountResult.Message }); };
@@ -114,21 +121,10 @@ namespace TrainingManagementSystem.Controllers
                 }
             }
         }
-        public RedirectToRouteResult RedirectToView()
+        public ActionResult SetRole(int roleId)
         {
-            RoleEnum actualRole = (RoleEnum)Session["Role"];
-            switch (actualRole)
-            {
-                case RoleEnum.Employee:
-                    return RedirectToRoute(new { controller = "Home", action = "EmployeeViewPage" });
-                case RoleEnum.Manager:
-                    return RedirectToRoute(new { controller = "Home", action = "ManagerViewPage" });
-                case RoleEnum.Administrator:
-                    return RedirectToRoute(new { controller = "Home", action = "AdministratorViewPage" });
-                default:
-                    return RedirectToRoute(new { controller = "Error", action = "NotFound" });
-            }
-
+            Session["Role"] = roleId;
+            return Json(new { Success = true });
         }
         [HttpGet]
         public async Task<JsonResult> GetEmployeeEnrolled() 

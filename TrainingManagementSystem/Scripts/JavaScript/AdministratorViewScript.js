@@ -1,8 +1,8 @@
 ﻿$(window).on('load', function () {
+    HideTab(),
     GetDepartmentList(),
-        GetTrainingList(),
-        GetPrerequisiteDataList(),
-        HideTab()
+    GetTrainingList(),
+    GetPrerequisiteDataList()
 });
 // GLOBAL VARIABLES
 let rowCount = 0
@@ -448,17 +448,6 @@ function PrerequisiteTableToggle() {
     }
 }
 
-function DepartmentTableToggle() {
-    table = document.getElementById("trainingTableArrowId_wrapper");
-    image = document.getElementById("departmentTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = '';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
 //#endregion
 
 //#endregion
@@ -496,7 +485,10 @@ function DisplayTab(event, tabId) {
     let displayTab = document.getElementById(tabId);
     displayTab.style.display = "inherit";
 
-    console.log(displayTab.style.display)
+    table1 = document.getElementById("TrainingTableId_wrapper");
+    table2 = document.getElementById("PrerequisiteTableId_wrapper");
+    table1.style.display = '';
+    table2.style.display = 'initial';
 
     event.currentTarget.style.backgroundColor = "#ffffff";
 }

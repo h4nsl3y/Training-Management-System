@@ -66,6 +66,18 @@ namespace BLL.RequiredFileBusinessLogics
                 return _resultBoolError;
             }
         }
+        public async Task<Response<int>> CountFilePresentAsync(int trainingId, int accountId)
+        {
+            try
+            {
+                return await _requiredFileRepository.CountFilePresentAsync(trainingId, accountId);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+                return new Response<int> () { Success = false, Message = "an Error has been encounter" };
+            }
+        }
     }
 }
 

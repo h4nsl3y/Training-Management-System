@@ -24,15 +24,19 @@ function GetUnenrolledTrainingList() {
                     "data": result.Data,
                     "columns": [
                         { "data": "Title" },
-                        { "data": "Title" },
+                        {
+                            "data": "StartDate",
+                            render: function (data) {
+                                return new Date(Number((data).match(/\d+/)[0]));
+                            },
+                        },
                         { "data": "SeatNumber" },
                         { "data": "ShortDescription" },
                         {
                             "data": "TrainingId",
                             render: function (data) {
                                 return "<button class= 'item-button' id = 'detailBtn' onclick = 'GetTrainingDetail(" + data + ", true)'> Details</button>";
-                            },
-                            targets: -1
+                            }
                         }
                     ],
                 });
@@ -108,10 +112,11 @@ function GetEnrolledTrainingList(stateList) {
                                     , SubmissionDate: row.SubmissionDate
                                 };
                                 enrollmentParameter = JSON.stringify(enrollmentParameter);
-                                let buttons = ` <div>
-                                                    <button class= 'item-button' id = 'detailBtn' onclick = 'GetTrainingDetail(${row.TrainingId}, false)'> Details </button> 
-                                                    <button class= 'item-button' id = 'cancelBtn' onclick = 'UpdateStateToCancel(${enrollmentParameter})'> Cancel </button >
-                                                </div>`
+                                let buttons = 
+                                `<div class='split-Area'>
+                                    <button class= 'item-button' id = 'detailBtn' onclick = 'GetTrainingDetail(${row.TrainingId}, false)'> Details </button> 
+                                    <button class= 'item-button' id = 'cancelBtn' onclick = 'UpdateStateToCancel(${enrollmentParameter})'> Cancel </button >
+                                </div>`
                                 return buttons;
                             }
                         }
@@ -368,27 +373,23 @@ function CheckValidEnrollment(trainingId) {
 }
 function CheckPrerequisiteFiles(prerequisiteIdList, trainingId) {
     let IsValid = true;
-    prerequisiteIdList.forEach(function (prerequisiteId) {
-        $.ajax({
-            type: "GET",
-            url: "/RequiredFile/IsFilePresent",
-            data: { prerequisiteId: prerequisiteId },
-            success: function (result) {
-                if (result.Success == true) {
-                    if (result.Data != true) {
-                        IsValid = false;
-                    }
-                    if (IsValid) {
-                        Enroll(trainingId);
-                    } else {
-                        ShowNotification("Error", "File(s) are missing for this training");
-                    }
+    $.ajax({
+        type: "GET",
+        url: "/RequiredFile/CoutPresentFile",
+        data: { trainingId: trainingId },
+        success: function (result) {
+            if (result.Success == true) {
+                if (result.Data == prerequisiteIdList.length) {
+                    console.log(result.Data,prerequisiteIdList.length)
+                    Enroll(trainingId);
+                } else {
+                    ShowNotification("Error", "File(s) are missing for this training");
                 }
-            },
-            error: function (error) {
-                ShowNotification("Error", "Communication has been interupted");
             }
-        });
+        },
+        error: function (error) {
+            ShowNotification("Error", "Communication has been interupted");
+        }
     });
 }
 function Enroll(trainingId) {
@@ -552,9 +553,9 @@ function Update(prerequisiteId) {
                 overlay.style.visibility = "visible";
 
                 prerequisites.forEach(function (prerequisite) {
-                    let row = "<label for='uploadFileId" + prerequisite.PrerequisiteId + "'> " + prerequisite.PrerequisiteDescription + " </label><br>";
-                    row += "<input type='file' name='file' id='uploadFileId" + prerequisite.PrerequisiteId + "' />";
-                    row += "<input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(" + prerequisite.PrerequisiteId + ",true)'><br>";
+                    let row = `<label for='uploadFileId${prerequisite.PrerequisiteId}'> ${prerequisite.PrerequisiteDescription} </label><br>
+                                <input type='file' name='file' id='uploadFileId${prerequisite.PrerequisiteId}' />
+                                <input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(${prerequisite.PrerequisiteId},true)'><br>`;
                     fileForm.append(row);
                 })
             }
@@ -597,9 +598,9 @@ function Upload(prerequisiteId) {
                 overlay.style.visibility = "visible";
 
                 prerequisites.forEach(function (prerequisite) {
-                    let row = "<label for='uploadFileId" + prerequisite.PrerequisiteId + "'> " + prerequisite.PrerequisiteDescription + " </label><br>";
-                    row += "<input type='file' name='file' id='uploadFileId" + prerequisite.PrerequisiteId + "' />";
-                    row += "<input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(" + prerequisite.PrerequisiteId + ", false)'><br>";
+                    let row = `<label for='uploadFileId${prerequisite.PrerequisiteId}'> ${prerequisite.PrerequisiteDescription} </label><br>
+                                <input type='file' name='file' id='uploadFileId${prerequisite.PrerequisiteId}' />
+                                <input type='button' id='uploadBtn' value='Upload' onclick='UploadFile(${prerequisite.PrerequisiteId},false)'><br>`;
                     fileForm.append(row);
                 })
             }
@@ -627,7 +628,6 @@ function DisplayTab(event, tabId) {
 
     event.currentTarget.style.backgroundColor = "#ffffff";
 }
-
 function HideTab() {
     let tabs = document.getElementsByName("tabArea")
     tabs.forEach((tab) => tab.style.display = 'none')

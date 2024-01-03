@@ -1,6 +1,9 @@
 ﻿$(document).ready(
     GetEnrollment()
 )
+//GLOBAL VARIABLE
+let index = 0
+
 //#region DataTable
 function GetEnrollment() {
     $.ajax({
@@ -66,15 +69,15 @@ function GetRequestByEmployee(requestAccountId,requestAccountEmail) {
                         {
                             "data": "StartDate",
                             render: function (data) {
-                                return new Date(Number((data).match(/\d+/)[0]));
+                                return (new Date(Number((data).match(/\d+/)[0]))).toString().split(' GMT')[0];;
                             },
                         },
                         { "data": "ShortDescription" },
                         {
-                            "data": "PrerequisiteId",
-                            render: function (data) {
-                                if (data != 0) {
-                                    return "<button class='item-button' id='viewDocumentBtn' onclick='GetDocument(" + data + " , " + requestAccountId + ")'>Document(s)</button>";
+                            render: function (data, type, row) {
+                                if (row.PrerequisiteId > 0) {
+                                    GetPrerequisiteByTraining(row.TrainingId, row.AccountId, `viewDocumentBtn${index}`);
+                                    return `<button class='item-button' id='viewDocumentBtn${index}' >Document(s)</button>`;
                                 }
                                 else {
                                     return "No document required";
@@ -83,31 +86,32 @@ function GetRequestByEmployee(requestAccountId,requestAccountEmail) {
                         },
                         {
                             render: function (data, type, row) {
-                                let enrollmentParameter = {
+                                let approvedEnrollmentParameter = {
                                     EnrollmentId: row.EnrollmentId
                                     , AccountId: row.AccountId
                                     , TrainingId: row.TrainingId
                                     , StateId: approve
                                     , SubmissionDate: row.SubmissionDate
                                 };
-                                enrollmentParameter = JSON.stringify(enrollmentParameter);
-
-                                return `<button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${enrollmentParameter} , ${requestAccountId} )'>Approve</button>`;
-                            }
-                        },
-                        {
-                            render: function (data, type, row) {
-                                let enrollmentParameter = {
+                                approvedEnrollmentParameter = JSON.stringify(approvedEnrollmentParameter);
+                                let rejectEnrollmentParameter = {
                                     EnrollmentId: row.EnrollmentId
                                     , AccountId: row.AccountId
                                     , TrainingId: row.TrainingId
-                                    , StateId: reject
+                                    , StateId: approve
                                     , SubmissionDate: row.SubmissionDate
                                 };
-                                enrollmentParameter = JSON.stringify(enrollmentParameter);
-                                return `<button class='item-button' id='detailBtn' onclick='RejectRequest( ${enrollmentParameter} , ${requestAccountId} ,  ${JSON.stringify(requestAccountEmail)} )'>Reject</button>`;
+                                rejectEnrollmentParameter = JSON.stringify(rejectEnrollmentParameter);
+                                let buttons =
+                                    `<div class='split-Area'>
+                                        <button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${approvedEnrollmentParameter} , ${requestAccountId} )'>Approve</button> 
+                                        <button class='item-button' id ='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} , ${requestAccountId} ,  ${JSON.stringify(requestAccountEmail)} )'> Reject</button>
+                                    </div>`; 
+
+                            return buttons
+                                
                             }
-                        }
+                        },
                     ],
                 });
             }
@@ -133,22 +137,24 @@ function HideRequest() {
     let overlay = document.getElementById("screenOverlay");
     overlay.style.visibility = "hidden";
 }
-function GetDocument(prerequisiteId, employeeId) {
-    $.ajax({
-        type: "GET",
-        url: "/RequiredFile/GetFile",
-        data: { prerequisiteId: prerequisiteId, accountId: employeeId },
-        xhrFields: {
-            responseType: 'blob'
-        },
-        success: function (result) {
-            let url = URL.createObjectURL(result);
-            window.open(url, '_blank');
-        },
-        error: function () {
-            ShowNotification("Error, File could not be load");
-        }
-    });
+function GetDocument(prerequisiteIds, employeeId) {
+    prerequisiteIds.forEach((prerequisiteId) => {
+        $.ajax({
+            type: "GET",
+            url: "/RequiredFile/GetFile",
+            data: { prerequisiteId: prerequisiteId, accountId: employeeId },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (result) {
+                let url = URL.createObjectURL(result);
+                window.open(url, '_blank');
+            },
+            error: function () {
+                ShowNotification("Error", "File could not be load");
+            }
+        });
+    }); 
 }
 //#endregion
 
@@ -202,5 +208,31 @@ function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAc
     });
 }
 //#endregion
-
+function GetPrerequisiteByTraining(trainingId, accountId, buttonId) {
+    let prerequisiteList = "[";
+    let index = 0;
+    $.ajax({
+        type: "GET",
+        url: "/Prerequisite/GetPrerequisiteByTraining",
+        data: { trainingId: trainingId },
+        success: function (result) {
+            if (result.Success == true) {
+                result.Data.forEach((prerequisite) => {
+                    prerequisiteList += `${prerequisite.PrerequisiteId},`;
+                    index += 1;
+                })
+                let prerequisites = prerequisiteList.substring(0, prerequisiteList.length - 1);
+                prerequisites +="]"
+                button = document.getElementById(buttonId);
+                button.setAttribute("onclick", `GetDocument( ${prerequisites}, ${accountId} );`);
+            }
+            else {
+                ShowNotification("Error", result.Message);
+            };
+        },
+        error: function (loaderror) {
+            ShowNotification("Error", "File could not be load");
+        }
+    });
+}
 

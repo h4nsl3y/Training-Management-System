@@ -110,12 +110,12 @@ function GetRoleList() {
         url: "/Role/GetRoleList",
         success: function (result) {
             if (result.Success == true) {
-                let managerCombobox = document.getElementById("RoleComboBoxId");
+                let roleCombobox = document.getElementById("RoleComboBoxId");
                 result.Data.forEach(function (row) {
                     let option = document.createElement("option");
                     option.value = row.RoleId;
                     option.text = row.RoleName;
-                    managerCombobox.add(option);
+                    roleCombobox.add(option);
                 })
             }
             else {
@@ -174,7 +174,7 @@ function Register() {
         success: function (result) {
             if (result.Success == true) {
                 ShowNotification("Success", "Successfully registered user")
-                window.location.href = '/Account/RedirectToView';
+                window.location.href = '/Account/RoleSelectionPage'; 
             }
             else {
                 notificationElement = document.getElementById("notificationText");

@@ -1,4 +1,5 @@
-﻿using BLL.GenericBusinessLogics;
+﻿using BLL.Email;
+using BLL.GenericBusinessLogics;
 using BLL.RequiredFileBusinessLogics;
 using DAL.Entity;
 using Newtonsoft.Json.Linq;
@@ -78,5 +79,8 @@ namespace TrainingManagementSystem.Controllers
                         Json(new { Success = false, Message = "Some error encountered while uploading file" }, JsonRequestBehavior.AllowGet);
 
         }
+
+        public async Task<JsonResult> CoutPresentFile(int trainingId) 
+         => Json(await _requiredFileSBusinessLogic.CountFilePresentAsync(trainingId, (int) Session["AccountId"]), JsonRequestBehavior.AllowGet);
     }
 }

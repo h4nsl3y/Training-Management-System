@@ -159,3 +159,15 @@ select {
         height: 25px;
         color: black;
     }
+.dataTables_wrapper {
+    width: 100%;
+}
+.split-Area{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.split-Area .item-button{
+    width: 95%;
+    margin: 2.5%;
+}

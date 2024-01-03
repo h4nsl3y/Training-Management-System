@@ -151,9 +151,12 @@ namespace DAL.Repository.AccountRepositories
         public async Task<Response<Account>> GetManagerListAsync()
         {
             
-            string query = $@"SELECT *FROM ACCOUNT INNER JOIN ACCOUNTROLE 
-                              ON ACCOUNT.ACCOUNTID = ACCOUNTROLE.ACCOUNTID WHERE ACCOUNTROLE.ROLEID = @ROLEID";
-            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter($"@ROLEID", RoleEnum.Manager) };
+            string query = $@"SELECT * FROM ACCOUNT INNER JOIN ACCOUNTROLE 
+                              ON ACCOUNT.ACCOUNTID = ACCOUNTROLE.ACCOUNTID WHERE ACCOUNTROLE.ROLEID = @ROLEID1 OR ACCOUNTROLE.ROLEID = @ROLEID2";
+            List<SqlParameter> parameters = new List<SqlParameter>() { 
+                new SqlParameter($"@ROLEID1", RoleEnum.Manager), 
+                new SqlParameter($"@ROLEID2", RoleEnum.Administrator)
+            };
             return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
         public async Task<Response<bool>> SetRoleAsync(string email, int roleId)

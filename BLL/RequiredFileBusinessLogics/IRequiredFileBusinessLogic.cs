@@ -14,5 +14,6 @@ namespace BLL.RequiredFileBusinessLogics
         byte[] GetFileData(string path);
         Task<Response<bool>> UpdateFileAsync(int prerequisiteId, int accountId, Dictionary<string, object> values);
         Task<Response<bool>> UploadFileAsync(HttpPostedFileBase file, string path, int accountId, int prerequisiteId);
+        Task<Response<int>> CountFilePresentAsync(int trainingId, int accountId);
     }
 }

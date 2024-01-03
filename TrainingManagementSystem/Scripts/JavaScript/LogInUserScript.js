@@ -19,7 +19,7 @@ function LoginUser() {
         success: function (result) {
             if (result.Success == true) {
                 ShowNotification("Success", "sucessfully log in user")
-                window.location.href = '/Account/RedirectToView'; 
+                window.location.href = '/Account/RoleSelectionPage'; 
             }
             else {
                 notificationElement = document.getElementById("notificationText");
