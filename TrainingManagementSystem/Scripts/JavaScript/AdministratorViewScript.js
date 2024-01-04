@@ -18,7 +18,7 @@ function AddDisplayPrerequisite() {
 
     let buttonElement = document.createElement("button");
     buttonElement.setAttribute("id", "removePrerequisiteBtnId-" + rowCount);
-    buttonElement.setAttribute("name", "PrerequisiteField");
+    buttonElement.setAttribute("name", "PrerequisiteFieldButton");
     buttonElement.setAttribute("class", "item-button");
     buttonElement.setAttribute("type", "button");
     buttonElement.setAttribute("onclick", "RemoveDisplayPrerequisite(" + rowCount + ");");
@@ -93,6 +93,10 @@ function CloseTrainingCreationForm() {
     elements.forEach(function (element) {
         element.remove();
     });
+    const elementButtons = document.querySelectorAll('[name="PrerequisiteFieldButton"]');
+    elementButtons.forEach(function (element) {
+        element.remove();
+    })
 }
 function FillTrainingDetail(trainingId) {
     $.ajax({
@@ -128,7 +132,14 @@ function FillTrainingDetail(trainingId) {
     });
 };
 function RegisterTraining() {
-    let data = {
+    let index = 0;
+    let prerequisiteList = {};
+    let prerequisiteIds = document.getElementsByName("PrerequisiteField");
+    prerequisiteIds.forEach((prerequisiteId) => {
+        prerequisiteList[`${index}`] = prerequisiteId.value.toString();
+        index += 1
+    });
+    let training = {
         Title: document.getElementById("trainingTitleId").value,
         DepartmentId: document.getElementById("trainingDepartmentId").value,
         SeatNumber: document.getElementById("trainingSeatAvailableId").value,
@@ -139,11 +150,11 @@ function RegisterTraining() {
         LongDescription: document.getElementById("trainingLongDescriptionId").value
     };
     if (TrainingFormValidation() == true) {
-        setTrainingPrerequisite(document.getElementById("trainingTitleId").value);
+        /*setTrainingPrerequisite(document.getElementById("trainingTitleId").value);*/
         $.ajax({
             type: "POST",
             url: "/Training/RegisterTraining",
-            data: data,
+            data: { training:training, prerequisiteList: prerequisiteList },
             dataType: 'json',
             success: function (result) {
                 if (result.Success == true) {
@@ -159,11 +170,17 @@ function RegisterTraining() {
         });
         CloseTrainingCreationForm();
         GetTrainingList();
-
     }
 };
 function UpdateTraining(trainingId) {
-    let data = {
+    let index = 0;
+    let prerequisiteList = {};
+    let prerequisiteIds = document.getElementsByName("PrerequisiteField");
+    prerequisiteIds.forEach((prerequisiteId) => {
+        prerequisiteList[`${index}`] = prerequisiteId.value.toString();
+        index += 1
+    });
+    let training = {
         TrainingId: trainingId,
         Title: document.getElementById("trainingTitleId").value,
         DepartmentId: document.getElementById("trainingDepartmentId").value,
@@ -178,7 +195,7 @@ function UpdateTraining(trainingId) {
         $.ajax({
             type: "POST",
             url: "/Training/UpdateTraining",
-            data: data,
+            data: {training: training, prerequisiteList: prerequisiteList},
             dataType: 'json',
             success: function (result) {
                 if (result.Success == true) {
@@ -246,7 +263,7 @@ function TrainingFormValidation() {
     if (!startDate) { emptyNotification += "starting-date " };
     if (!endDate) { emptyNotification += "ending-date " };
     if (!deadline) { emptyNotification += "deadline " };
-    if (!seatNumber) { emptyNotification += "title " };
+    if (!seatNumber) { emptyNotification += "Seat-number " };
     if (!shortDescrition) { emptyNotification += "shortDescrition " };
     if (!longDescription) { emptyNotification += "longDescription " };
 
@@ -304,7 +321,6 @@ function UpdateDisplayPrerequisite(trainingId) {
         data: { trainingId: trainingId },
         success: function (result) {
             if (result.Success == true) {
-
                 result.Data.forEach(function (row) {
                     AddDisplayPrerequisite()
                     let combobox = document.getElementById("trainingPrerequisiteDetailId-" + (rowCount - 1));
@@ -451,8 +467,8 @@ function PrerequisiteTableToggle() {
 //#endregion
 
 //#endregion
-
-function setTrainingPrerequisite(trainingTitle) {
+// TO DO : remove
+/*function setTrainingPrerequisite(trainingTitle) {
     let prerequisiteIds = document.querySelectorAll('select[name="PrerequisiteField"]');
     prerequisiteIds.forEach(prerequisiteId => {
         data = { prerequisiteId: prerequisiteId.value, title: trainingTitle };
@@ -473,7 +489,7 @@ function setTrainingPrerequisite(trainingTitle) {
             }
         });
     });
-}
+}*/
 
 function DisplayTab(event, tabId) {
     let tabs = document.getElementsByName("tabArea")

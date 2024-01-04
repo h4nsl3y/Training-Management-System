@@ -25,7 +25,6 @@ function GetEnrollment() {
                                 else {
                                     return row.FirstName + ' ' + row.OtherName + ' ' + row.LastName;
                                 }
-                                
                             }
                         },
                         {
@@ -49,7 +48,8 @@ function GetEnrollment() {
 };
 
 
-function GetRequestByEmployee(requestAccountId,requestAccountEmail) {
+function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
+    let buttonIndex = 0;
     $.ajax({
         type: "GET",
         url: "/ViewModel/GetTrainingEnrollmentViewModel",
@@ -76,8 +76,10 @@ function GetRequestByEmployee(requestAccountId,requestAccountEmail) {
                         {
                             render: function (data, type, row) {
                                 if (row.PrerequisiteId > 0) {
-                                    GetPrerequisiteByTraining(row.TrainingId, row.AccountId, `viewDocumentBtn${index}`);
-                                    return `<button class='item-button' id='viewDocumentBtn${index}' >Document(s)</button>`;
+                                    GetPrerequisiteByTraining(row.TrainingId, row.AccountId, `viewDocumentBtn${buttonIndex}`);
+                                    let button = `<button class='item-button' id='viewDocumentBtn${buttonIndex}' >Document(s)</button>`
+                                    buttonIndex += 1;
+                                    return button;
                                 }
                                 else {
                                     return "No document required";
@@ -98,7 +100,7 @@ function GetRequestByEmployee(requestAccountId,requestAccountEmail) {
                                     EnrollmentId: row.EnrollmentId
                                     , AccountId: row.AccountId
                                     , TrainingId: row.TrainingId
-                                    , StateId: approve
+                                    , StateId: reject
                                     , SubmissionDate: row.SubmissionDate
                                 };
                                 rejectEnrollmentParameter = JSON.stringify(rejectEnrollmentParameter);

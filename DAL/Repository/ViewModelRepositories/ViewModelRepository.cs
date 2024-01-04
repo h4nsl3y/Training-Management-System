@@ -19,15 +19,25 @@ namespace DAL.Repository.ViewModelRepositories
         }
         public async Task<Response<T>> GetTrainingEnrollmentView(int accountId)
         {
-            string query = $@"SELECT TRAINING.TRAININGID, TRAINING.TITLE, TRAINING.DEPARTMENTID,
+            string query = $@"
+                            WITH DATASET AS (
+                            SELECT
+                            TRAINING.TRAININGID, TRAINING.TITLE, TRAINING.DEPARTMENTID,
                             TRAINING.DEADLINE, TRAINING.STARTDATE, TRAINING.SHORTDESCRIPTION, 
                             ENROLLMENT.ENROLLMENTID, ENROLLMENT.ACCOUNTID, ENROLLMENT.STATEID, 
-                            ENROLLMENT.SUBMISSIONDATE, TRAININGPREREQUISITE.PREREQUISITEID
-                            
+                            ENROLLMENT.SUBMISSIONDATE, TRAININGPREREQUISITE.PREREQUISITEID,
+							ROW_NUMBER() over(PARTITION BY ENROLLMENT.ENROLLMENTID ORDER BY TRAINING.TRAININGID) as DUPLICATE
                             FROM TRAINING 
                             INNER JOIN ENROLLMENT ON TRAINING.TRAININGID = ENROLLMENT.TRAININGID
                             LEFT OUTER JOIN TRAININGPREREQUISITE ON TRAININGPREREQUISITE.TRAININGID =  TRAINING.TRAININGID
-                            WHERE ENROLLMENT.ACCOUNTID = @ACCOUNTID AND ENROLLMENT.STATEID = @STATEID;";
+                            WHERE ENROLLMENT.ACCOUNTID = @ACCOUNTID AND ENROLLMENT.STATEID = @STATEID
+							)
+							SELECT TRAININGID, TITLE, DEPARTMENTID,
+                            DEADLINE, STARTDATE, SHORTDESCRIPTION, 
+                            ENROLLMENTID, ACCOUNTID, STATEID, 
+                            SUBMISSIONDATE, PREREQUISITEID
+							FROM DATASET
+							WHERE DUPLICATE =1";
             List<SqlParameter> parameters = new List<SqlParameter>() 
             {
                 new SqlParameter("@ACCOUNTID", accountId),

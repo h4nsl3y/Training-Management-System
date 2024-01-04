@@ -13,11 +13,11 @@ namespace BLL.EnrollmentBusinesslogics
 {
     public class EnrollmentBusinesslogic : IEnrollmentBusinessLogic
     {
-        private readonly IEnrollmentRepository _enrollmenyRepository;
+        private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly ILogger _logger;
         public EnrollmentBusinesslogic(IEnrollmentRepository enrollmenyRepository, ILogger logger)
         {
-            _enrollmenyRepository = enrollmenyRepository;
+            _enrollmentRepository = enrollmenyRepository;
             _logger = logger;
         }
 
@@ -25,7 +25,7 @@ namespace BLL.EnrollmentBusinesslogics
         {
             try
             {
-                return await _enrollmenyRepository.GetEnrollmentByEmailAsync(email);
+                return await _enrollmentRepository.GetEnrollmentByEmailAsync(email);
             }
             catch (Exception exception)
             {

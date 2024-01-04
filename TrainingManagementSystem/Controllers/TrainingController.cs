@@ -25,7 +25,9 @@ namespace TrainingManagementSystem.Controllers
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
         }
         [HttpPost]
-        public async Task<JsonResult> RegisterTraining(Training training) => Json(await _genericBusinessLogic.AddAsync(training), JsonRequestBehavior.AllowGet) ;
+        public async Task<JsonResult> RegisterTraining(Training training, List<int> prerequisiteList) 
+            => Json(await _trainingBusinessLogic.RegisterTrainingAsync(training,prerequisiteList), JsonRequestBehavior.AllowGet);
+
         [HttpGet]
         public async Task<JsonResult> GetTraining(int trainingId)
         {
@@ -42,8 +44,12 @@ namespace TrainingManagementSystem.Controllers
             => Json(await _trainingBusinessLogic.GetUnenrolledAsync((int)Session["AccountId"]), JsonRequestBehavior.AllowGet) ;
 
         [HttpPost]
-        public async Task<JsonResult> UpdateTraining(Training training)
-            => Json(await _genericBusinessLogic.UpdateAsync(training), JsonRequestBehavior.AllowGet) ;
+        public async Task<JsonResult> UpdateTraining(Training training, List<int> prerequisiteList)
+        {
+            //=> Json(await _genericBusinessLogic.UpdateAsync(training), JsonRequestBehavior.AllowGet);
+            return Json(await _trainingBusinessLogic.UpdateTrainingAsync(training,prerequisiteList), JsonRequestBehavior.AllowGet);
+        }
+            
         
         [HttpPost]
         public async Task<JsonResult> SetPrerequisite(int prerequisiteId, string title)

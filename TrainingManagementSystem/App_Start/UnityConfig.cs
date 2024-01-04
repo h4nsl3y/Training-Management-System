@@ -1,4 +1,5 @@
 using BLL.AccountBusinessLogics;
+using BLL.AutomaticProcess;
 using BLL.Email;
 using BLL.EnrollmentBusinesslogics;
 using BLL.GenericBusinessLogics;
@@ -16,6 +17,7 @@ using DAL.Repository.PrerequisiteRepositories;
 using DAL.Repository.RequiredFileRepositories;
 using DAL.Repository.TrainingRepositories;
 using DAL.Repository.ViewModelRepositories;
+using Quartz;
 using System;
 using Unity;
 
@@ -37,7 +39,7 @@ namespace TrainingManagementSystem
           });
 
         /// <summary>
-        /// Configured Unity Container.
+        /// Configured Unity GetContainer.
         /// </summary>
         public static IUnityContainer Container => container.Value;
         #endregion
@@ -79,6 +81,7 @@ namespace TrainingManagementSystem
             container.RegisterType<IEnrollmentBusinessLogic, EnrollmentBusinesslogic>();
             container.RegisterType<IRejectionBusinessLogic, RejectionBusinessLogic>();
             container.RegisterType<IEmail, Email>();
+            container.RegisterType<IJob, BackgroundJob>();
             container.RegisterType(typeof(IViewModelBusinesslogic<>), typeof(ViewModelBusinessLogic<>));
 
         }

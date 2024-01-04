@@ -79,7 +79,6 @@ namespace TrainingManagementSystem.Controllers
                         Json(new { Success = false, Message = "Some error encountered while uploading file" }, JsonRequestBehavior.AllowGet);
 
         }
-
         public async Task<JsonResult> CoutPresentFile(int trainingId) 
          => Json(await _requiredFileSBusinessLogic.CountFilePresentAsync(trainingId, (int) Session["AccountId"]), JsonRequestBehavior.AllowGet);
     }

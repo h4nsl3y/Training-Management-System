@@ -46,11 +46,35 @@ namespace BLL.TrainingBusinessLogics
                 return _resultError;
             }
         }
+        public async Task<Response<bool>> RegisterTrainingAsync(Training training, List<int> prerequisites)
+        {
+            try
+            {
+                return await _trainingRepository.RegisterTrainingAsync(training, prerequisites);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+                return _resultboolError;
+            }
+        }
         public async Task<Response<bool>> SetPrerequisiteAsync(int prerequisiteId, string title)
         {
             try
             {
                 return await _trainingRepository.SetPrerequisiteAsync(prerequisiteId, title);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+                return _resultboolError;
+            }
+        }
+        public async Task<Response<bool>> UpdateTrainingAsync(Training training, List<int> prerequisites)
+        {
+            try
+            {
+                return await _trainingRepository.UpdateTrainingAsync(training, prerequisites);
             }
             catch (Exception exception)
             {

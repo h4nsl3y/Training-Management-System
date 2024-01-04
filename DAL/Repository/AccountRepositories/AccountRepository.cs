@@ -30,9 +30,12 @@ namespace DAL.Repository.AccountRepositories
         }
         public async Task<Response<bool>> AddAsync (Account account)
         {
-            string insertAccount = $@"INSERT INTO {tableName}
-                                     (FIRSTNAME, OTHERNAME, LASTNAME, NATIONALIDENTIFICATIONNUMBER, MOBILENUMBER, EMAIL, MANAGERID, DEPARTMENTID, PASSWORD)
-                               VALUES(@FIRSTNAME,@OTHERNAME,@LASTNAME,@NATIONALIDENTIFICATIONNUMBER,@MOBILENUMBER,@EMAIL,@MANAGERID,@DEPARTMENTID,@PASSWORD);";
+            string insertAccount = $@"DECLARE @ACCOUNTID INT;
+                                    INSERT INTO ACCOUNT
+                                    (FIRSTNAME, OTHERNAME, LASTNAME, NATIONALIDENTIFICATIONNUMBER, MOBILENUMBER, EMAIL, MANAGERID, DEPARTMENTID, PASSWORD)
+                                    VALUES(@FIRSTNAME,@OTHERNAME,@LASTNAME,@NATIONALIDENTIFICATIONNUMBER,@MOBILENUMBER,@EMAIL,@MANAGERID,@DEPARTMENTID,@PASSWORD);
+                                    SET @ACCOUNTID = SCOPE_IDENTITY(); 
+                                    INSERT INTO ACCOUNTROLE(ACCOUNTID, ROLEID) VALUES(@ACCOUNTID, @ROLEID)";
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@FIRSTNAME",GetPropertyValue(account.FirstName)),
@@ -43,16 +46,10 @@ namespace DAL.Repository.AccountRepositories
                 new SqlParameter("@EMAIL", GetPropertyValue(account.Email)),
                 new SqlParameter("@MANAGERID", GetPropertyValue(account.ManagerId)),
                 new SqlParameter("@DEPARTMENTID", GetPropertyValue(account.DepartmentId)),
-                new SqlParameter("@PASSWORD", GetPropertyValue(account.Password))
+                new SqlParameter("@PASSWORD", GetPropertyValue(account.Password)),
+                new SqlParameter("@ROLEID", GetPropertyValue(account.RoleId))
         };
-            
-           
-            Response<bool> insertAccountResult = await Task.Run(() => _dataBaseUtil.AffectedRowsAsync(insertAccount, parameters));
-            Response<bool> insertRoleResult = await Task.Run(() => SetRoleAsync(account.Email, account.RoleId));
-
-            return (insertAccountResult.Success == true && insertRoleResult.Success == true) ?
-                new Response<bool>() { Data = { true }, Success = true } :
-                new Response<bool>() { Data = { false }, Success = false };
+            return await Task.Run(() => _dataBaseUtil.ExecuteTransactionAsync(insertAccount, parameters));
         }
         public async Task<Response<Account>> AuthenticateAsync(string email)
         {
@@ -158,16 +155,6 @@ namespace DAL.Repository.AccountRepositories
                 new SqlParameter($"@ROLEID2", RoleEnum.Administrator)
             };
             return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
-        }
-        public async Task<Response<bool>> SetRoleAsync(string email, int roleId)
-        {
-            string query = @"INSERT INTO ACCOUNTROLE(ACCOUNTID, ROLEID) VALUES((SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL), @ROLEID);";
-            List<SqlParameter> parameters = new List<SqlParameter>()
-            {
-                new SqlParameter("@EMAIL", email),
-                new SqlParameter("@ROLEID", roleId)
-            };
-            return await Task.Run(() => _dataBaseUtil.AffectedRowsAsync(query, parameters));
         }
     }
 }

@@ -13,7 +13,6 @@ namespace TrainingManagementSystem.Controllers
     {
         private readonly IGenericBusinessLogic<Enrollment> _genericBusinessLogic;
         private readonly IEnrollmentBusinessLogic _enrollmentBusinessLogic;
-        private Response<bool> _boolResult;
         public EnrollmentController(IGenericBusinessLogic<Enrollment> genericBusinessLogic, IEnrollmentBusinessLogic enrollmentBusinessLogic)
         {
             _genericBusinessLogic = genericBusinessLogic;

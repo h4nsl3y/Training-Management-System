@@ -42,15 +42,82 @@ namespace DAL.Repository.TrainingRepositories
             };
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
+        public async Task<Response<bool>> RegisterTrainingAsync(Training training, List<int> prerequisites)
+        {
+            string prerequisiteList = String.Join(",", prerequisites);
+            string query = @"DECLARE @TRAININGID INT;
+                        INSERT INTO TRAINING (TITLE, DEPARTMENTID, SEATNUMBER, DEADLINE, STARTDATE, ENDDATE, SHORTDESCRIPTION, LONGDESCRIPTION)
+                        VALUES (@TITLE, @DEPARTMENTID, @SEATNUMBER, @DEADLINE, @STARTDATE, @ENDDATE, @SHORTDESCRIPTION, @LONGDESCRIPTION)
+                        SET @TRAININGID = SCOPE_IDENTITY(); 
+                        IF (@PREREQUISITEIDS IS NOT NULL AND LEN(@PREREQUISITEIDS) > 0)
+                        BEGIN
+                            INSERT INTO TRAININGPREREQUISITE (TRAININGID, PREREQUISITEID)
+                            SELECT @TrainingId, P.value
+                            FROM STRING_SPLIT(@PREREQUISITEIDS, ',') AS P;
+                        END";
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@TITLE", training.Title),
+                new SqlParameter("@DEPARTMENTID", training.DepartmentId),
+                new SqlParameter("@SEATNUMBER", training.SeatNumber),
+                new SqlParameter("@DEADLINE", training.Deadline),
+                new SqlParameter("@STARTDATE", training.StartDate),
+                new SqlParameter("@ENDDATE", training.EndDate),
+                new SqlParameter("@SHORTDESCRIPTION", training.ShortDescription),
+                new SqlParameter("@LONGDESCRIPTION", training.LongDescription),
+                new SqlParameter("@PREREQUISITEIDS", prerequisiteList)
+            };
+            return await _dataBaseUtil.ExecuteTransactionAsync(query, parameters);
+        }
         public async Task<Response<bool>> SetPrerequisiteAsync(int prerequisiteId, string title)
         {
             string query = @"INSERT INTO TRAININGPREREQUISITE (TRAININGID , PREREQUISITEID) 
                             VALUES ((SELECT TRAININGID FROM TRAINING
                             WHERE TITLE = @TITLE) , @PREREQUISITEID) ;";
-            List<SqlParameter> parameters = new List<SqlParameter>();
-            parameters.Add(new SqlParameter("@TITLE", title));
-            parameters.Add(new SqlParameter("@PREREQUISITEID", prerequisiteId));
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@TITLE", title),
+                new SqlParameter("@PREREQUISITEID", prerequisiteId)
+            };
             return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
+        }
+        public async Task<Response<bool>> UpdateTrainingAsync(Training training, List<int> prerequisites)
+        {
+            string prerequisiteList = String.Join(",", prerequisites);
+            string query = @"
+                        UPDATE TRAINING SET 
+                        TITLE = @TITLE, 
+                        DEPARTMENTID = @DEPARTMENTID, 
+                        SEATNUMBER = @SEATNUMBER, 
+                        DEADLINE =  @DEADLINE, 
+                        STARTDATE = @STARTDATE, 
+                        ENDDATE = @ENDDATE, 
+                        SHORTDESCRIPTION = @SHORTDESCRIPTION, 
+                        LONGDESCRIPTION = @LONGDESCRIPTION
+                        WHERE TRAININGID = @TRAININGID;
+
+                        DELETE FROM TRAININGPREREQUISITE WHERE TRAININGID = @TRAININGID;
+                        
+                        IF (@PREREQUISITEIDS IS NOT NULL AND LEN(@PREREQUISITEIDS) > 0)
+                        BEGIN
+                            INSERT INTO TRAININGPREREQUISITE (TRAININGID, PREREQUISITEID)
+                            SELECT @TrainingId, P.value
+                            FROM STRING_SPLIT(@PREREQUISITEIDS, ',') AS P;
+                        END;";
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@TRAININGID", training.TrainingId),
+                new SqlParameter("@TITLE", training.Title),
+                new SqlParameter("@DEPARTMENTID", training.DepartmentId),
+                new SqlParameter("@SEATNUMBER", training.SeatNumber),
+                new SqlParameter("@DEADLINE", training.Deadline),
+                new SqlParameter("@STARTDATE", training.StartDate),
+                new SqlParameter("@ENDDATE", training.EndDate),
+                new SqlParameter("@SHORTDESCRIPTION", training.ShortDescription),
+                new SqlParameter("@LONGDESCRIPTION", training.LongDescription),
+                new SqlParameter("@PREREQUISITEIDS", prerequisiteList)
+            };
+            return await _dataBaseUtil.ExecuteTransactionAsync(query, parameters);
         }
     }
 }

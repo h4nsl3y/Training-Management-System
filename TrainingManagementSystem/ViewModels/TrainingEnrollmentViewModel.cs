@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace TrainingManagementSystem.ViewModels
+namespace TrainingManagementSystem.ViewModel
 {
     public class TrainingEnrollmentViewModel : ISystemEntity
     {

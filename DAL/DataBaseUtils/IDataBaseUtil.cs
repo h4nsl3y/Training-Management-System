@@ -11,6 +11,7 @@ namespace DAL.DataBaseUtils
     public interface IDataBaseUtil<T>
     {
         Task<Response<T>> ExecuteQueryAsync(string query, List<SqlParameter> parameters = null);
+        Task<Response<bool>> ExecuteTransactionAsync(string query, List<SqlParameter> parameters = null);
         Task<Response<bool>> AffectedRowsAsync(string query, List<SqlParameter> parameters = null);
     }
 }

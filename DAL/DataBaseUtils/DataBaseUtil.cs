@@ -52,6 +52,41 @@ namespace DAL.DataBaseUtils
             }
             return result;
         }
+        public async Task<Response<bool>> ExecuteTransactionAsync(string query, List<SqlParameter> parameters = null)
+        {
+            Response<bool> result;
+            try
+            {
+                await ConnectAsync();
+                using (SqlTransaction transaction = _connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(query, _connection, transaction))
+                        {
+                            if (parameters != null) { sqlCommand.Parameters.AddRange(parameters.ToArray()); }
+                            int affectedrows = await sqlCommand.ExecuteNonQueryAsync();
+                            transaction.Commit();
+                            result = new Response<bool>() { Success = true, Data = { affectedrows > 0 } };
+                        }
+                    }
+                    catch(Exception exception)
+                    {
+                        transaction.Rollback(); 
+                        throw;
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                throw;
+            }
+            finally
+            {
+                Disconnect();
+            }
+            return result;
+        }
         public async Task<Response<bool>> AffectedRowsAsync(string query, List<SqlParameter> parameters = null)
         {
             Response<bool> result;
