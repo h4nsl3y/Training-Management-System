@@ -125,7 +125,13 @@ function GetEnrolledTrainingList(stateList) {
                 var table = $('#enrollmentTableId').DataTable();
                 table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var data = this.data();
-                    if (data.StateId == 3) {
+                    if (data.StateId == 5) {
+                        $(this.node()).css('background-color', '#ababff');
+                    }
+                    else if (data.StateId == 4) {
+                        $(this.node()).css('background-color', '#ffffab');
+                    }
+                    else if (data.StateId == 3) {
                         $(this.node()).css('background-color', '#abffac');
                     }
                     else if (data.StateId == 2) {
@@ -226,46 +232,6 @@ function UpdateStateToCancel(enrollmentParameter) {
         },
     });
 }
-//#region TableToggle
-function TrainingTableToggle() {
-    let table = document.getElementById("trainingTableId_wrapper");
-    let image = document.getElementById("trainingTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = '';
-        table.style.width = '80 % !important';
-        table.style.padding = '0px 10 % !important';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
-function EnrollmentTableToggle() {
-    table = document.getElementById("enrollmentTableId_wrapper");
-    image = document.getElementById("enrollmentTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = '';
-        table.style.width = '80 % !important';
-        table.style.padding = '0px 10 % !important';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
-function PrerequisiteTableToggle() {
-    table = document.getElementById("prerequisiteTableId_wrapper");
-    image = document.getElementById("prerequisiteTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = '';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
-//#endregion
-
 //#endregion
 
 //#region FormTraining

@@ -437,59 +437,8 @@ function GetPrerequisiteDataList() {
         }
     });
 };
-
-//#region TableToggle
-
-function TrainingTableToggle() {
-    table = document.getElementById("TrainingTableId_wrapper");
-    image = document.getElementById("trainingTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = '';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
-
-function PrerequisiteTableToggle() {
-    table = document.getElementById("PrerequisiteTableId_wrapper");
-    image = document.getElementById("prerequisiteTableArrowId");
-    if (table.style.display == 'none') {
-        table.style.display = '';
-        image.style.transform = "scaleY(-1)";
-    } else {
-        table.style.display = 'none';
-        image.style.transform = "scaleY(1)";
-    }
-}
-
 //#endregion
 
-//#endregion
-// TO DO : remove
-/*function setTrainingPrerequisite(trainingTitle) {
-    let prerequisiteIds = document.querySelectorAll('select[name="PrerequisiteField"]');
-    prerequisiteIds.forEach(prerequisiteId => {
-        data = { prerequisiteId: prerequisiteId.value, title: trainingTitle };
-        $.ajax({
-            type: "POST",
-            url: "/Training/SetPrerequisite",
-            data: data,
-            success: function (result) {
-                if (result.Success == true) {
-                    ShowNotification("Success", "Successfully registered the prerequisite");
-                }
-                else {
-                    ShowNotification("Error", result.Message);
-                }
-            },
-            error: function (error) {
-                ShowNotification("Error", "Communication has been interupted");
-            }
-        });
-    });
-}*/
 
 function DisplayTab(event, tabId) {
     let tabs = document.getElementsByName("tabArea")

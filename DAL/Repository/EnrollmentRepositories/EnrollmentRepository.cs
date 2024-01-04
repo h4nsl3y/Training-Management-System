@@ -25,7 +25,7 @@ namespace DAL.Repository.EnrollmentRepositories
         {
             string query = @"SELECT * FROM ENROLLMENT 
                             WHERE ACCOUNTID = (SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL)
-                            AND TRAININGID IN (SELECT TRAININGID FROM TRAINING WHERE DEADLINE > GETDATE()) ;";
+                            AND TRAININGID IN (SELECT TRAININGID FROM TRAINING WHERE DATEADD(DD, +2, cast(DEADLINE as date)) > GETDATE()) ;";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EMAIL", email) };
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
