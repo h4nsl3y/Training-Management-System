@@ -18,24 +18,40 @@ namespace DAL.Repository.TrainingRepositories
         {
             _dataBaseUtil = dataBaseUtil;
         }
-        public async Task<Response<Training>> GetenrolledTrainingListAsync(int accountId)
+        public async Task<Response<bool>> DeleteTrainingAsync(int trainingId)
         {
-            string query =   @"SELECT * FROM TRAINING WHERE 
-                               ENDDATE > GETDATE() AND
-                                TRAININGID IN 
-                             ( SELECT TRAININGID FROM ENROLLMENT WHERE ACCOUNTID = @ACCOUNTID ) ;";
-            List<SqlParameter> parameters = new List<SqlParameter>()
-            {
-                new SqlParameter("@ACCOUNTID", accountId)
-            };
+            string query = @"UPDATE TRAINING SET ISACTIVE = 0 WHERE TRAININGID = @TRAININGID;
+                            DELETE FROM TRAININGPREREQUISITE WHERE TRAININGID = @TRAININGID;";
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
+            return await _dataBaseUtil.ExecuteTransactionAsync(query, parameters);
+        }
+        public async Task<Response<Training>> GetAllTrainingAsync()
+        {
+            string query = @"SELECT * FROM TRAINING WHERE ISACTIVE = 1;";
+            return await _dataBaseUtil.ExecuteQueryAsync(query);
+        }
+        public async Task<Response<Training>> GetTrainingAsync(int trainingId)
+        {
+            string query = @"SELECT TOP 1 * FROM TRAINING WHERE ISACTIVE = 1 AND TRAININGID = @TRAININGID;";
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
             return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
-        public async Task<Response<Training>> GetUnenrolleTrainingListdAsync(int accountId)
+        public async Task<Response<Training>> GetEnrolledTrainingAsync(int accountId)
+        {
+            string query = @"SELECT * FROM TRAINING WHERE 
+                            ISACTIVE = 1 AND
+                            ENDDATE > GETDATE() AND
+                            TRAININGID IN ( SELECT TRAININGID FROM ENROLLMENT WHERE ACCOUNTID = @ACCOUNTID ) ;";
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ACCOUNTID", accountId) };
+            return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
+        }
+        public async Task<Response<Training>> GetUnenrolleTrainingAsync(int accountId)
         { 
-            string query =  @"SELECT * FROM TRAINING WHERE 
-                              DEADLINE > GETDATE() AND
-                              TRAININGID NOT IN 
-                             (SELECT TRAININGID FROM ENROLLMENT WHERE ACCOUNTID = @ACCOUNTID) ;";
+            string query = @"SELECT * FROM TRAINING WHERE 
+                            ISACTIVE = 1 AND
+                            DEADLINE > GETDATE() AND
+                            TRAININGID NOT IN 
+                            (SELECT TRAININGID FROM ENROLLMENT WHERE ACCOUNTID = @ACCOUNTID) ;";
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@ACCOUNTID", accountId)

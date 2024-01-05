@@ -38,11 +38,11 @@ function GetEnrollment() {
                 });
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             };
         },
         error: function () {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
@@ -118,13 +118,13 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
                 });
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             };
             let overlay = document.getElementById("screenOverlay");
             overlay.style.visibility = "visible";
         },
         error: function () {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
@@ -153,7 +153,7 @@ function GetDocument(prerequisiteIds, employeeId) {
                 window.open(url, '_blank');
             },
             error: function () {
-                ShowNotification("Error", "File could not be load");
+                ShowNotification(false, "Error", "File could not be load");
             }
         });
     }); 
@@ -174,11 +174,11 @@ function UpdatRequestState(enrollmentParameter, requestEmployeeId ) {
                 GetEnrollment()
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             };
         },
         error: function () {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
@@ -201,11 +201,11 @@ function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAc
                 CloseTextArea();
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             };
         },
         error: function (result) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 }
@@ -229,11 +229,11 @@ function GetPrerequisiteByTraining(trainingId, accountId, buttonId) {
                 button.setAttribute("onclick", `GetDocument( ${prerequisites}, ${accountId} );`);
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             };
         },
         error: function (loaderror) {
-            ShowNotification("Error", "File could not be load");
+            ShowNotification(false, "Error", "File could not be load");
         }
     });
 }

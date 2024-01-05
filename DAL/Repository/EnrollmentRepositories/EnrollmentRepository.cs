@@ -20,12 +20,11 @@ namespace DAL.Repository.EnrollmentRepositories
         {
             _dataBaseUtil = dataBaseUtil;
         }
-
         public async Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email)
         {
             string query = @"SELECT * FROM ENROLLMENT 
                             WHERE ACCOUNTID = (SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL)
-                            AND TRAININGID IN (SELECT TRAININGID FROM TRAINING WHERE DATEADD(DD, +2, cast(DEADLINE as date)) > GETDATE()) ;";
+                            AND TRAININGID IN (SELECT TRAININGID FROM TRAINING WHERE STARTDATE > GETDATE()) ;";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EMAIL", email) };
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
@@ -35,13 +34,22 @@ namespace DAL.Repository.EnrollmentRepositories
                                 (SELECT TRAININGID FROM TRAINING WHERE DEADLINE = CAST(GETDATE() AS DATE))";
             return await _dataBaseUtil.ExecuteQueryAsync(query);
         }
+        public async Task<Response<bool>> IsAnyEnrollment(int trainingId)
+        {
+            string query = @"SELECT * FROM ENROLLMENT WHERE TRAININGID = @TRAININGID ";
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
+            Response<Enrollment> response = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            return new Response<bool> { Success = response.Success, Data = { response.Data.Count() > 0} };
+        }
         public async Task SelectTrainingParticipants(Enrollment enrollment)
         {
-            string query = $@"UPDATE ENROLLMENT
+            string query = $@"DELCARE @TRAININGCAPACITY;
+                            SET @TRAINING = SELECT SEATNUMBER FROM TRAINING WHERE TRAININGID = @TRAININGID;
+                            UPDATE ENROLLMENT
                             SET STATEID = CASE
                                     WHEN ENROLLMENT.ENROLLMENTID IN
 				                            (
-				                            SELECT TOP (SELECT SEATNUMBER FROM TRAINING WHERE TRAININGID = @TRAININGID)
+				                            SELECT TOP @TRAININGCAPACITY
 				                            ENROLLMENTID FROM ENROLLMENT 
 				                            JOIN TRAINING ON ENROLLMENT.TRAININGID = TRAINING.TRAININGID
 				                            JOIN ACCOUNT ON ENROLLMENT.ACCOUNTID = ACCOUNT.ACCOUNTID

@@ -6,10 +6,10 @@
             if (result.Success == true) {
                 window.location.href = '/Account/LogInPage';
             }
-            else { ShowNotification("Error", "Failed to log out"); }
+            else { ShowNotification(false, "Error", "Failed to log out"); }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }

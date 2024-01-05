@@ -11,6 +11,7 @@ namespace DAL.Repository.EnrollmentRepositories
     {
         Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email);
         Task<Response<Enrollment>> GetEnrollmentIdByDeadline();
+        Task<Response<bool>> IsAnyEnrollment(int trainingId);
         Task SelectTrainingParticipants(Enrollment enrollment);
     }
 }

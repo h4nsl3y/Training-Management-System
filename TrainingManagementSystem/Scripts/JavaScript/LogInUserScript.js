@@ -5,7 +5,7 @@
     if (document.getElementById("employeePasswordId").value == "") { notificationText = notificationText.concat("Password "); flag = false };
     notificationText = notificationText.concat(") are mandatory")
     if (flag) { LoginUser() }
-    else { ShowNotification("Error", notificationText); }
+    else { ShowNotification(false, "Error", notificationText); }
 }
 function LoginUser() {
     var data = {
@@ -18,7 +18,7 @@ function LoginUser() {
         data: data,
         success: function (result) {
             if (result.Success == true) {
-                ShowNotification("Success", "sucessfully log in user")
+                ShowNotification(true, "Success", "sucessfully log in user")
                 window.location.href = '/Account/RoleSelectionPage'; 
             }
             else {
@@ -28,7 +28,7 @@ function LoginUser() {
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted") ;
+            ShowNotification(false, "Error", "Communication has been interupted") ;
         }
     });
 }

@@ -73,11 +73,11 @@ function GetDepartmentList() {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -96,11 +96,11 @@ function GetManagerList() {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -119,11 +119,11 @@ function GetRoleList() {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -173,7 +173,7 @@ function Register() {
         data: userDetails,
         success: function (result) {
             if (result.Success == true) {
-                ShowNotification("Success", "Successfully registered user")
+                ShowNotification(true, "Success", "Successfully registered user")
                 window.location.href = '/Account/RoleSelectionPage'; 
             }
             else {

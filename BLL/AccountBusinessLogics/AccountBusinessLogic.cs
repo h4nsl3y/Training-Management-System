@@ -114,7 +114,6 @@ namespace BLL.AccountBusinessLogics
                 _logger.Log(exception);
                 return _resultError;
             }
-
         }
         public async Task<Response<Account>> GetActiveRequestEmployeeAsync(int managerId)
         {

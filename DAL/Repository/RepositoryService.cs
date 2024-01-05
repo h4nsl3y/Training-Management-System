@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Repository
 {
-    public abstract  class RepositoryService
+    public abstract class RepositoryService
     {
         protected object GetPropertyValue(object value) => (value == null) ? DBNull.Value : value;
     }

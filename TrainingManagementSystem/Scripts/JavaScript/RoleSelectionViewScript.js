@@ -30,11 +30,11 @@ function GetRoleList(roleId) {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -50,17 +50,17 @@ function SetRole() {
         data: { roleId: roleId},
         success: function (result) {
             if (result.Success == true) {
-                ShowNotification("Success", "Role has been set");
+                ShowNotification(true, "Success", "Role has been set");
                 if (roleId == "1") { window.location.href = "/Home/EmployeeViewPage" }
                 if (roleId == "2") { window.location.href = "/Home/ManagerViewPage" }
                 if (roleId == "3") { window.location.href = "/Home/AdministratorViewPage" }
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }

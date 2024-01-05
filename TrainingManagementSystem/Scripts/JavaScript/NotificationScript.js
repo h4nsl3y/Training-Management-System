@@ -1,14 +1,29 @@
-﻿function ShowNotification(title ,message) {  
-    let notification = document.getElementById("notification");
-    let notifTitle = document.getElementById("notificationTitle");
-    let notifMessage = document.getElementById("notificationMessage");
-    notifMessage.textContent = message;
-    notifTitle.textContent = title;
-    if (title == "Success") { notification.style.backgroundColor = "rgb(127,255,0)" }
-    else { notification.style.backgroundColor = "rgb(240, 240, 125)" }
-    notification.style.visibility = "visible";
+﻿function ShowNotification(isPositive, title ,message) {  
+
+    notificationDiv = document.createElement("div");
+    notificationDiv.classList.add("notification-container");
+    notificationDiv.id = "notification";
+
+    notificationTitle = document.createElement("p");
+    notificationTitle.classList.add("notification-title");
+    notificationTitle.id = notificationTitle;
+    notificationTitle.textContent = title;
+
+    notificationMessage = document.createElement("p"); 
+    notificationMessage.classList.add("notification-text");
+    notificationMessage.id = notificationMessage;
+    notificationMessage.textContent = message
+
+    if (isPositive == true) { notificationDiv.style.backgroundColor = "#3982e8" }
+    else { notificationDiv.style.backgroundColor = "#e83939" }
+
+    notificationDiv.appendChild(notificationTitle);
+    notificationDiv.appendChild(notificationMessage);
+
+    var body = document.getElementsByTagName("BODY")[0];
+    body.appendChild(notificationDiv);
+    
     setTimeout(function () {
-        notification.style.visibility = "hidden";
-        notifMessage = null;
+        notificationDiv.remove();
     }, 5000);
 }

@@ -10,5 +10,6 @@ namespace BLL.EnrollmentBusinesslogics
     public interface IEnrollmentBusinessLogic
     {
         Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email);
-        }
+        Task<Response<bool>> IsAnyEnrollment(int trainingId);
+    }
 }

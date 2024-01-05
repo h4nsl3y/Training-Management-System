@@ -41,10 +41,10 @@ function GetUnenrolledTrainingList() {
                     ],
                 });
             }
-            else { ShowNotification("Error", result.Message); }
+            else { ShowNotification(false, "Error", result.Message); }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }
@@ -56,7 +56,7 @@ function GetStateList() {
             GetEnrolledTrainingList(result.Data);
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -68,7 +68,7 @@ function GetDepartmentList() {
             result.Data.forEach((department) =>  departmentList.push(department));
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -101,9 +101,8 @@ function GetEnrolledTrainingList(stateList) {
                         },
                         {
                             render: function (data, type, row) {
-
                                 let cancelState = 4;
-                                
+                                let rejectedState = 2;
                                 let enrollmentParameter = {
                                     EnrollmentId: row.EnrollmentId
                                     , AccountId: row.AccountId
@@ -112,11 +111,15 @@ function GetEnrolledTrainingList(stateList) {
                                     , SubmissionDate: row.SubmissionDate
                                 };
                                 enrollmentParameter = JSON.stringify(enrollmentParameter);
-                                let buttons = 
-                                `<div class='split-Area'>
-                                    <button class= 'item-button' id = 'detailBtn' onclick = 'GetTrainingDetail(${row.TrainingId}, false)'> Details </button> 
-                                    <button class= 'item-button' id = 'cancelBtn' onclick = 'UpdateStateToCancel(${enrollmentParameter})'> Cancel </button >
-                                </div>`
+                                let buttons =
+                                    `<button class= 'item-button' id = 'detailBtn' onclick = 'GetTrainingDetail(${row.TrainingId}, false)'> Details </button>`;
+                                if (!row.StateId == cancelState && !row.StateId == rejectedState) {
+                                    buttons =
+                                        `<div class='split-Area'> 
+                                            ${buttons}
+                                            <button class= 'item-button' id = 'cancelBtn' onclick = 'UpdateStateToCancel(${enrollmentParameter})'> Cancel </button >
+                                        </div>`;
+                                }  
                                 return buttons;
                             }
                         }
@@ -139,10 +142,10 @@ function GetEnrolledTrainingList(stateList) {
                     }
                 });
             }
-            else { ShowNotification("Error", result.data); }
+            else { ShowNotification(false, "Error", result.data); }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -155,11 +158,11 @@ function GetPrerequisiteFiles() {
                 GetAllPrerequisite(result.Data)
             }
             else {
-                ShowNotification("Error", result.Data);
+                ShowNotification(false, "Error", result.Data);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     })
 }
@@ -202,11 +205,11 @@ function GetAllPrerequisite(setPrerequisite) {
                 });
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }
@@ -220,15 +223,15 @@ function UpdateStateToCancel(enrollmentParameter) {
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
-                ShowNotification("Success", "Enrollment request has been cancelled"),
+                ShowNotification(true, "Success", "Enrollment request has been cancelled"),
                 GetStateList()
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             };
         },
         error: function () {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 }
@@ -243,7 +246,7 @@ function GetTrainingDetail(id, displayButton) {
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) { DisplayTrainingDetails(result.Data[0], displayButton); }
-            else { ShowNotification("Error",result.Message); }
+            else { ShowNotification(false, "Error",result.Message); }
         },
         error: function (error) {
             console.log(error);
@@ -300,11 +303,11 @@ function GetTrainingPrerequisite(trainingId) {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }
@@ -329,11 +332,11 @@ function CheckValidEnrollment(trainingId) {
                 }
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }
@@ -349,12 +352,12 @@ function CheckPrerequisiteFiles(prerequisiteIdList, trainingId) {
                     console.log(result.Data,prerequisiteIdList.length)
                     Enroll(trainingId);
                 } else {
-                    ShowNotification("Error", "File(s) are missing for this training");
+                    ShowNotification(false, "Error", "File(s) are missing for this training");
                 }
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }
@@ -368,7 +371,7 @@ function Enroll(trainingId) {
             if (result.Success == true) {
                 GetUnenrolledTrainingList();
                 GetStateList();
-                ShowNotification("Success", "Successfully enrolled")
+                ShowNotification(true, "Success", "Successfully enrolled")
                 let overlay = document.getElementById("screenOverlay");
                 let enrollButton = document.getElementById("enrollBtn");
                 let uploadForm = document.getElementById("upload-form-container");
@@ -377,11 +380,11 @@ function Enroll(trainingId) {
                 overlay.style.visibility = "hidden";
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }
@@ -413,9 +416,9 @@ function UploadFile(prerequisiteId , update) {
 
                 GetPrerequisiteFiles();
             }
-            else { ShowNotification("Error", "File size is not supported ! maximum size is 10 MB"); uploadFlag = false; }
+            else { ShowNotification(false, "Error", "File size is not supported ! maximum size is 10 MB"); uploadFlag = false; }
         }
-        else { ShowNotification("Error", "File type is not supported ! please select a file from the following format : PDF"); uploadFlag = false; };
+        else { ShowNotification(false, "Error", "File type is not supported ! please select a file from the following format : PDF"); uploadFlag = false; };
     });
     if (uploadFlag) {
         if (update) {
@@ -438,15 +441,15 @@ function FileUpload(fileData) {
         contentType: false,
         success: function (result) {
             if (result.Success == true) {
-                ShowNotification("Success", "File update successfully");
+                ShowNotification(true, "Success", "File update successfully");
                 document.getElementById('uploadBtn').style.visibility = 'hidden';
                 GetPrerequisiteFiles();
                 HideDetail()
             }
-            else { ShowNotification("Error", result.Message); }
+            else { ShowNotification(false, "Error", result.Message); }
         },
         error: function (error) {
-            ShowNotification("Error", "Failed to upload file");
+            ShowNotification(false, "Error", "Failed to upload file");
         }
     });
 }
@@ -459,16 +462,16 @@ function FileUpdate(fileData) {
         contentType: false,
         success: function (result) {
             if (result.Success == true) {
-                ShowNotification("Success", "File uploaded successfully");
+                ShowNotification(true, "Success", "File uploaded successfully");
                 document.getElementById('uploadFormId').style.backgroundColor = '#a1ffa4';
                 document.getElementById('uploadBtn').style.visibility = 'hidden';
                 GetPrerequisiteFiles();
                 HideDetail()
             }
-            else { ShowNotification("Error", result.Message); }
+            else { ShowNotification(false, "Error", result.Message); }
         },
         error: function (error) {
-            ShowNotification("Error", "Failed to upload file");
+            ShowNotification(false, "Error", "Failed to upload file");
         }
     });
 }
@@ -485,7 +488,7 @@ function GetDocument(prerequisiteId) {
             window.open(url, '_blank');
         },
         error: function () {
-            ShowNotification("Error, File could not be load");
+            ShowNotification(false, "Error, File could not be load");
         }
     });
 }
@@ -526,11 +529,11 @@ function Update(prerequisiteId) {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }
@@ -571,11 +574,11 @@ function Upload(prerequisiteId) {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }

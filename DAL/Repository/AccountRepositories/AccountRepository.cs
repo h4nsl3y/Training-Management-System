@@ -75,81 +75,84 @@ namespace DAL.Repository.AccountRepositories
         }
         public async Task<Response<Account>> GetAsync(Dictionary<string, object> conditions = null)
         {
-            string query = $@"SELECT ACCOUNT.ACCOUNTID,
-                            ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
-                            ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
-                            ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID,
-                            ACCOUNT.PASSWORD, ACCOUNTROLE.ROLEID
-                            FROM ACCOUNT
-                            INNER JOIN ACCOUNTROLE
-                            ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID";
+            StringBuilder query = new StringBuilder(
+                $@"SELECT ACCOUNT.ACCOUNTID,
+                ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
+                ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
+                ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID,
+                ACCOUNT.PASSWORD, ACCOUNTROLE.ROLEID
+                FROM ACCOUNT
+                INNER JOIN ACCOUNTROLE
+                ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID
+                WHERE ISACTIVE = 1");
             List<SqlParameter> parameters = new List<SqlParameter>();
             if (conditions != null)
             {
-                query += " WHERE ";
+                query.Append(" AND ");
                 foreach (var condition in conditions)
                 {
-                    query += $"{condition.Key} = @{condition.Key} AND ";
+                    query.Append($"{condition.Key} = @{condition.Key} AND ");
                     parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
                 }
-                query = query.Substring(0, query.Length - 5);
+                query.Length -= 5;
             }
-            query += " ;";
-            Response<Account> queryResult =  (conditions == null) ?
-                                        await _dataBaseUtil.ExecuteQueryAsync(query) :
-                                        await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            query.Append(" ;");
+            Response<Account> queryResult = await _dataBaseUtil.ExecuteQueryAsync(query.ToString(), parameters);
             return new Response<Account>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
         }
         public async Task<Response<Account>> GetAllAsync(Dictionary<string, object> conditions = null)
         {
-            string query = $@"SELECT ACCOUNT.ACCOUNTID,
-                            ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
-                            ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
-                            ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID, ACCOUNTROLE.ROLEID
-                            FROM ACCOUNT 
-                            INNER JOIN ACCOUNTROLE
-                            ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID";
+            StringBuilder query = new StringBuilder(
+                @"SELECT ACCOUNT.ACCOUNTID,
+                ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
+                ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
+                ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID, ACCOUNTROLE.ROLEID
+                FROM ACCOUNT 
+                INNER JOIN ACCOUNTROLE
+                ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID
+                WHERE ISACTIVE = 1");
             List<SqlParameter> parameters = new List<SqlParameter>();
             if (conditions != null)
             {
-                query += " WHERE ";
+                query.Append(" AND ");
                 foreach (var condition in conditions)
                 {
-                    query += $"{condition.Key} = @{condition.Key} AND ";
+                    query.Append($"{condition.Key} = @{condition.Key} AND ");
                     parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
                 }
-                query = query.Substring(0, query.Length - 5);
+                query.Length -= 5;
             }
-            query += " ;";
-            return (conditions == null) ?
-                await _dataBaseUtil.ExecuteQueryAsync(query) :
-                await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            query.Append(" ;");
+            return await _dataBaseUtil.ExecuteQueryAsync(query.ToString(), parameters);
         }
         public async Task<Response<Account>> GetActiveRequestEmployeeAsync(int managerId)
         {
-            string query = $@"SELECT 
-                            ACCOUNT.ACCOUNTID,
-                            ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
-                            ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
-                            ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID, ACCOUNTROLE.ROLEID
-                            FROM ACCOUNT 
-                            INNER JOIN ACCOUNTROLE
-                            ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID 
-                            WHERE MANAGERID = @MANAGERID AND ACCOUNT.ACCOUNTID
-                            IN (SELECT DISTINCT ACCOUNTID FROM ENROLLMENT WHERE STATEID = @STATEID )";
+            StringBuilder query = new StringBuilder(
+                $@"SELECT 
+                ACCOUNT.ACCOUNTID,
+                ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
+                ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
+                ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID, ACCOUNTROLE.ROLEID
+                FROM ACCOUNT 
+                INNER JOIN ACCOUNTROLE
+                ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID 
+                WHERE ACCOUNT.ISACTIVE = 1
+                AND MANAGERID = @MANAGERID 
+                AND ACCOUNT.ACCOUNTID
+                IN (SELECT DISTINCT ACCOUNTID FROM ENROLLMENT WHERE STATEID = @STATEID )");
 
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter($"@MANAGERID", managerId),
                 new SqlParameter($"@STATEID", EnrollmentStateEnum.Waiting_For_Approval )
             };
-            return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
+            return await _dataBaseUtil.ExecuteQueryAsync(query.ToString(),parameters);
         }
         public async Task<Response<Account>> GetManagerListAsync()
         {
-            
             string query = $@"SELECT * FROM ACCOUNT INNER JOIN ACCOUNTROLE 
-                              ON ACCOUNT.ACCOUNTID = ACCOUNTROLE.ACCOUNTID WHERE ACCOUNTROLE.ROLEID = @ROLEID1 OR ACCOUNTROLE.ROLEID = @ROLEID2";
+                              ON ACCOUNT.ACCOUNTID = ACCOUNTROLE.ACCOUNTID 
+                              WHERE ACCOUNTROLE.ROLEID = @ROLEID1 OR ACCOUNTROLE.ROLEID = @ROLEID2";
             List<SqlParameter> parameters = new List<SqlParameter>() { 
                 new SqlParameter($"@ROLEID1", RoleEnum.Manager), 
                 new SqlParameter($"@ROLEID2", RoleEnum.Administrator)

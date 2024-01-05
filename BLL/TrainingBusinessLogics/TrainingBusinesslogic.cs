@@ -22,11 +22,23 @@ namespace BLL.TrainingBusinessLogics
             _resultError = new Response<Training> { Success = false, Message = "an Error has been encounter" };
             _resultboolError = new Response<bool> { Success = false, Message = "an Error has been encounter" };
         }
-        public async Task<Response<Training>> GetEnrolledAsync(int accountId)
+        public async Task<Response<bool>> DeleteTrainingAsync(int trainingId)
         {
             try
             {
-                return await _trainingRepository.GetUnenrolleTrainingListdAsync(accountId);
+                return await _trainingRepository.DeleteTrainingAsync(trainingId);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+                return _resultboolError;
+            }
+        }
+        public async Task<Response<Training>> GetTrainingAsync(int trainingId)
+        {
+            try
+            {
+                return await _trainingRepository.GetTrainingAsync(trainingId);
             }
             catch (Exception exception)
             {
@@ -34,11 +46,35 @@ namespace BLL.TrainingBusinessLogics
                 return _resultError;
             }
         }
-        public async Task<Response<Training>> GetUnenrolledAsync(int accountId)
+        public async Task<Response<Training>> GetAllTrainingAsync()
         {
             try
             {
-                return await _trainingRepository.GetUnenrolleTrainingListdAsync(accountId);
+                return await _trainingRepository.GetAllTrainingAsync();
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+                return _resultError;
+            }
+        }
+        public async Task<Response<Training>> GetEnrolledTrainingAsync(int accountId)
+        {
+            try
+            {
+                return await _trainingRepository.GetEnrolledTrainingAsync(accountId);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+                return _resultError;
+            }
+        }
+        public async Task<Response<Training>> GetUnenrolledTrainingAsync(int accountId)
+        {
+            try
+            {
+                return await _trainingRepository.GetUnenrolleTrainingAsync(accountId);
             }
             catch (Exception exception)
             {

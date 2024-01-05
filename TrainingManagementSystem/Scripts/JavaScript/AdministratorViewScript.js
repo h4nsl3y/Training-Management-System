@@ -44,11 +44,11 @@ function GetDepartmentList() {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -67,11 +67,11 @@ function GetPrerequisiteList(rowId) {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -246,7 +246,24 @@ function ConvertToDateString(timestamp) {
     let dateTimeObject = new Date(Number((timestamp).match(/\d+/)[0]));
     return dateTimeObject.toISOString().slice(0, 19).replace("T", " ");
 }
-
+function DeleteTraining(trainingId) {
+    $.ajax({
+        type: "GET",
+        url: "/Training/DeleteTraining",
+        data: { trainingId: trainingId },
+        success: function (result) {
+            if (result.Success == true) {
+                ShowNotification(true, "Success", "Training has successfully deleted");
+            }
+            else {
+                ShowNotification(false, "Error", result.Message);
+            }
+        },
+        error: function (error) {
+            ShowNotification(false, "Error", "Communication has been interupted");
+        }
+    })
+}
 function TrainingFormValidation() {
     let title = document.getElementById("trainingTitleId").value ;
     let department = document.getElementById("trainingDepartmentId").value ;
@@ -328,11 +345,11 @@ function UpdateDisplayPrerequisite(trainingId) {
                 })
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 }
@@ -397,18 +414,23 @@ function GetTrainingList() {
                         {
                             "data": "TrainingId",
                             render: function (data) {
-                                return "<button class='item-button' id='detailBtn' onclick='DisplayTrainingForm(" + false + "," + data + ")'>Edit</button>";
+                                let buttons =
+                                `<div class='split-Area'>
+                                    <button class='item-button' id='detailBtn' onclick='DisplayTrainingForm(false,${data})'>Edit</button>
+                                    <button class='item-button' id='detailBtn' onclick='DeleteTraining(${data})'>Delete</button>
+                                    </div>`;
+                                return buttons;
                             },
                         }
                     ],
                 });
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             };
         },
         error: function () {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
@@ -429,11 +451,11 @@ function GetPrerequisiteDataList() {
                 });
             }
             else {
-                ShowNotification("Error", result.Message);
+                ShowNotification(false, "Error", result.Message);
             }
         },
         error: function (error) {
-            ShowNotification("Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
