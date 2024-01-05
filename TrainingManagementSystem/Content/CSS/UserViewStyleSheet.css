@@ -49,12 +49,13 @@ body .account-area .log-out-container .log-out-button {
   margin: 0px 10%;
 }
 .area-container {
-    background-color: #fff;
-    width: 100%;
-    border: 2px solid white;
-    height: fit-content;
-    margin: 1% 0px;
-    border-radius: 0px 10px 10px  10px;
+  background-color: #fff;
+  width: 100%;
+  border: 2px solid #fff;
+  height: fit-content;
+  margin: 0px 0px;
+  display: none;
+  border-radius: 0px 10px 10px 10px;
 }
 .container-title {
   margin: 20px 20px;
@@ -73,19 +74,12 @@ tr {
   margin: 5px 5px;
 }
 table,
-p {
-  font-size: 12px;
-}
+p,
 label {
   font-size: 12px;
 }
 textarea {
   resize: none;
-}
-.arrow {
-  width: 20px;
-  filter: brightness(0) invert(1);
-  transform: scaleY(-1);
 }
 .first-column {
   display: grid;
@@ -121,41 +115,37 @@ select {
 .log-out-button:active {
   background-color: #185dbe;
 }
-.area-container {
-    margin: 0px 0px;
-    display: none;
-}
 .tab-button {
-    display: grid;
-    grid-template-columns: 15% 15% 15%;
-    height: 30px;
-    margin: 0px 10%;
-    transition: 0.3s;
+  display: grid;
+  grid-template-columns: 15% 15% 15%;
+  height: 30px;
+  margin: 0px 10%;
+  transition: 0.3s;
 }
 .display-content {
-    background-color: white;
-    border-radius: 5px;
+  background-color: #fff;
+  border-radius: 5px;
 }
-    .tab-button .item-button {
-        border-radius: 5px 5px 0px 0px;
-        background-color: rgb(210,210,210);
-        cursor: pointer;
-        height: 25px;
-        color: black;
-    }
+.tab-button .item-button {
+  border-radius: 5px 5px 0px 0px;
+  background-color: #d2d2d2;
+  cursor: pointer;
+  height: 25px;
+  color: #000;
+}
 .dataTables_wrapper {
-    width: 100%;
+  width: 100%;
 }
-.split-Area{
-    display: grid;
-    grid-template-columns: 50% 50%;
+.split-Area {
+  display: grid;
+  grid-template-columns: 50% 50%;
 }
 .three-split-Area {
-    display: grid;
-    grid-template-columns: 33% 34% 33%;
+  display: grid;
+  grid-template-columns: 33% 34% 33%;
 }
-
-.split-Area .item-button{
-    width: 95%;
-    margin: 2.5%;
+.split-Area .item-button,
+.three-split-Area .item-button {
+  width: 95%;
+  margin: 2.5%;
 }

@@ -1615,12 +1615,7 @@
     <Content Include="Scripts\dojoSRC\util\shrinksafe\src\org\dojotoolkit\shrinksafe\resources\Messages.properties" />
     <Content Include="Scripts\dojoSRC\util\shrinksafe\tests\runner.sh" />
     <Content Include="Content\Stylus\UserStylus.styl" />
-    <Content Include="Content\Stylus\Employee.styl" />
     <Content Include="Content\Stylus\VariablesStylus.styl" />
-    <Content Include="Content\Stylus\Administrator.styl" />
-    <Content Include="Content\Stylus\Manager.styl" />
-    <Content Include="Content\Stylus\Notification.styl" />
-    <Content Include="Content\Stylus\Error.styl" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\dojoSRC\dijit-themes\.gitignore" />
     <Content Include="Scripts\dojoSRC\dijit-themes\flat\dgrid\flat.css" />
