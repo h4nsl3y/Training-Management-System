@@ -253,6 +253,7 @@ function DeleteTraining(trainingId) {
         data: { trainingId: trainingId },
         success: function (result) {
             if (result.Success == true) {
+                GetTrainingList(),
                 ShowNotification(true, "Success", "Training has successfully deleted");
             }
             else {
