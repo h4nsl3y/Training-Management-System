@@ -25,11 +25,13 @@ namespace DAL.Repository.ApplicationProcessRepositories
                                     A1.EMAIL,
                                     CONCAT(A2.FIRSTNAME,' ',A2.OTHERNAME,' ',A2.LASTNAME) AS MANAGERNAME,
                                     T.TITLE,
-                                    T.STARTDATE 
+                                    T.STARTDATE, 
+                                    D.DEPARTMENTNAME
                             FROM ACCOUNT A1
                             JOIN ACCOUNT A2 ON A1.MANAGERID = A2.ACCOUNTID
                             JOIN ENROLLMENT E ON E.ACCOUNTID = A1.ACCOUNTID
                             JOIN TRAINING T ON T.TRAININGID = E.TRAININGID
+                            JOIN DEPARTMENT D ON D.DEPARTMENTID = A1.DEPARTMENTID
                             WHERE T.TRAININGID = @TRAININGID
                             AND E.STATEID = @STATEID";
             List<SqlParameter> parameters = new List<SqlParameter>()

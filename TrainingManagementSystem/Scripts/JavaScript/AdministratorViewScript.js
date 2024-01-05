@@ -501,18 +501,12 @@ function GenerateCSVFile(trainingId) {
         xhrFields: {
             responseType: 'blob' 
         },
-        responseType: ""
         success: function (result) {
-            if (result.Success == true) {
-                console.log("GG")
-                saveData(data, 'myDownload.zip'));
-            }
-            else {
-                ShowNotification(false, "Error", result.Message);
-            }
+            let url = URL.createObjectURL(result);
+            window.open(url, '_blank');
         },
         error: function (error) {
-            ShowNotification(false, "Error", "Communication has been interupted");
+            ShowNotification(false, "Error", "File could not be load");
         }
     });
 }

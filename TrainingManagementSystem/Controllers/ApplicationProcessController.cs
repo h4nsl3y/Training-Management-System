@@ -1,5 +1,6 @@
 ﻿using BLL.AccountTrainingBusinessLogics;
 using BLL.ApplicationProcessBusinessLogics;
+using DAL.Entity;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,8 +18,10 @@ namespace TrainingManagementSystem.Controllers
         {
             _applicationProcessBusinessLogic = applicationProcessBusinessLogic;
         }
-        public async Task<JsonResult> GenerateCSVFile(int trainingId) 
-            => Json(await _applicationProcessBusinessLogic.CreateExcelFile(trainingId), JsonRequestBehavior.AllowGet);
-
+        public async Task<ActionResult> GenerateCSVFile(int trainingId)
+        {
+            Response<byte[]> byteResponse = await _applicationProcessBusinessLogic.CreateExcelFile(trainingId);
+            return File(byteResponse.Data.FirstOrDefault(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "data.csv");
+        }
     }
 }

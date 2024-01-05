@@ -9,7 +9,7 @@ namespace BLL.AccountTrainingBusinessLogics
 {
     public interface IApplicationProcessBusinessLogic
     {
-        Task<Response<RequiredFiles>> CreateExcelFile(int trainingId);
+        Task<Response<byte[]>> CreateExcelFile(int trainingId);
         bool SendEmail(string Subject, string Body, string recipientEmail);
     }
 }
