@@ -132,7 +132,10 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
 
 //#region  Overlay
 function CloseTextArea() {
+
+    let rejectionComment = document.getElementById("rejectionReasonid");
     let overlay = document.getElementById("commentContainerId");
+    rejectionComment.value = "";
     overlay.style.visibility = "hidden";
 }
 function HideRequest() {
@@ -198,6 +201,7 @@ function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAc
         success: function (result) {
             if (result.Success == true) {
                 UpdatRequestState(enrollmentParameter, requestEmployeeId);
+                rejectionComment.value = "";
                 CloseTextArea();
             }
             else {

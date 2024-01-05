@@ -18,7 +18,7 @@ namespace DAL.Entity
         [Required(ErrorMessage = "National identification number is required.")]
         public string NationalIdentificationNumber { get; set; }
         [Required(ErrorMessage = "Mobile number is required.")]
-        [RegularExpression(@"^\+^\d{2,3}\s\d{8}$", ErrorMessage = "Invalid mobile number.")] //E 164 ^\+[1-9]\d{1,14}$
+        [RegularExpression(@"^\+^\d{2,3}\s\d{8}$", ErrorMessage = "Invalid mobile number.")] 
         public string MobileNumber { get; set; }
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address format.")]

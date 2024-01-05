@@ -1,5 +1,4 @@
-﻿using BLL.Email;
-using BLL.GenericBusinessLogics;
+﻿using BLL.GenericBusinessLogics;
 using BLL.RequiredFileBusinessLogics;
 using DAL.Entity;
 using Newtonsoft.Json.Linq;

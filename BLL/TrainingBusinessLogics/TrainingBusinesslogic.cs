@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 
 namespace BLL.TrainingBusinessLogics
 {
@@ -26,7 +27,11 @@ namespace BLL.TrainingBusinessLogics
         {
             try
             {
-                return await _trainingRepository.DeleteTrainingAsync(trainingId);
+                Response<bool> boolResponse = await _trainingRepository.IsAnyEnrollmentByTrainingAsync(trainingId);
+                bool IsAnyEnrollment = boolResponse.Data.FirstOrDefault();
+                return IsAnyEnrollment ?
+                        new Response<bool> { Success = false, Message = "Some users has already registered for this training" } :
+                        await _trainingRepository.DeleteTrainingAsync(trainingId);
             }
             catch (Exception exception)
             {
@@ -82,6 +87,18 @@ namespace BLL.TrainingBusinessLogics
                 return _resultError;
             }
         }
+        public async Task<Response<bool>> IsAnyEnrollmentByTrainingAsync(int trainingId)
+        {
+            try
+            {
+                return await _trainingRepository.IsAnyEnrollmentByTrainingAsync(trainingId);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+                return new Response<bool> { Success = false, Message = "An error has occured" };
+            }
+        }
         public async Task<Response<bool>> RegisterTrainingAsync(Training training, List<int> prerequisites)
         {
             try
@@ -110,7 +127,11 @@ namespace BLL.TrainingBusinessLogics
         {
             try
             {
-                return await _trainingRepository.UpdateTrainingAsync(training, prerequisites);
+                Response<bool> boolResponse = await _trainingRepository.IsAnyEnrollmentByTrainingAsync(training.TrainingId);
+                bool IsAnyEnrollment = boolResponse.Data.FirstOrDefault();
+                return IsAnyEnrollment ?
+                        new Response<bool> { Success = false, Message = "Some users has already registered for this training" } :
+                        await _trainingRepository.UpdateTrainingAsync(training, prerequisites);
             }
             catch (Exception exception)
             {

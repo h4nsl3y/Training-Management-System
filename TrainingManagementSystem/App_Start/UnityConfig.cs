@@ -1,6 +1,7 @@
 using BLL.AccountBusinessLogics;
+using BLL.AccountTrainingBusinessLogics;
+using BLL.ApplicationProcessBusinessLogics;
 using BLL.AutomaticProcess;
-using BLL.Email;
 using BLL.EnrollmentBusinesslogics;
 using BLL.GenericBusinessLogics;
 using BLL.PrerequisiteBusinesslogics;
@@ -11,6 +12,7 @@ using BLL.ViewModelsBusinessLogics;
 using DAL.DataBaseUtils;
 using DAL.Logger;
 using DAL.Repository.AccountRepositories;
+using DAL.Repository.ApplicationProcessRepositories;
 using DAL.Repository.EnrollmentRepositories;
 using DAL.Repository.GenericRepositories;
 using DAL.Repository.PrerequisiteRepositories;
@@ -70,8 +72,9 @@ namespace TrainingManagementSystem
             container.RegisterType<ITrainingRepository, TrainingRepository>();
             container.RegisterType<IPrerequisiteRepository,PrerequisiteRepository>();
             container.RegisterType<IEnrollmentRepository, EnrollmentRepository>();
+            container.RegisterType<IApplicationProcessBusinessLogic, ApplicationProcessBusinessLogic>();
             container.RegisterType(typeof(IViewModelRepository<>), typeof(ViewModelRepository<>));
-
+            
             container.RegisterType(typeof(IGenericBusinessLogic<>), typeof(GenericBusinessLogic<>));
             container.RegisterType<IRequiredFilesRepository,RequiredFilesRepository>();
             container.RegisterType<IAccountBusinesslogic,AccountBusinessLogic>();
@@ -80,10 +83,9 @@ namespace TrainingManagementSystem
             container.RegisterType<IRequiredFileBusinessLogic,RequiredFileBusinessLogic>();
             container.RegisterType<IEnrollmentBusinessLogic, EnrollmentBusinesslogic>();
             container.RegisterType<IRejectionBusinessLogic, RejectionBusinessLogic>();
-            container.RegisterType<IEmail, Email>();
+            container.RegisterType<IApplicationProcessRepository, ApplicationProcessRepository>();
             container.RegisterType<IJob, BackgroundJob>();
             container.RegisterType(typeof(IViewModelBusinesslogic<>), typeof(ViewModelBusinessLogic<>));
-
         }
     }
 }

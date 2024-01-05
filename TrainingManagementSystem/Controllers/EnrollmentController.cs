@@ -1,5 +1,4 @@
-﻿using BLL.Email;
-using BLL.EnrollmentBusinesslogics;
+﻿using BLL.EnrollmentBusinesslogics;
 using BLL.GenericBusinessLogics;
 using DAL.Entity;
 using System;
@@ -25,10 +24,10 @@ namespace TrainingManagementSystem.Controllers
             return Json(await _genericBusinessLogic.GetAsync(conditions), JsonRequestBehavior.AllowGet) ;
         }
         [HttpGet]
-        public async Task<JsonResult> GetAllEnrollmentByEmployee(string email)
+        public async Task<JsonResult> GetAllEnrollmentByEmployeeId(int accountId)
         {
-            if (email == "none") { email = Session["Email"].ToString(); }
-            return Json(await _enrollmentBusinessLogic.GetEnrollmentByEmailAsync(email), JsonRequestBehavior.AllowGet);
+            if (accountId == 0) { accountId = (int) Session["AccountId"]; }
+            return Json(await _enrollmentBusinessLogic.GetEnrollmentByAccountAsync(accountId), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public async Task<ActionResult> RegisterEnrollment(int trainingId)

@@ -9,9 +9,8 @@ namespace DAL.Repository.EnrollmentRepositories
 {
     public interface IEnrollmentRepository
     {
-        Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email);
+        Task<Response<Enrollment>> GetEnrollmentByEmailAsync(int accountId);
         Task<Response<Enrollment>> GetEnrollmentIdByDeadline();
-        Task<Response<bool>> IsAnyEnrollment(int trainingId);
         Task SelectTrainingParticipants(Enrollment enrollment);
     }
 }

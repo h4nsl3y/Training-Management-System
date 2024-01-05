@@ -123,11 +123,11 @@ function FillTrainingDetail(trainingId) {
                 UpdateDisplayPrerequisite(training.TrainingId);
             }
             else {
-                ShowNotification('Error', "Some error has been encountered while loading the training details");
+                ShowNotification(false ,'Error', "Some error has been encountered while loading the training details");
             }
         },
         error: function () {
-            ShowNotification('Error', "Some error has been encountered")
+            ShowNotification(false ,'Error', "Some error has been encountered")
         }
     });
 };
@@ -158,14 +158,14 @@ function RegisterTraining() {
             dataType: 'json',
             success: function (result) {
                 if (result.Success == true) {
-                    ShowNotification('Success', "Training has been successfully registered");
+                    ShowNotification(true ,'Success', "Training has been successfully registered");
                 }
                 else {
-                    ShowNotification('Error', "Some error has been encountered while registering the training");
+                    ShowNotification(false ,'Error', "Some error has been encountered while registering the training");
                 }
             },
             error: function () {
-                ShowNotification('Error', "Some error has been encountered")
+                ShowNotification(false ,'Error', "Some error has been encountered")
             }
         });
         CloseTrainingCreationForm();
@@ -199,14 +199,14 @@ function UpdateTraining(trainingId) {
             dataType: 'json',
             success: function (result) {
                 if (result.Success == true) {
-                    ShowNotification('Success', "Training has been successfully updated");
+                    ShowNotification(true, 'Success', "Training has been successfully updated");
                 }
                 else {
-                    ShowNotification('Error', "Some error has been encountered while registering the training");
+                    ShowNotification(false, 'Error', result.Message);
                 }
             },
             error: function () {
-                ShowNotification('Error', "Some error has been encountered")
+                ShowNotification(false, 'Error', "Some error has been encountered")
             }
         });
         CloseTrainingCreationForm();
@@ -248,7 +248,7 @@ function ConvertToDateString(timestamp) {
 }
 function DeleteTraining(trainingId) {
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "/Training/DeleteTraining",
         data: { trainingId: trainingId },
         success: function (result) {
@@ -383,6 +383,7 @@ function RegisterPrerequisite() {
 
 //#region DataTable
 function GetTrainingList() {
+    let buttons = "";
     $.ajax({
         type: "GET",
         url: "/Training/GetAllTraining",
@@ -413,16 +414,28 @@ function GetTrainingList() {
                         },
                         { "data": "ShortDescription" },
                         {
-                            "data": "TrainingId",
-                            render: function (data) {
-                                let buttons =
-                                `<div class='split-Area'>
-                                    <button class='item-button' id='detailBtn' onclick='DisplayTrainingForm(false,${data})'>Edit</button>
-                                    <button class='item-button' id='detailBtn' onclick='DeleteTraining(${data})'>Delete</button>
-                                    </div>`;
+                            render: function (data, type, row) {
+                                let deadline = new Date(Number((row.Deadline).match(/\d+/)[0]));
+                                let today = new Date();
+                                if (deadline < today) {
+                                    buttons =
+                                        `<div class='three-split-Area'>
+                                            <button class='item-button' id='detailBtn' onclick='DisplayTrainingForm(false,${row.TrainingId})'>Edit</button>
+                                            <button class='item-button' id='detailBtn' onclick='DeleteTraining(${row.TrainingId})'>Delete</button>
+                                            <button class='item-button' id='detailBtn' onclick='GenerateCSVFile(${row.TrainingId})'>CSV</button>
+                                        </div>`;
+                                }
+                                else {
+                                    buttons =
+                                        `<div class='split-Area'>
+                                            <button class='item-button' id='detailBtn' onclick='DisplayTrainingForm(false,${row.TrainingId})'>Edit</button>
+                                            <button class='item-button' id='detailBtn' onclick='DeleteTraining(${row.TrainingId})'>Delete</button>
+                                        </div>`;
+                                }
+
                                 return buttons;
-                            },
-                        }
+                            }
+                        },
                     ],
                 });
             }
@@ -479,6 +492,29 @@ function DisplayTab(event, tabId) {
     table2.style.display = 'initial';
 
     event.currentTarget.style.backgroundColor = "#ffffff";
+}
+function GenerateCSVFile(trainingId) {
+    $.ajax({
+        type: "GET",
+        url: "/ApplicationProcess/GenerateCSVFile",
+        data: { trainingId: trainingId },
+        xhrFields: {
+            responseType: 'blob' 
+        },
+        responseType: ""
+        success: function (result) {
+            if (result.Success == true) {
+                console.log("GG")
+                saveData(data, 'myDownload.zip'));
+            }
+            else {
+                ShowNotification(false, "Error", result.Message);
+            }
+        },
+        error: function (error) {
+            ShowNotification(false, "Error", "Communication has been interupted");
+        }
+    });
 }
 
 function HideTab() {

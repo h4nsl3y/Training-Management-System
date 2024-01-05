@@ -73,10 +73,17 @@ function GetDepartmentList() {
     });
 };
 function GetEnrolledTrainingList(stateList) {
+
+
+    let waitForApprovalState = 1;
+    let rejectedState = 2;
+    let approveState = 3;
+    let cancelState = 4;
+    let confirmedState = 5;
     $.ajax({
         type: 'GET',
-        url: "/Enrollment/GetAllEnrollmentByEmployee",
-        data: { email: "none" },
+        url: "/Enrollment/GetAllEnrollmentByEmployeeId",
+        data: { accountId: "0" },
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
@@ -101,8 +108,6 @@ function GetEnrolledTrainingList(stateList) {
                         },
                         {
                             render: function (data, type, row) {
-                                let cancelState = 4;
-                                let rejectedState = 2;
                                 let enrollmentParameter = {
                                     EnrollmentId: row.EnrollmentId
                                     , AccountId: row.AccountId
@@ -113,7 +118,7 @@ function GetEnrolledTrainingList(stateList) {
                                 enrollmentParameter = JSON.stringify(enrollmentParameter);
                                 let buttons =
                                     `<button class= 'item-button' id = 'detailBtn' onclick = 'GetTrainingDetail(${row.TrainingId}, false)'> Details </button>`;
-                                if (!row.StateId == cancelState && !row.StateId == rejectedState) {
+                                if (row.StateId == confirmedState || row.StateId == approveState || row.StateId == waitForApprovalState) {
                                     buttons =
                                         `<div class='split-Area'> 
                                             ${buttons}

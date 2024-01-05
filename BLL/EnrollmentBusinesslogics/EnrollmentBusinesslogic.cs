@@ -1,5 +1,4 @@
-﻿using BLL.Email;
-using DAL.Entity;
+﻿using DAL.Entity;
 using DAL.Logger;
 using DAL.Repository.EnrollmentRepositories;
 using System;
@@ -22,29 +21,16 @@ namespace BLL.EnrollmentBusinesslogics
             _logger = logger;
         }
 
-        public async Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email)
+        public async Task<Response<Enrollment>> GetEnrollmentByAccountAsync(int accountId)
         {
             try
             {
-                return await _enrollmentRepository.GetEnrollmentByEmailAsync(email);
+                return await _enrollmentRepository.GetEnrollmentByEmailAsync(accountId);
             }
             catch (Exception exception)
             {
                 _logger.Log(exception);
                 return  new Response<Enrollment> { Success = false , Message = "An error has occured" };
-            }
-        }
-
-        public async Task<Response<bool>> IsAnyEnrollment(int trainingId)
-        {
-            try
-            {
-                return await _enrollmentRepository.IsAnyEnrollment(trainingId);
-            }
-            catch (Exception exception)
-            {
-                _logger.Log(exception);
-                return new Response<bool> { Success = false, Message = "An error has occured" };
             }
         }
     }

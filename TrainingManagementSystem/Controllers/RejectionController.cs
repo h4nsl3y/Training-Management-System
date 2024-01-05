@@ -1,5 +1,4 @@
-﻿using BLL.Email;
-using BLL.GenericBusinessLogics;
+﻿using BLL.GenericBusinessLogics;
 using BLL.RejectionBusinessLogics;
 using BLL.ViewModelsBusinessLogics;
 using DAL.Entity;

@@ -20,12 +20,12 @@ namespace DAL.Repository.EnrollmentRepositories
         {
             _dataBaseUtil = dataBaseUtil;
         }
-        public async Task<Response<Enrollment>> GetEnrollmentByEmailAsync(string email)
+        public async Task<Response<Enrollment>> GetEnrollmentByEmailAsync(int accountId)
         {
             string query = @"SELECT * FROM ENROLLMENT 
-                            WHERE ACCOUNTID = (SELECT ACCOUNTID FROM ACCOUNT WHERE EMAIL = @EMAIL)
+                            WHERE ACCOUNTID = @ACCOUNTID
                             AND TRAININGID IN (SELECT TRAININGID FROM TRAINING WHERE STARTDATE > GETDATE()) ;";
-            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@EMAIL", email) };
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ACCOUNTID", accountId) };
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
         public async Task<Response<Enrollment>> GetEnrollmentIdByDeadline()
@@ -33,13 +33,6 @@ namespace DAL.Repository.EnrollmentRepositories
             string query = @"SELECT * FROM ENROLLMENT WHERE TRAININGID IN
                                 (SELECT TRAININGID FROM TRAINING WHERE DEADLINE = CAST(GETDATE() AS DATE))";
             return await _dataBaseUtil.ExecuteQueryAsync(query);
-        }
-        public async Task<Response<bool>> IsAnyEnrollment(int trainingId)
-        {
-            string query = @"SELECT * FROM ENROLLMENT WHERE TRAININGID = @TRAININGID ";
-            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
-            Response<Enrollment> response = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
-            return new Response<bool> { Success = response.Success, Data = { response.Data.Count() > 0} };
         }
         public async Task SelectTrainingParticipants(Enrollment enrollment)
         {

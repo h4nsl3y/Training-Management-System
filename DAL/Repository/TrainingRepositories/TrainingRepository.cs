@@ -58,6 +58,13 @@ namespace DAL.Repository.TrainingRepositories
             };
             return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
         }
+        public async Task<Response<bool>> IsAnyEnrollmentByTrainingAsync(int trainingId)
+        {
+            string query = @"SELECT TOP 1 * FROM ENROLLMENT WHERE TRAININGID = @TRAININGID; ";
+            List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
+            Response<Training> response = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            return new Response<bool> { Success = response.Success, Data = { response.Data.Count() > 0 } };
+        }
         public async Task<Response<bool>> RegisterTrainingAsync(Training training, List<int> prerequisites)
         {
             string prerequisiteList = String.Join(",", prerequisites);
@@ -135,5 +142,6 @@ namespace DAL.Repository.TrainingRepositories
             };
             return await _dataBaseUtil.ExecuteTransactionAsync(query, parameters);
         }
+
     }
 }
