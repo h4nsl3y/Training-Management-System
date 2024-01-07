@@ -1,0 +1,68 @@
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(155, 155, 155, 0.5);
+    top: 0;
+    left: 0;
+    z-index: 1;
+    visibility: hidden;
+}
+.display-content {
+    width: 40%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+    margin: 200px 30% 0px 30%;
+}
+.upload-area {
+    width: 80%;
+    margin: 10px 10%;
+    background-color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.upload-form {
+    background-color: white;
+}
+.button-content {
+    width: 100%;
+    text-align: center;
+}
+.text-content, .button-content {
+    margin: 10px 10%;
+}
+.upload-button {
+    float: right;
+}
+.item-button-overlay {
+    width: 40%;
+    height: 20px;
+    background-color: rgb(57,130,232);
+    border: none;
+    color: white;
+}
+.dataTable {
+    width: 100% !important;
+}
+
+
+.area-container{
+    margin: 0px 0px;
+}
+
+.tab-button {
+    display: grid;
+    grid-template-columns: 15% 15% 15%;
+    height : 30px;
+    margin: 0px 10%;
+    transition: 0.3s;
+}
+    .tab-button .item-button {
+        border-radius: 5px 5px 0px 0px;
+        background-color: rgb(210,210,210);
+        cursor: pointer;
+        height: 25px;
+        color: black;
+    }

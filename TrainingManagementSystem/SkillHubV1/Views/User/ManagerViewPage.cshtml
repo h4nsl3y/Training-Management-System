@@ -1,0 +1,54 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script defer src="~/Scripts/JavaScript/ManagerViewScript.js"></script>
+<link rel="stylesheet" href="~/Content/CSS/ManagerOverlay.css">
+
+
+<div class="List-area">
+    <div class="area-container">
+        <div class="container-title">
+            <h3>Employee requests</h3>
+        </div>
+        <div class="container-list" id="containerEnrollmentId">
+            <table class="list-item display compact" style="width: 100% !important;" id="employeeEnrollmentTableId">
+                <thead>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Options</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+<div id="screenOverlay" class="overlay">
+    <div class="display-content">
+        <table class="request-list display compact" style="width: 100% !important;" id="requestTableId">
+            <thead>
+                <tr>
+                    <th>Training title</th>
+                    <th>starting date</th>
+                    <th>Description</th>
+                    <th>Required File</th>
+                    <th>Option</th>
+                </tr>
+            </thead>
+        </table>
+
+        <div class="button-content">
+            <button class="item-button" id="closeDetailsBtn" onclick="HideRequest()">Close</button>
+        </div>
+    </div>
+</div>
+<div id="commentContainerId" class="overlay zindex2">
+    <div class="comment-container">
+        <label for="rejectionReason">Rejection reason : </label>
+        <textarea id="rejectionReasonid" class="rejection-textArea"></textarea>
+        <div class="button-content">
+            <button class="item-button-overlay" id="submitRejectionCommentBtn">Submit</button>
+            <button class="item-button-overlay" id="closeTextAreasBtn" onclick="CloseTextArea()">Close</button>
+        </div>
+    </div>
+</div>

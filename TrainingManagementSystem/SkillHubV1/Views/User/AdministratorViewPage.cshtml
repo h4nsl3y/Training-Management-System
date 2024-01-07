@@ -1,0 +1,127 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/Content/CSS/AdministratorOverlay.css">
+<script src="~/Scripts/JavaScript/AdministratorViewScript.js"></script>
+
+<div class="tab-button">
+    <button name="tabButton" class="item-button" onclick="DisplayTab(event, 'trainingTabId')">Available Trainings</button>
+    <button name="tabButton" class="item-button" onclick="DisplayTab(event, 'prerequisiteTabId')">Required files</button>
+</div>
+
+<div class="List-area"  id="baseArea">
+    <div class="area-container" name="tabArea" id="trainingTabId">
+        <div class="container-title">
+            <h3>Training</h3>
+            <button class="item-button" onclick="DisplayTrainingForm(true,0)">Add</button>
+        </div>
+        <div class="container-list" id="containerTrainingId">
+            <table class="list-item display compact" style="width: 100% !important;" id="TrainingTableId">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Department</th>
+                        <th>Available seats</th>
+                        <th>Start date</th>
+                        <th>Deadlines</th>
+                        <th>Short description</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+    <div class="area-container" name="tabArea" id="prerequisiteTabId">
+        <div class="container-title">
+            <h3>Prerequisite</h3>
+            <button class="item-button" onclick="DisplayPrerequisiteForm(true,0)">Add</button>
+        </div>
+        <div class="container-list" id="containerTrainingId">
+            <table class="list-item display compact" style="width: 100% !important;" id="PrerequisiteTableId">
+                <thead>
+                    <tr>
+                        <th>Prerequisite Description</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div id="screenOverlay" class="overlay">
+    <div class="display-content">
+        <form class="training-creation-form" id="trainingFormId">
+            <h2 id="trainingFormTitleId">formTitle</h2>
+            <div class="form-row">
+
+                <div class="input-field">
+                    <label for="trainingTitleId" class="training-form-label">Title</label>
+                    <input type="text" id="trainingTitleId" class="input-text-field" />
+                </div>
+
+                <div class="input-field">
+                    <label for="trainingDepartmentId" class="training-form-label">Department</label>
+                    <select id="trainingDepartmentId" class="input-combo-box">
+                        <option value="none" selected disabled hidden>Select an department</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-field">
+                    <label for="trainingStartDateId" class="training-form-label">Start date</label>
+                    <input type="datetime-local" id="trainingStartDateId" class="input-text-field" />
+
+                </div>
+                <div class="input-field">
+                    <label for="trainingEndDateId" class="training-form-label">End date</label>
+                    <input type="datetime-local" id="trainingEndDateId" class="input-text-field" />
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="input-field">
+                    <label for="trainingDeadLineId" class="training-form-label">Deadline</label>
+                    <input type="date" id="trainingDeadLineId" class="input-text-field" />
+                </div>
+                <div class="input-field">
+                    <label for="trainingSeatAvailableId" class="training-form-label">Available seat</label>
+                    <input type="number" id="trainingSeatAvailableId" class="input-text-field" />
+                </div>
+            </div>
+
+            <div class="prerequisiteArea">
+                <label class="training-form-label">Prerequisite : </label>
+                <button id="addPrerequisiteBtnId" class="item-button" type="button" onclick="AddDisplayPrerequisite()">+</button>
+                <div id="prerequisiteRowId" class="prerequisiteRow">
+                </div>
+            </div>
+
+            <div class="textArea-field">
+                <label for="trainingShortDescriptionId" class="training-form-label">Short Description</label>
+                <textarea id="trainingShortDescriptionId" class="input-text-area" maxlength="64" rows="2"></textarea>
+            </div>
+
+            <div class="textArea-field">
+                <label for="trainingLongDescriptionId" class="training-form-label">Complete description</label>
+                <textarea id="trainingLongDescriptionId" class="input-text-area" maxlength="256" rows="4"></textarea>
+            </div>
+
+        </form>
+
+        <form class="prerequisite-form" id="prerequisiteFormId" >
+            <label for="prerequisiteDescriptionId" class="prerequisite-form-label">New prerequisite description</label>
+            <input type="text" id="prerequisiteDescriptionId" class="input-text-field" />
+        </form>
+
+        <div class="notification">
+            <p id="notificationText"> </p>
+        </div>
+
+        <div class="button-content">
+            <button class="item-button" id="submitTrainingDetailsBtn"></button>
+            <button class="item-button" id="closeTrainingDetailsBtn" onclick="CloseTrainingCreationForm()">Close</button>
+        </div>
+    </div>
+</div>

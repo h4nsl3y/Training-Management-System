@@ -1,0 +1,57 @@
+﻿@{
+    string fullName = "";
+    string initial ="";
+    if(ViewBag.FirstName!= null && ViewBag.LastName!= null)
+    {
+        if (ViewBag.Othername != null)
+        {
+            fullName = ViewBag.FirstName + " " + ViewBag.OtherName + " " + ViewBag.LastName;
+        }
+        else
+        {
+            fullName = ViewBag.FirstName + " " + ViewBag.LastName;
+        }
+        initial = ViewBag.FirstName.Substring(0, 1) + ViewBag.LastName.Substring(0, 1);
+    }
+
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <!-- User Interface CSS -->
+    <link rel="stylesheet" href="~/Content/CSS/UserViewStyleSheet.css" />
+    <link rel="stylesheet" href="~/Content/CSS/NotificationStyleSheet.css" />
+    <!-- Jquery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <!-- Date Converter JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment-with-locales.min.js"></script>
+    <!-- JS link -->
+    <script src="~/Scripts/JavaScript/NotificationScript.js"></script>
+    <script src="~/Scripts/JavaScript/LogOutScript.js"></script>
+    <!-- Data Table CSS -->
+    <link id="stylesheet" rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+    <!-- Data Table JS -->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src='https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js'></script>
+    <!-- Lodash JS -->
+    <script type="text/JavaScript" src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js"></script>
+
+</head>
+<body>
+    <div class="account-area">
+        <div class="account-img-container">
+            <label class="account-img" id="account-img-id">@initial</label>
+        </div>
+        <div class="account-fullname-container">
+            <h2 class="account-fullname" id="account-fullname-id">@fullName</h2>
+        </div>
+        <div class="log-out-container">
+            <button class="log-out-button" onclick="LogOutUser()">Log out</button>
+        </div>
+    </div>
+    @RenderBody()
+    
+</body>
+</html>

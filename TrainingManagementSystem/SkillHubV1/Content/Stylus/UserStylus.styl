@@ -1,0 +1,149 @@
+@import 'VariablesStylus.styl'
+
+body
+    font-family: 'Trebuchet MS', sans-serif;
+    background-color: lightGrey;
+
+    .account-area
+        background-color: white;
+        height: 80px;
+        width: 80%;
+        min-height: 100px;
+        min-width: 800px;
+        margin: 5px 10%;
+        display: grid;
+        grid-template-columns: 10% 70% 20%;
+
+        .account-img-container
+            text-align: center;
+
+            .account-img
+                position: relative;
+                background-color: rgb(57,130,232);
+                color: black;
+                border-radius: 50%;
+                text-align: center;
+                padding: 25px 25px;
+                top: 35px;
+                font-size: 25px;
+            
+        .account-fullname-container
+            
+            .account-fullname
+                text-align: center;
+                margin: 25px 0px;
+        
+        .log-out-container
+            margin: 25px 0px;
+
+            .log-out-button
+                width: widthRatio;
+                margin: 10px 10%;
+                background-color: baseBlue;
+                border: none;
+                padding: 5px 10px;
+                border-radius: 20px;
+                color: white;
+
+.List-area 
+      width: 80%;
+      min-height: 500px;
+      min-width: 800px;
+      height: fit-content;
+      margin: 0px 10%;
+
+.area-container 
+    background-color: white;
+    width: 100%;
+    border: 2px solid white;
+    height: fit-content;
+    margin: 0px 0px;
+    display: none;
+    border-radius: 0px 10px 10px  10px;
+
+.container-title 
+    margin: 20px 20px;
+
+.container-list 
+    width: 90%;
+    margin: 0px 5%;
+
+    .list-item 
+        width: 100%;
+        background-color: white;
+        text-align: center;
+
+ tr 
+    border-bottom: solid rgb(128, 128, 128) 1px;
+    margin: 5px 5px;
+
+table, p ,label 
+    font-size: 12px;
+
+textarea 
+    resize: none;
+  
+.first-column 
+    display: grid;
+    grid-template-columns: 20% 20% 60%;
+
+.second-column 
+    display: grid;
+    grid-template-rows: auto auto auto;
+
+.input , select
+    border: none !important;
+    border-bottom: 1px solid black !important;
+
+.button-Area 
+    display: grid;
+    grid-row: inherit;
+
+.List-button 
+    margin: 5px;
+
+.item-button 
+    width: 100%;
+    height: 20px;
+    background-color: rgb(57,130,232);
+    margin: 5px 0px;
+    border: none;
+    color: white;
+    display: inline-block;
+    border-radius: 5px;
+
+.item-button:active, .log-out-button:active
+    background-color: activeBlue;
+
+.tab-button 
+    display: grid;
+    grid-template-columns: 15% 15% 15%;
+    height: 30px;
+    margin: 0px 10%;
+    transition: 0.3s;
+
+.display-content 
+    background-color: white;
+    border-radius: 5px;
+
+.tab-button .item-button 
+    border-radius: 5px 5px 0px 0px;
+    background-color: rgb(210,210,210);
+    cursor: pointer;
+    height: 25px;
+    color: black;
+    
+.dataTables_wrapper 
+    width: 100%;
+
+.split-Area
+    display: grid;
+    grid-template-columns: 50% 50%;
+
+.three-split-Area 
+    display: grid;
+    grid-template-columns: 33% 34% 33%;
+
+.split-Area .item-button, .three-split-Area .item-button 
+    width: 95%;
+    margin: 2.5%;
