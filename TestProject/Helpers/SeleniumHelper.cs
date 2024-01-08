@@ -11,10 +11,10 @@ using System.IO;
 
 namespace TestProject.Services
 {
-    public class SeleniumService
+    public class SeleniumHelper
     {
         private IWebDriver _driver;
-        public SeleniumService()
+        public SeleniumHelper()
         {
             ChromeOptions options = new ChromeOptions();
             options.AddArguments("--incognito");

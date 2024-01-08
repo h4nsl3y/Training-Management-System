@@ -42,7 +42,7 @@ function GetDepartmentList() {
                     option.text = row.DepartmentName;
                     combobox.add(option);
                 })
-                GetTrainingList(result)
+                GetTrainingList(result.Data)
             }
             else {
                 ShowNotification(false, "Error", result.Message);
@@ -383,7 +383,7 @@ function RegisterPrerequisite() {
 //#endregion
 
 //#region DataTable
-function GetTrainingList((departmentList)) {
+function GetTrainingList(departmentList) {
     let buttons = "";
     $.ajax({
         type: "GET",
@@ -400,7 +400,8 @@ function GetTrainingList((departmentList)) {
                         {
                             "data": "DepartmentId",
                             render: function (data) {
-                                let department = _.find(departmentList, { DepartmentId: data })
+                                let department = _.find(departmentList, function (d) 
+                                { return d.DepartmentId == data; });
                                 return department.DepartmentName;
                             }
                         },

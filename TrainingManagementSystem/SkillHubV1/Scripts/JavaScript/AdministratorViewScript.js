@@ -1,7 +1,6 @@
 ﻿$(window).on('load', function () {
     HideTab(),
     GetDepartmentList(),
-    GetTrainingList(),
     GetPrerequisiteDataList()
 });
 // GLOBAL VARIABLES
@@ -171,7 +170,7 @@ function RegisterTraining() {
             }
         });
         CloseTrainingCreationForm();
-        GetTrainingList();
+        GetTrainingList(result);
     }
 };
 function UpdateTraining(trainingId) {
@@ -212,7 +211,7 @@ function UpdateTraining(trainingId) {
             }
         });
         CloseTrainingCreationForm();
-        GetTrainingList();
+        GetTrainingList(result);
     }
 }
 function DisplayTrainingForm(isAdding, trainingId) {
@@ -255,7 +254,7 @@ function DeleteTraining(trainingId) {
         data: { trainingId: trainingId },
         success: function (result) {
             if (result.Success == true) {
-                GetTrainingList(),
+                GetTrainingList(result),
                 ShowNotification(true, "Success", "Training has successfully deleted");
             }
             else {
@@ -377,7 +376,7 @@ function RegisterPrerequisite() {
         }
     });
     CloseTrainingCreationForm();
-    GetTrainingList();
+    GetTrainingList(result);
 }
 //#endregion
 
