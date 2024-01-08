@@ -82,7 +82,7 @@ namespace TrainingManagementSystem.Controllers
         [HttpPost]
         public async Task<JsonResult> RegisterUser(Account newAccount)
         {
-            Response<bool> duplicatedResult = await _accountBusinessLogic.DuplicatedAsync(newAccount.Email, newAccount.NationalIdentificationNumber, newAccount.MobileNumber);
+            Response<bool> duplicatedResult = await _accountBusinessLogic.IsDuplicatedAsync(newAccount.Email, newAccount.NationalIdentificationNumber, newAccount.MobileNumber);
             if (duplicatedResult.Data.Any(item => item == true))
             {
                 string duplicateMessage = "The field(s) : ";

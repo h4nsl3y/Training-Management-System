@@ -151,7 +151,6 @@ function RegisterTraining() {
         LongDescription: document.getElementById("trainingLongDescriptionId").value
     };
     if (TrainingFormValidation() == true) {
-        /*setTrainingPrerequisite(document.getElementById("trainingTitleId").value);*/
         $.ajax({
             type: "POST",
             url: "/Training/RegisterTraining",

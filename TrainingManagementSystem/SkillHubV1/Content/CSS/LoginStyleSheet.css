@@ -47,6 +47,7 @@ form {
 }
 .text-logo {
     color: white;
+    margin:0px !important;
 }
 .notification {
     color: red;

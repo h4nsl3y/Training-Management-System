@@ -12,7 +12,7 @@ namespace BLL.AccountBusinessLogics
     {
         Task<Response<bool>> AddAccountAsync(Account account);
         Task<Response<bool>> AuthenticatedAsync(string email, string password);
-        Task<Response<bool>> DuplicatedAsync(string email, string NationalIdentificationNumber, string mobileNumber);
+        Task<Response<bool>> IsDuplicatedAsync(string email, string NationalIdentificationNumber, string mobileNumber);
         string Encrypt(string password);
         Task<Response<Account>> GetAccountAsync(Dictionary<string, object> conditions = null);
         Task<Response<Account>> GetAllAccountAsync(Dictionary<string, object> conditions = null);

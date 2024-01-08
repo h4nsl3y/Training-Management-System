@@ -18,14 +18,12 @@ namespace BLL.AccountBusinessLogics
 {
     public class AccountBusinessLogic : IAccountBusinesslogic
     {
-        private readonly IGenericRepository<Account> _genericRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly ILogger _logger;
         private Response<Account> _resultError;
         private Response<bool> _resultBoolError;
-        public AccountBusinessLogic(IGenericRepository<Account> genericRepository, IAccountRepository accountRepository, ILogger logger)
+        public AccountBusinessLogic( IAccountRepository accountRepository, ILogger logger)
         {
-            _genericRepository = genericRepository;
             _accountRepository = accountRepository;
             _logger = logger;
             _resultError = new Response<Account> { Success = false, Message = "an Error has been encounter" };
@@ -69,7 +67,7 @@ namespace BLL.AccountBusinessLogics
                 return _resultBoolError;
             }
         }
-        public async Task<Response<bool>> DuplicatedAsync(string email, string NationalIdentificationNumber, string mobileNumber)
+        public async Task<Response<bool>> IsDuplicatedAsync(string email, string NationalIdentificationNumber, string mobileNumber)
         {
             try
             {
@@ -87,10 +85,7 @@ namespace BLL.AccountBusinessLogics
                 return _resultBoolError;
             }
         }
-        public string Encrypt(string password)
-        {
-            return BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
-        }
+        public string Encrypt(string password) => BCrypt.Net.BCrypt.EnhancedHashPassword(password, 13);
         public async Task<Response<Account>> GetAccountAsync(Dictionary<string, object> conditions = null)
         {
             try

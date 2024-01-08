@@ -6,12 +6,12 @@
 
     notificationTitle = document.createElement("p");
     notificationTitle.classList.add("notification-title");
-    notificationTitle.id = notificationTitle;
+    notificationTitle.id = "notificationTitle";
     notificationTitle.textContent = title;
 
     notificationMessage = document.createElement("p"); 
     notificationMessage.classList.add("notification-text");
-    notificationMessage.id = notificationMessage;
+    notificationMessage.id = "notificationMessage";
     notificationMessage.textContent = message
 
     if (isPositive == true) { notificationDiv.style.backgroundColor = "#3982e8" }

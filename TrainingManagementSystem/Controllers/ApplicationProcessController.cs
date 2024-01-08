@@ -21,7 +21,7 @@ namespace TrainingManagementSystem.Controllers
         public async Task<ActionResult> GenerateCSVFile(int trainingId)
         {
             Response<byte[]> byteResponse = await _applicationProcessBusinessLogic.CreateExcelFile(trainingId);
-            return File(byteResponse.Data.FirstOrDefault(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "data.csv");
+            return File(byteResponse.Data.FirstOrDefault(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "data.xlsx");
         }
     }
 }

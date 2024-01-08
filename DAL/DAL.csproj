@@ -82,6 +82,7 @@
     <Compile Include="Entity\Role.cs" />
     <Compile Include="Entity\SystemEntity.cs" />
     <Compile Include="Entity\Training.cs" />
+    <Compile Include="Enum\DepartmentEnum.cs" />
     <Compile Include="Enum\EnrollmentStateEnum.cs" />
     <Compile Include="Enum\RoleEnum.cs" />
     <Compile Include="Logger\ILogger.cs" />
