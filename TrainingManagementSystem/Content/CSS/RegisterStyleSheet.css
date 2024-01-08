@@ -17,6 +17,9 @@ form {
     display: flex;
     flex-wrap: wrap;
 }
+h2{
+    margin: 0px 10%;
+}
 .image-container {
     background-color: blue;
     width: 60%;
@@ -33,7 +36,7 @@ form {
     text-align:center;
 }
 .input-container{
-    width: 100%;
+    width: 80%;
     margin: 0px 10%;
 }
 .field-container {
@@ -49,9 +52,10 @@ form {
 label {
     font-size: 13px;
 }
-input[type=text], input[type=number], input[type=password], input[type=tel] {
+input[type=text], input[type=number], input[type=password], input[type=tel], select {
     border: none;
     border-bottom: 1px solid black;
+    max-width:80%;
 }
 input[type=tel]{
     width : 100%;

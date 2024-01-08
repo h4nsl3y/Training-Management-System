@@ -64,7 +64,7 @@ namespace DAL.Repository.AccountRepositories
             foreach (var condition in conditions)
             {
                 string query = $@"SELECT TOP  1 * FROM {tableName} 
-                                  WHERE {condition.Key} = @{condition.Key} ;";
+                                  WHERE {condition.Key} = @{condition.Key}";
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
                 Response<Account> queryResult = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);

@@ -4,16 +4,17 @@ namespace TestProject
 {
     public class Tests
     {
-        private const string _FIRSTNAME = "TestFirstName";
-        private const string _OTHERNAME = "TestOtherName";
-        private const string _LASTNAME = "TestLastName";
-        private const string _NATIONALIDENTIFICATIONNUMBER = "T0123456789123";
-        private const string _MOBILENUMBER = "56789023";
-        private const string _EMAIL = "Test@email.com";
-        private const string _DEPARTMENT = "Product and Technology"; 
-        private const string _ROLE = "Administrator";
-        private const string _PASSWORD = "*password!";
+        private static string _timestamp = (DateTime.Now).ToString("yyyyMMddHHmmssffff");
+        private string firtName = $"TestFirstName";
+        private string _lastName = $"TestLastName";
+        private string _nationalIdentificationNumber = "T"+ _timestamp.Substring(_timestamp.Length - 13);
+        private string _mobileNumber = _timestamp.Substring(_timestamp.Length - 8);
+        private string _EMAIL = $"Test_{_timestamp}@email.com";
+        private string _DEPARTMENT = $"Product and Technology"; 
+        private string _ROLE = $"Administrator";
+        private string _PASSWORD = $"*password_{_timestamp}!";
 
+        private const string _URL = "http://192.168.100.210:81";
 
         [SetUp]
         public void Setup()
@@ -25,30 +26,35 @@ namespace TestProject
         {
             SeleniumService _service = new SeleniumService();
 
-            _service.GoTo("http://localhost:56075/");
+            _service.GoTo(_URL);
             // TODO ADD WAIT
+            _service.ExplicitWait("//input[@value='Sign Up']", 5000);
             _service.Click("//input[@value='Sign Up']");
             // TODO ADD WAIT
-            _service.EnterText("//input[@id='FirstNameFieldId']", _FIRSTNAME);
-            _service.EnterText("//input[@id='OtherNameFieldId']", _OTHERNAME);
-            _service.EnterText("//input[@id='LastNameFieldId']", _LASTNAME);
-            _service.EnterText("//input[@id='NationalIdentificationNumberFieldId']", _NATIONALIDENTIFICATIONNUMBER);
-            _service.EnterText("//input[@id='MobileNumberFieldId']", _MOBILENUMBER);
-            _service.EnterText("//input[@id='EmailFieldId']", _FIRSTNAME);
+            _service.WaitForDom();
+            _service.EnterText("//input[@id='FirstNameFieldId']", firtName);
+            _service.EnterText("//input[@id='LastNameFieldId']", _lastName);
+            _service.EnterText("//input[@id='NationalIdentificationNumberFieldId']", _nationalIdentificationNumber);
+            _service.EnterText("//input[@id='MobileNumberFieldId']", _mobileNumber);
+            _service.EnterText("//input[@id='EmailFieldId']", _EMAIL);
 
-            _service.Click("//input[@id='DepartmentComboBoxId']");
+            _service.Click("//select[@id='DepartmentComboBoxId']");
             _service.Click($"//option[text()='{_DEPARTMENT}']");
             
-            _service.EnterText("//input[@id='RoleComboBoxId']", _FIRSTNAME);
+            _service.Click("//select[@id='RoleComboBoxId']");
             _service.Click($"//option[text()='{_ROLE}']");
 
 
             _service.EnterText("//input[@id='PasswordFieldId']", _PASSWORD);
             _service.EnterText("//input[@id='ConfirmPasswordFieldId']", _PASSWORD);
 
-            _service.Click("//option[@value='Sign Up']");
+            _service.Click("//input[@value='Sign Up']");
 
-            Thread.Sleep(20000);
+            // Thread.Sleep(20000);
+
+            _service.ExplicitWait("//label[text()='Employee']/preceding-sibling::input", 5000);
+            _service.Click("//label[text()='Employee']/preceding-sibling::input");
+            _service.Click("//input[@value='Submit']");
 
             Assert.Pass();
         }

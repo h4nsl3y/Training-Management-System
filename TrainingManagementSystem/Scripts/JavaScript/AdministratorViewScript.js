@@ -1,11 +1,11 @@
 ﻿$(window).on('load', function () {
     HideTab(),
     GetDepartmentList(),
-    GetTrainingList(),
     GetPrerequisiteDataList()
 });
 // GLOBAL VARIABLES
 let rowCount = 0
+let departmentList = [];
 
 //#region ComboboxList
 function AddDisplayPrerequisite() {
@@ -42,6 +42,7 @@ function GetDepartmentList() {
                     option.text = row.DepartmentName;
                     combobox.add(option);
                 })
+                GetTrainingList(result)
             }
             else {
                 ShowNotification(false, "Error", result.Message);
@@ -169,7 +170,7 @@ function RegisterTraining() {
             }
         });
         CloseTrainingCreationForm();
-        GetTrainingList();
+        GetTrainingList(result);
     }
 };
 function UpdateTraining(trainingId) {
@@ -210,7 +211,7 @@ function UpdateTraining(trainingId) {
             }
         });
         CloseTrainingCreationForm();
-        GetTrainingList();
+        GetTrainingList(result);
     }
 }
 function DisplayTrainingForm(isAdding, trainingId) {
@@ -253,7 +254,7 @@ function DeleteTraining(trainingId) {
         data: { trainingId: trainingId },
         success: function (result) {
             if (result.Success == true) {
-                GetTrainingList(),
+                GetTrainingList(result),
                 ShowNotification(true, "Success", "Training has successfully deleted");
             }
             else {
@@ -375,14 +376,14 @@ function RegisterPrerequisite() {
         }
     });
     CloseTrainingCreationForm();
-    GetTrainingList();
+    GetTrainingList(result);
 }
 //#endregion
 
 //#endregion
 
 //#region DataTable
-function GetTrainingList() {
+function GetTrainingList((departmentList)) {
     let buttons = "";
     $.ajax({
         type: "GET",
@@ -396,7 +397,13 @@ function GetTrainingList() {
                     "data": result.Data,
                     "columns": [
                         { "data": "Title" },
-                        { "data": "DepartmentId" },
+                        {
+                            "data": "DepartmentId",
+                            render: function (data) {
+                                let department = _.find(departmentList, { DepartmentId: data })
+                                return department.DepartmentName;
+                            }
+                        },
                         { "data": "SeatNumber" },
                         {
                             "data": "StartDate",

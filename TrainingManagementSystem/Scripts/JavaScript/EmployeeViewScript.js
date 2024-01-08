@@ -73,13 +73,11 @@ function GetDepartmentList() {
     });
 };
 function GetEnrolledTrainingList(stateList) {
-
-
-    let waitForApprovalState = 1;
-    let rejectedState = 2;
-    let approveState = 3;
-    let cancelState = 4;
-    let confirmedState = 5;
+    let waitForApprovalState = GetStateId(stateList, "Waiting for approval");
+    let rejectedState = GetStateId(stateList, "Rejected");
+    let approveState =  GetStateId(stateList, "Approved");
+    let cancelState = GetStateId(stateList, "Cancelled");
+    let confirmedState = GetStateId(stateList, "Confirmed");
     $.ajax({
         type: 'GET',
         url: "/Enrollment/GetAllEnrollmentByEmployeeId",
@@ -133,16 +131,17 @@ function GetEnrolledTrainingList(stateList) {
                 var table = $('#enrollmentTableId').DataTable();
                 table.rows().every(function (rowIdx, tableLoop, rowLoop) {
                     var data = this.data();
-                    if (data.StateId == 5) {
-                        $(this.node()).css('background-color', '#ababff');
+                    if (data.StateId == confirmedState) {
+                        $(this.nodes()).css('background-color', '#ababff');
+                        console.log("aaa")
                     }
-                    else if (data.StateId == 4) {
+                    else if (data.StateId == cancelState) {
                         $(this.node()).css('background-color', '#ffffab');
                     }
-                    else if (data.StateId == 3) {
+                    else if (data.StateId == rejectedState) {
                         $(this.node()).css('background-color', '#abffac');
                     }
-                    else if (data.StateId == 2) {
+                    else if (data.StateId == approveState) {
                         $(this.node()).css('background-color', '#ffabab');
                     }
                 });
@@ -239,6 +238,10 @@ function UpdateStateToCancel(enrollmentParameter) {
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
+}
+function GetStateId(list, stateDefinition) {
+    let state = _.find(list, { StateDefinition: stateDefinition });
+    return state.StateId
 }
 //#endregion
 

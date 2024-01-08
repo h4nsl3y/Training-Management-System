@@ -6,6 +6,7 @@
 });
 // GLOBAL VARIABLES
 let rowCount = 0
+let departmentList = [];
 
 //#region ComboboxList
 function AddDisplayPrerequisite() {
@@ -42,6 +43,7 @@ function GetDepartmentList() {
                     option.text = row.DepartmentName;
                     combobox.add(option);
                 })
+                GetTrainingList(result)
             }
             else {
                 ShowNotification(false, "Error", result.Message);
@@ -382,7 +384,7 @@ function RegisterPrerequisite() {
 //#endregion
 
 //#region DataTable
-function GetTrainingList() {
+function GetTrainingList((departmentList)) {
     let buttons = "";
     $.ajax({
         type: "GET",
@@ -396,7 +398,13 @@ function GetTrainingList() {
                     "data": result.Data,
                     "columns": [
                         { "data": "Title" },
-                        { "data": "DepartmentId" },
+                        {
+                            "data": "DepartmentId",
+                            render: function (data) {
+                                let department = _.find(departmentList, { DepartmentId: data })
+                                return department.DepartmentName;
+                            }
+                        },
                         { "data": "SeatNumber" },
                         {
                             "data": "StartDate",
