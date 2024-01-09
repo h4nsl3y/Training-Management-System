@@ -50,7 +50,7 @@ namespace BLL.AccountBusinessLogics
                     {"EMAIL", email }
                 };
                 Response<Account> result = await _accountRepository.GetAsync(conditions);
-                if (result.Success && result.Data.First() != null)
+                if (result.Success && result.Data.Any())
                 {
                     object passwordHash = result.Data.FirstOrDefault().Password;
                     bool authenticateFlag = BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash.ToString());

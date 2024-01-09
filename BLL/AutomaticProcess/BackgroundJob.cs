@@ -19,18 +19,13 @@ namespace BLL.AutomaticProcess
         {
             _enrollmentRepository = enrollmentRepository;
         }
-
         public async Task Execute(IJobExecutionContext context)
         {
-
-                Response<Enrollment> enrollmentResponse = await _enrollmentRepository.GetEnrollmentIdByDeadline();
-                foreach (Enrollment enrollment in enrollmentResponse.Data)
-                {
-                    await _enrollmentRepository.SelectTrainingParticipants(enrollment);
-                }
-
-            
+            Response<Enrollment> enrollmentResponse = await _enrollmentRepository.GetEnrollmentIdByDeadline();
+            foreach (Enrollment enrollment in enrollmentResponse.Data)
+            {
+                await _enrollmentRepository.SelectTrainingParticipants(enrollment);
+            }
         }
-        
     }
 }
