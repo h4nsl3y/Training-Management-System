@@ -53,11 +53,22 @@ namespace TestProject.Services
         }
         public void ImplicitWait(int millisecond) => _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(millisecond);
         public bool IsElementPresent(string xpath) => _driver.FindElement(By.XPath(xpath)).Enabled;
+        
+        public bool IsElementAbsent(string xpath) => !_driver.FindElement(By.XPath(xpath)).Enabled;
         public void SwitchToNewWindow(int index) => _driver.SwitchTo().Window(_driver.WindowHandles[index]);
         public void WaitForDom(int millisecond)
         {
             WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromMilliseconds(millisecond));
             wait.Until(webDriver => ((IJavaScriptExecutor)_driver).ExecuteScript("return document.readyState").Equals("complete"));
+        }
+        public void WaitToDissapear(string xpath, int millisecond)
+        {
+            WebDriverWait wait = new WebDriverWait(_driver, TimeSpan.FromMilliseconds(millisecond))
+            {
+                PollingInterval = TimeSpan.FromMilliseconds(200),
+            };
+            wait.IgnoreExceptionTypes(typeof(ElementNotInteractableException));
+            wait.Until(w => !w.FindElement(By.XPath(xpath)).Enabled);
         }
     }
 }

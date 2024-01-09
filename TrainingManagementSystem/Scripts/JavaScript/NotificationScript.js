@@ -1,8 +1,9 @@
-﻿function ShowNotification(isPositive, title ,message) {  
+﻿let notificationIndex = 0
+function ShowNotification(isPositive, title, message) {  
 
     notificationDiv = document.createElement("div");
     notificationDiv.classList.add("notification-container");
-    notificationDiv.id = "notification";
+    notificationDiv.id = `notification-${notificationIndex}`;
 
     notificationTitle = document.createElement("p");
     notificationTitle.classList.add("notification-title");
@@ -23,7 +24,7 @@
     var body = document.getElementsByTagName("BODY")[0];
     body.appendChild(notificationDiv);
     
-    setTimeout(function () {
+   /* setTimeout(function () {
         notificationDiv.remove();
-    }, 5000);
+    }, 500000);*/
 }

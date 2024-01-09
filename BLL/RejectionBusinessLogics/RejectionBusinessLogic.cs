@@ -29,7 +29,8 @@ namespace BLL.RejectionBusinessLogics
             {
                 Response<bool> result = await _genericRepository.AddAsync(new Rejection() { EnrollmentId = enrollmentId, Comment = comment });
                 await Task.Run(() => _applicationProcessBusinessLogic.SendEmail("Rejection",
-                                                                                $"Your request for the training has been rejected due to \n : '{comment}'. ", employeeEmail));
+                                                                                $"Your request for the training has been rejected due to \n : '{comment}'. ", 
+                                                                                employeeEmail));
                 return new Response<bool>() { Success = ((result.Success) ? true : false) };
             }
             catch(Exception exception)
