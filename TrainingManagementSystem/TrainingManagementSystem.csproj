@@ -200,6 +200,7 @@
     <Content Include="Content\CSS\NotificationStyleSheet.css" />
     <Content Include="Content\CSS\RegisterStyleSheet.css" />
     <Content Include="Content\CSS\RoleSelectorStyleSheet.css" />
+    <Content Include="Content\CSS\SpinnerStyleSheet.css" />
     <Content Include="Content\CSS\UserViewStyleSheet.css" />
     <Content Include="Content\image\Arrow.png" />
     <Content Include="favicon.ico" />
@@ -217,6 +218,7 @@
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\JavaScript\AdministratorViewScript.js" />
     <Content Include="Scripts\JavaScript\ErrorScript.js" />
+    <Content Include="Scripts\JavaScript\SpinnerScript.js" />
     <Content Include="Scripts\JavaScript\LogOutScript.js" />
     <Content Include="Scripts\JavaScript\ManagerViewScript.js" />
     <Content Include="Scripts\JavaScript\NotificationScript.js" />

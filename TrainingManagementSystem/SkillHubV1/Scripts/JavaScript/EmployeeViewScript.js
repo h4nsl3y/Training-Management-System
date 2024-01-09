@@ -133,7 +133,6 @@ function GetEnrolledTrainingList(stateList) {
                     var data = this.data();
                     if (data.StateId == confirmedState) {
                         $(this.nodes()).css('background-color', '#ababff');
-                        console.log("aaa")
                     }
                     else if (data.StateId == cancelState) {
                         $(this.node()).css('background-color', '#ffffab');

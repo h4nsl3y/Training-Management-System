@@ -20,7 +20,6 @@ namespace TestProject
     public class UnitTest
     {
         private Mock<IAccountRepository> _stubAccountRepository;
-        private Mock<ILogger> _stubLogger;
         private AccountBusinessLogic _accountBusinessLogic;
 
         private List<Account> _accountList;
@@ -28,7 +27,6 @@ namespace TestProject
         [SetUp]
         public void Setup()
         {
-            Random rnd = new Random(32000);
             _accountList = new List<Account>()
             {
                 new Account(){
@@ -71,7 +69,6 @@ namespace TestProject
             };
 
             _stubAccountRepository = new Mock<IAccountRepository>();
-            _stubLogger = new Mock<ILogger>();
 
             _stubAccountRepository.Setup(accountRepository => accountRepository.AddAsync(It.IsAny<Account>())).ReturnsAsync(new Response<bool> { Success = true, Data = { true } });
 
@@ -132,7 +129,7 @@ namespace TestProject
                 account.RoleId == (int)RoleEnum.Administrator
                 ).ToList() });
 
-            _accountBusinessLogic = new AccountBusinessLogic(_stubAccountRepository.Object, _stubLogger.Object);
+            _accountBusinessLogic = new AccountBusinessLogic(_stubAccountRepository.Object, null);
         }
 
         [Test]
