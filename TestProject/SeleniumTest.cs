@@ -117,7 +117,7 @@ namespace TestProject
         }
 
 
-/*        [Test, Order(3)]
+       [Test, Order(3)]
         public void SeleniumTest_CreateTraining()
         {
 
@@ -142,16 +142,18 @@ namespace TestProject
             //Assert.IsTrue(_seleniumHelper.IsElementPresent($"//h2[text()='{_firstName} {_lastName}']"));
 
             //_seleniumHelper.WaitToDissapear(".//div[@id='spinnerContainer']", 5000);
-            _seleniumHelper.ImplicitWait(8000);
+            //_seleniumHelper.ImplicitWait(8000);
+            _seleniumHelper.ExplicitWait(".//td[text()='Advance Transactional SQL']//following-sibling::td/button", 8000);
             _seleniumHelper.Click(".//td[text()='Advance Transactional SQL']//following-sibling::td/button");
             _seleniumHelper.ExplicitWait("//div[@id = 'screenOverlay' and contains(@style,'visible')]", 5000);
 
             _seleniumHelper.Click("//button[@id = 'enrollBtn' and contains(@style,'visible')]");
 
-            Assert.IsTrue(_seleniumHelper.IsElementPresent("//p[@id='notificationMessage' and contains(text(),'Successfully enrolled')"));
+            _seleniumHelper.ExplicitWait("//p[@id='notificationMessage' and contains(text(),'Successfully enrolled')]", 2000);
+            Assert.IsTrue(_seleniumHelper.IsElementPresent("//p[@id='notificationMessage' and contains(text(),'Successfully enrolled')]"));
 
             _seleniumHelper.Close();
-        }*/
+        }
         #endregion
     }
 }
