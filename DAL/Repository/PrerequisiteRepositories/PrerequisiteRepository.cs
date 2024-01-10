@@ -1,4 +1,4 @@
-﻿using DAL.DataBaseUtils;
+﻿using DAL.DataBaseHelpers;
 using DAL.Entity;
 using System;
 using System.Collections.Generic;
@@ -13,16 +13,12 @@ namespace DAL.Repository.PrerequisiteRepositories
 {
     public class PrerequisiteRepository : RepositoryService, IPrerequisiteRepository
     {
-        private readonly IDataBaseUtil<Prerequisite> _dataBaseUtil;
-        private readonly string primaryKey;
-        private readonly string tableName;
+        private readonly IDataBaseHelper<Prerequisite> _dataBaseHelper;
 
-        public PrerequisiteRepository(IDataBaseUtil<Prerequisite> dataBaseUtil)
+        public PrerequisiteRepository(IDataBaseHelper<Prerequisite> dataBaseHelper)
         {
-            _dataBaseUtil = dataBaseUtil;
+            _dataBaseHelper = dataBaseHelper;
             PropertyInfo[] properties = typeof(Prerequisite).GetProperties();
-            primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
-            tableName = typeof(Prerequisite).Name;
         }
         public async Task<Response<Prerequisite>> GetPrequisiteAsync(int trainingId)
         {
@@ -31,7 +27,7 @@ namespace DAL.Repository.PrerequisiteRepositories
                                 (SELECT PREREQUISITEID FROM TrainingPrerequisite 
                                 WHERE TRAININGID = @TRAININGID) ;";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
-            return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            return await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
         }
         public async Task<Response<int>> GetPrerequisiteIdByEmployee(int accountId)
         {
@@ -41,7 +37,7 @@ namespace DAL.Repository.PrerequisiteRepositories
                                 (SELECT PREREQUISITEID FROM REQUIREDFILES 
                                 WHERE ACCOUNTID = @ACCOUNTID) ;";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ACCOUNTID", accountId) };
-            Response<Prerequisite> prerequisiteResult = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            Response<Prerequisite> prerequisiteResult = await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
             return new Response<int>() { 
                 Success = true ,
                 Data = prerequisiteResult.Data.Select(prerequisites => prerequisites.PrerequisiteId).ToList()

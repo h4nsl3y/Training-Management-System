@@ -1,4 +1,4 @@
-﻿using DAL.DataBaseUtils;
+﻿using DAL.DataBaseHelpers;
 using DAL.Entity;
 using System;
 using System.Collections;
@@ -17,10 +17,10 @@ namespace DAL.Repository.GenericRepositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : ISystemEntity
     {
-        private readonly IDataBaseUtil<T> _dataBaseUtil;
-        public GenericRepository(IDataBaseUtil<T> dataBaseUtil)
+        private readonly IDataBaseHelper<T> _dataBaseHelper;
+        public GenericRepository(IDataBaseHelper<T> dataBaseHelper)
         {
-            _dataBaseUtil = dataBaseUtil;
+            _dataBaseHelper = dataBaseHelper;
         }
         public async Task<Response<bool>> AddAsync(T entity)
         {
@@ -43,7 +43,7 @@ namespace DAL.Repository.GenericRepositories
             }
             query = query.Substring(0, query.Length - 1);
             query += ") ;";
-            return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
+            return await _dataBaseHelper.AffectedRowsAsync(query, parameters);
         }
         public async Task<Response<bool>> DeleteAsync(T entity)
         {
@@ -53,7 +53,7 @@ namespace DAL.Repository.GenericRepositories
             PropertyInfo primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault();
             query += $"{primaryKey.Name} = @{primaryKey.Name}";
             parameters.Add(new SqlParameter($"@{primaryKey.Name}", primaryKey.GetValue(entity)));
-            return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
+            return await _dataBaseHelper.AffectedRowsAsync(query, parameters);
         }
         public async Task<Response<T>> GetAsync(Dictionary<string, object> conditions)
         {
@@ -92,7 +92,7 @@ namespace DAL.Repository.GenericRepositories
 
 
 
-            return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
+            return await _dataBaseHelper.AffectedRowsAsync(query, parameters);
         }
         private async Task<Response<T>> GetDataAsync(Dictionary<string, object> conditions = null)
         {
@@ -117,8 +117,8 @@ namespace DAL.Repository.GenericRepositories
             }
             query += " ;";
             return (conditions == null) ?
-                await _dataBaseUtil.ExecuteQueryAsync(query) :
-                await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+                await _dataBaseHelper.ExecuteQueryAsync(query) :
+                await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
         }
     }
 }

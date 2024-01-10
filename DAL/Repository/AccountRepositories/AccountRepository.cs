@@ -1,4 +1,4 @@
-﻿using DAL.DataBaseUtils;
+﻿using DAL.DataBaseHelpers;
 using DAL.Entity;
 using DAL.Enum;
 using System;
@@ -18,14 +18,12 @@ namespace DAL.Repository.AccountRepositories
 {
     public class AccountRepository : RepositoryService, IAccountRepository
     {
-        private readonly DataBaseUtil<Account> _dataBaseUtil;
-        private readonly string primaryKey;
+        private readonly DataBaseHelper<Account> _dataBaseHelper;
         private readonly string tableName;
-        public AccountRepository(DataBaseUtil<Account> dataBaseUtil)
+        public AccountRepository(DataBaseHelper<Account> dataBaseHelper)
         {
-            _dataBaseUtil = dataBaseUtil;
+            _dataBaseHelper = dataBaseHelper;
             PropertyInfo[] properties = typeof(Account).GetProperties();
-            primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
             tableName = typeof(Account).Name;
         }
         public async Task<Response<bool>> AddAsync (Account account)
@@ -49,14 +47,14 @@ namespace DAL.Repository.AccountRepositories
                 new SqlParameter("@PASSWORD", GetPropertyValue(account.Password)),
                 new SqlParameter("@ROLEID", GetPropertyValue(account.RoleId))
         };
-            return await Task.Run(() => _dataBaseUtil.ExecuteTransactionAsync(insertAccount, parameters));
+            return await Task.Run(() => _dataBaseHelper.ExecuteTransactionAsync(insertAccount, parameters));
         }
         public async Task<Response<Account>> AuthenticateAsync(string email)
         {
             string query = $@"SELECT PASSWORD FROM ACCOUNT WHERE EMAIL = @EMAIL";
 
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter($"@EMAIL", email) };
-            return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            return await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
         }
         public async Task<Response<bool>> DuplicatedAsync(Dictionary<string, object> conditions)
         {
@@ -67,7 +65,7 @@ namespace DAL.Repository.AccountRepositories
                                   WHERE {condition.Key} = @{condition.Key}";
                 List<SqlParameter> parameters = new List<SqlParameter>();
                 parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
-                Response<Account> queryResult = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+                Response<Account> queryResult = await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
                 duplicatedresult.Data.Add(queryResult.Data.Count > 0);
                 duplicatedresult.Success = queryResult.Success;
             }
@@ -97,7 +95,7 @@ namespace DAL.Repository.AccountRepositories
                 query.Length -= 5;
             }
             query.Append(" ;");
-            Response<Account> queryResult = await _dataBaseUtil.ExecuteQueryAsync(query.ToString(), parameters);
+            Response<Account> queryResult = await _dataBaseHelper.ExecuteQueryAsync(query.ToString(), parameters);
             return new Response<Account>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
         }
         public async Task<Response<Account>> GetAllAsync(Dictionary<string, object> conditions = null)
@@ -123,7 +121,7 @@ namespace DAL.Repository.AccountRepositories
                 query.Length -= 5;
             }
             query.Append(" ;");
-            return await _dataBaseUtil.ExecuteQueryAsync(query.ToString(), parameters);
+            return await _dataBaseHelper.ExecuteQueryAsync(query.ToString(), parameters);
         }
         public async Task<Response<Account>> GetActiveRequestEmployeeAsync(int managerId)
         {
@@ -146,7 +144,7 @@ namespace DAL.Repository.AccountRepositories
                 new SqlParameter($"@MANAGERID", managerId),
                 new SqlParameter($"@STATEID", EnrollmentStateEnum.Waiting_For_Approval )
             };
-            return await _dataBaseUtil.ExecuteQueryAsync(query.ToString(),parameters);
+            return await _dataBaseHelper.ExecuteQueryAsync(query.ToString(),parameters);
         }
         public async Task<Response<Account>> GetManagerListAsync()
         {
@@ -157,7 +155,7 @@ namespace DAL.Repository.AccountRepositories
                 new SqlParameter($"@ROLEID1", RoleEnum.Manager), 
                 new SqlParameter($"@ROLEID2", RoleEnum.Administrator)
             };
-            return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
+            return await _dataBaseHelper.ExecuteQueryAsync(query,parameters);
         }
     }
 }

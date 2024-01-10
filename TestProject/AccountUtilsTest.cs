@@ -144,7 +144,6 @@ namespace TestProject
                     ).ToList()
                 } );
 
-            _accountBusinessLogic = new AccountBusinessLogic(_stubAccountRepository.Object, null);
         }
 
         [Test]

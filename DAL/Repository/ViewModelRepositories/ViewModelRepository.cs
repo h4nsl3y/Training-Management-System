@@ -1,4 +1,4 @@
-﻿using DAL.DataBaseUtils;
+﻿using DAL.DataBaseHelpers;
 using DAL.Entity;
 using DAL.Enum;
 using System;
@@ -12,10 +12,10 @@ namespace DAL.Repository.ViewModelRepositories
 {
     public class ViewModelRepository<T> : IViewModelRepository<T>
     {
-        private readonly IDataBaseUtil<T> _dataBaseUtil;
-        public ViewModelRepository(IDataBaseUtil<T> dataBaseUtil) 
+        private readonly IDataBaseHelper<T> _dataBaseHelper;
+        public ViewModelRepository(IDataBaseHelper<T> dataBaseHelper) 
         { 
-            _dataBaseUtil = dataBaseUtil;
+            dataBaseHelper = dataBaseHelper;
         }
         public async Task<Response<T>> GetTrainingEnrollmentView(int accountId)
         {
@@ -43,7 +43,7 @@ namespace DAL.Repository.ViewModelRepositories
                 new SqlParameter("@ACCOUNTID", accountId),
                 new SqlParameter("@STATEID", EnrollmentStateEnum.Waiting_For_Approval)
             };
-            Response<T> result = await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
+            Response<T> result = await _dataBaseHelper.ExecuteQueryAsync(query,parameters);
             return result;
         }
     }

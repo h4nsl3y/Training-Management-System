@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DataBaseUtils
+namespace DAL.DataBaseHelpers
 {
-    public interface IDataBaseUtil<T>
+    public interface IDataBaseHelper<T>
     {
         Task<Response<T>> ExecuteQueryAsync(string query, List<SqlParameter> parameters = null);
         Task<Response<bool>> ExecuteTransactionAsync(string query, List<SqlParameter> parameters = null);

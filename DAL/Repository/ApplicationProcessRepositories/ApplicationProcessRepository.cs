@@ -1,4 +1,4 @@
-﻿using DAL.DataBaseUtils;
+﻿using DAL.DataBaseHelpers;
 using DAL.Entity;
 using DAL.Enum;
 using System;
@@ -13,10 +13,10 @@ namespace DAL.Repository.ApplicationProcessRepositories
 {
     public class ApplicationProcessRepository : IApplicationProcessRepository
     {
-        private readonly IDataBaseUtil<AccountTraining> _dataBaseUtil;
-        public ApplicationProcessRepository(IDataBaseUtil<AccountTraining> dataBaseUtil) 
+        private readonly IDataBaseHelper<AccountTraining> _dataBaseHelper;
+        public ApplicationProcessRepository(IDataBaseHelper<AccountTraining> dataBaseHelper) 
         {
-            _dataBaseUtil = dataBaseUtil;
+            _dataBaseHelper = dataBaseHelper;
         }
         public async Task<Response<AccountTraining>> GetAccountTrainingData(int trainingId)
         {
@@ -39,7 +39,7 @@ namespace DAL.Repository.ApplicationProcessRepositories
                 new SqlParameter("@TRAININGID",trainingId),
                  new SqlParameter("@STATEID",EnrollmentStateEnum.Confirmed)
             };
-            return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            return await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
         }
     }
 }

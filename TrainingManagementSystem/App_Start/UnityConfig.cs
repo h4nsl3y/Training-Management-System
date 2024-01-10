@@ -9,7 +9,7 @@ using BLL.RejectionBusinessLogics;
 using BLL.RequiredFileBusinessLogics;
 using BLL.TrainingBusinessLogics;
 using BLL.ViewModelsBusinessLogics;
-using DAL.DataBaseUtils;
+using DAL.DataBaseHelpers;
 using DAL.Logger;
 using DAL.Repository.AccountRepositories;
 using DAL.Repository.ApplicationProcessRepositories;
@@ -64,7 +64,7 @@ namespace TrainingManagementSystem
 
             // TODO: Register your type's mappings here.
             // container.RegisterType<IProductRepository, ProductRepository>();
-            container.RegisterType(typeof(IDataBaseUtil<>), typeof(DataBaseUtil<>));
+            container.RegisterType(typeof(IDataBaseHelper<>), typeof(DataBaseHelper<>));
             container.RegisterType<ILogger, Logger>();
 
             container.RegisterType(typeof(IGenericRepository<>), typeof(GenericRepository<>));

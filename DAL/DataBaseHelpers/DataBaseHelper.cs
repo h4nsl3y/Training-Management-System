@@ -10,13 +10,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.DataBaseUtils
+namespace DAL.DataBaseHelpers
 {
-    public class DataBaseUtil<T> : IDataBaseUtil<T> where T : class
+    public class DataBaseHelper<T> : IDataBaseHelper<T> where T : class
     {
         private readonly string _connString;
         private SqlConnection _connection;
-        public DataBaseUtil()
+        public DataBaseHelper()
         {
             _connString = ConfigurationManager.AppSettings["ConnectionString"];
         }
@@ -118,7 +118,7 @@ namespace DAL.DataBaseUtils
                 if (_connection == null || _connection.State != ConnectionState.Open)
                 {
                     _connection = new SqlConnection(_connString);
-                    await _connection.OpenAsync();//Open();
+                    await _connection.OpenAsync();
                 }
             }
             catch(Exception exception) 

@@ -68,8 +68,8 @@
     <Compile Include="Custom\CustomAuthorizationAttribute.cs" />
     <Compile Include="Custom\CustomeSessionStateAttribute.cs" />
     <Compile Include="Custom\CustomHandleErrorAttribute.cs" />
-    <Compile Include="DataBaseUtils\DataBaseUtil.cs" />
-    <Compile Include="DataBaseUtils\IDataBaseUtil.cs" />
+    <Compile Include="DataBaseHelpers\DataBaseHelper.cs" />
+    <Compile Include="DataBaseHelpers\IDataBaseHelper.cs" />
     <Compile Include="Entity\Account.cs" />
     <Compile Include="Entity\AccountTraining.cs" />
     <Compile Include="Entity\State.cs" />

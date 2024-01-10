@@ -1,4 +1,4 @@
-﻿using DAL.DataBaseUtils;
+﻿using DAL.DataBaseHelpers;
 using DAL.Entity;
 using System;
 using System.Collections.Generic;
@@ -13,12 +13,12 @@ namespace DAL.Repository.RequiredFileRepositories
 {
     public class RequiredFilesRepository : IRequiredFilesRepository
     {
-        private readonly DataBaseUtil<RequiredFiles> _dataBaseUtil;
+        private readonly DataBaseHelper<RequiredFiles> _dataBaseHelper;
         private readonly string primaryKey;
         private readonly string tableName;
-        public RequiredFilesRepository(DataBaseUtil<RequiredFiles> dataBaseUtil)
+        public RequiredFilesRepository(DataBaseHelper<RequiredFiles> dataBaseHelper)
         {
-            _dataBaseUtil = dataBaseUtil;
+            _dataBaseHelper = dataBaseHelper;
             PropertyInfo[] properties = typeof(RequiredFiles).GetProperties();
             primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
             tableName = typeof(RequiredFiles).Name;
@@ -39,7 +39,7 @@ namespace DAL.Repository.RequiredFileRepositories
             parameters.Add(new SqlParameter("@PREREQUISITEID", prerequisiteId));
             parameters.Add(new SqlParameter("@ACCOUNTID", accountId));
 
-            return await _dataBaseUtil.AffectedRowsAsync(query, parameters);
+            return await _dataBaseHelper.AffectedRowsAsync(query, parameters);
         }
 
         public async Task<Response<int>> CountFilePresentAsync(int trainingId, int accountId)
@@ -55,7 +55,7 @@ namespace DAL.Repository.RequiredFileRepositories
                 new SqlParameter("@ACCOUNTID", accountId),
                 new SqlParameter("@TRAININGID", trainingId)
             };
-            Response<RequiredFiles> result = await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            Response<RequiredFiles> result = await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
             return new Response<int>() { Success = true, Data = { result.Data.Count } };
         }
     }

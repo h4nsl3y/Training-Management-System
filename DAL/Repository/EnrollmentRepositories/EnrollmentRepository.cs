@@ -1,4 +1,4 @@
-﻿using DAL.DataBaseUtils;
+﻿using DAL.DataBaseHelpers;
 using DAL.Entity;
 using DAL.Enum;
 using DAL.Repository.GenericRepositories;
@@ -15,10 +15,10 @@ namespace DAL.Repository.EnrollmentRepositories
 {
     public class EnrollmentRepository : IEnrollmentRepository
     {
-        private readonly DataBaseUtil<Enrollment> _dataBaseUtil;
-        public EnrollmentRepository(DataBaseUtil<Enrollment> dataBaseUtil)
+        private readonly DataBaseHelper<Enrollment> _dataBaseHelper;
+        public EnrollmentRepository(DataBaseHelper<Enrollment> dataBaseHelper)
         {
-            _dataBaseUtil = dataBaseUtil;
+            _dataBaseHelper = dataBaseHelper;
         }
         public async Task<Response<Enrollment>> GetEnrollmentByEmailAsync(int accountId)
         {
@@ -26,13 +26,13 @@ namespace DAL.Repository.EnrollmentRepositories
                             WHERE ACCOUNTID = @ACCOUNTID
                             AND TRAININGID IN (SELECT TRAININGID FROM TRAINING WHERE STARTDATE > GETDATE()) ;";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ACCOUNTID", accountId) };
-            return await _dataBaseUtil.ExecuteQueryAsync(query, parameters);
+            return await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
         }
         public async Task<Response<Enrollment>> GetEnrollmentIdByDeadline()
         {
             string query = @"SELECT * FROM ENROLLMENT WHERE TRAININGID IN
                                 (SELECT TRAININGID FROM TRAINING WHERE DEADLINE = CAST(GETDATE() AS DATE))";
-            return await _dataBaseUtil.ExecuteQueryAsync(query);
+            return await _dataBaseHelper.ExecuteQueryAsync(query);
         }
         public async Task SelectTrainingParticipants(Enrollment enrollment)
         {
@@ -68,7 +68,7 @@ namespace DAL.Repository.EnrollmentRepositories
                 new SqlParameter("@ENROLLMENTSTATECONFIRM", EnrollmentStateEnum.Confirmed),
                 new SqlParameter("@ENROLLMENTSTATEREJECT", EnrollmentStateEnum.Rejected)
             };
-            await _dataBaseUtil.AffectedRowsAsync(query, parameters);
+            await _dataBaseHelper.AffectedRowsAsync(query, parameters);
         }
     }
 }
