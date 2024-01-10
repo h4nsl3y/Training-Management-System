@@ -45,7 +45,7 @@ namespace DAL.Repository.TrainingRepositories
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ACCOUNTID", accountId) };
             return await _dataBaseUtil.ExecuteQueryAsync(query,parameters);
         }
-        public async Task<Response<Training>> GetUnenrolleTrainingAsync(int accountId)
+        public async Task<Response<Training>> GetAvailableTrainingAsync(int accountId)
         { 
             string query = @"SELECT * FROM TRAINING WHERE 
                             ISACTIVE = 1 AND

@@ -1,7 +1,7 @@
 ﻿$(window).on('load', function () {
-    HideTab(),
-    GetDepartmentList(),
-    GetPrerequisiteDataList()
+    HideTab();
+    GetDepartmentList();
+    GetPrerequisiteDataList();
 });
 // GLOBAL VARIABLES
 let rowCount = 0
@@ -384,6 +384,7 @@ function RegisterPrerequisite() {
 //#region DataTable
 function GetTrainingList(departmentList) {
     let buttons = "";
+    DisplaySpinner();
     $.ajax({
         type: "GET",
         url: "/Training/GetAllTraining",
@@ -449,13 +450,16 @@ function GetTrainingList(departmentList) {
             else {
                 ShowNotification(false, "Error", result.Message);
             };
+            RemoveSpinnner();
         },
         error: function () {
+            RemoveSpinnner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
 function GetPrerequisiteDataList() {
+    DisplaySpinner();
     $.ajax({
         type: "GET",
         url: "/Prerequisite/GetAllPrerequisite",
@@ -474,15 +478,17 @@ function GetPrerequisiteDataList() {
             else {
                 ShowNotification(false, "Error", result.Message);
             }
+            RemoveSpinnner();
         },
         error: function (error) {
+            RemoveSpinnner();
             ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
 //#endregion
 
-
+//#region functions
 function DisplayTab(event, tabId) {
     let tabs = document.getElementsByName("tabArea")
     tabs.forEach((tab) => tab.style.display = 'none')
@@ -506,7 +512,7 @@ function GenerateCSVFile(trainingId) {
         url: "/ApplicationProcess/GenerateCSVFile",
         data: { trainingId: trainingId },
         xhrFields: {
-            responseType: 'blob' 
+            responseType: 'blob'
         },
         success: function (result) {
             let url = URL.createObjectURL(result);
@@ -517,7 +523,6 @@ function GenerateCSVFile(trainingId) {
         }
     });
 }
-
 function HideTab() {
     let tabs = document.getElementsByName("tabArea")
     tabs.forEach((tab) => tab.style.display = 'none')
@@ -527,3 +532,4 @@ function HideTab() {
     let tabButtons = document.getElementsByName("tabButton")
     tabButtons[0].style.backgroundColor = "#ffffff";
 }
+//#endregion

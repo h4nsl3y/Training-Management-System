@@ -75,11 +75,11 @@ namespace BLL.TrainingBusinessLogics
                 return _resultError;
             }
         }
-        public async Task<Response<Training>> GetUnenrolledTrainingAsync(int accountId)
+        public async Task<Response<Training>> GetAvailableTrainingAsync(int accountId)
         {
             try
             {
-                return await _trainingRepository.GetUnenrolleTrainingAsync(accountId);
+                return await _trainingRepository.GetAvailableTrainingAsync(accountId);
             }
             catch (Exception exception)
             {

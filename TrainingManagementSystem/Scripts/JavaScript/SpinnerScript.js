@@ -1,6 +1,4 @@
-﻿
-document.addEventListener('DOMContentLoaded', function () { displaySpinner(); })
-function displaySpinner() {
+﻿function DisplaySpinner() {
     let bodyElement = document.body;
 
     let containerElement = document.createElement("div");
@@ -12,10 +10,9 @@ function displaySpinner() {
 
     containerElement.append(spinnerElement);
     bodyElement.appendChild(containerElement);
-
-    setTimeout(function () {
-        containerElement.remove();
-    }, 2000);
 }
 
-
+function RemoveSpinnner() {
+    let containerElement = document.getElementById("spinnerContainer")
+    containerElement.remove();
+}

@@ -18,9 +18,7 @@ form {
     display: flex;
     flex-wrap: wrap;
     border-radius: 5px;
-}
-h2{
-    margin: 0px 10%;
+    justify-content: center;
 }
 .image-container {
     background-color: blue;

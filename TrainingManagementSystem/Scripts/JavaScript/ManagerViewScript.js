@@ -6,6 +6,7 @@ let index = 0
 
 //#region DataTable
 function GetEnrollment() {
+    DisplaySpinner()
     $.ajax({
         type: "GET",
         url: "/Account/GetEmployeeEnrolled",
@@ -40,16 +41,17 @@ function GetEnrollment() {
             else {
                 ShowNotification(false, "Error", result.Message);
             };
+            RemoveSpinnner();
         },
         error: function () {
+            RemoveSpinnner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
-
-
 function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
     let buttonIndex = 0;
+    DisplaySpinner();
     $.ajax({
         type: "GET",
         url: "/ViewModel/GetTrainingEnrollmentViewModel",
@@ -122,8 +124,10 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
             };
             let overlay = document.getElementById("screenOverlay");
             overlay.style.visibility = "visible";
+            RemoveSpinnner();
         },
         error: function () {
+            RemoveSpinnner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
@@ -132,7 +136,6 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
 
 //#region  Overlay
 function CloseTextArea() {
-
     let rejectionComment = document.getElementById("rejectionReasonid");
     let overlay = document.getElementById("commentContainerId");
     rejectionComment.value = "";
@@ -165,7 +168,8 @@ function GetDocument(prerequisiteIds, employeeId) {
 
 //#region ManagerOption
 function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestAccountEmail) {
-    let data = { enrollment: enrollmentParameter }  ;
+    let data = { enrollment: enrollmentParameter };
+    DisplaySpinner()
     $.ajax({
         type: "POST",
         url: "/Enrollment/UpdateState",
@@ -179,8 +183,10 @@ function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestAccoun
             else {
                 ShowNotification(false, "Error", result.Message);
             };
+            RemoveSpinnner();
         },
         error: function () {
+            RemoveSpinnner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
@@ -194,6 +200,7 @@ function RejectRequest(enrollmentParameter, requestEmployeeId, requestAccountEma
 function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAccountEmail) {
     let rejectionComment = document.getElementById("rejectionReasonid").value;
     let requestEnrollmentId = enrollmentParameter.EnrollmentId;
+    DisplaySpinner();
     $.ajax({
         type: "POST",
         url: "/Rejection/SetRejectionComment",
@@ -207,8 +214,10 @@ function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAc
             else {
                 ShowNotification(false, "Error", result.Message);
             };
+            RemoveSpinnner();
         },
         error: function (result) {
+            RemoveSpinnner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
@@ -217,6 +226,7 @@ function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAc
 function GetPrerequisiteByTraining(trainingId, accountId, buttonId) {
     let prerequisiteList = "[";
     let index = 0;
+    DisplaySpinnner();
     $.ajax({
         type: "GET",
         url: "/Prerequisite/GetPrerequisiteByTraining",
@@ -235,8 +245,10 @@ function GetPrerequisiteByTraining(trainingId, accountId, buttonId) {
             else {
                 ShowNotification(false, "Error", result.Message);
             };
+            RemoveSpinnner();
         },
-        error: function (loaderror) {
+        error: function () {
+            RemoveSpinnner();
             ShowNotification(false, "Error", "File could not be load");
         }
     });

@@ -13,7 +13,7 @@ namespace BLL.TrainingBusinessLogics
         Task<Response<Training>> GetAllTrainingAsync();
         Task<Response<Training>> GetTrainingAsync(int trainingId);
         Task<Response<Training>> GetEnrolledTrainingAsync(int accountId);
-        Task<Response<Training>> GetUnenrolledTrainingAsync(int accountId);
+        Task<Response<Training>> GetAvailableTrainingAsync(int accountId);
         Task<Response<bool>> IsAnyEnrollmentByTrainingAsync(int trainingId);
         Task<Response<bool>> RegisterTrainingAsync(Training training, List<int> prerequisites);
         Task<Response<bool>> SetPrerequisiteAsync(int prerequisiteId, string title);

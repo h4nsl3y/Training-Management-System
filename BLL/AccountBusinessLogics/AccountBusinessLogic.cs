@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -33,6 +34,7 @@ namespace BLL.AccountBusinessLogics
         {
             try
             {
+                account.Password = await Task.Run(() => Encrypt(account.Password));
                 return await _accountRepository.AddAsync(account);
             }
             catch (Exception exception)

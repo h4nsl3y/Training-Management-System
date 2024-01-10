@@ -106,8 +106,8 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
                                 rejectEnrollmentParameter = JSON.stringify(rejectEnrollmentParameter);
                                 let buttons =
                                     `<div class='split-Area'>
-                                        <button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${approvedEnrollmentParameter} , ${requestAccountId} )'>Approve</button> 
-                                        <button class='item-button' id ='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} , ${requestAccountId} ,  ${JSON.stringify(requestAccountEmail)} )'> Reject</button>
+                                        <button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${approvedEnrollmentParameter} , ${requestAccountId} ,  ${JSON.stringify(requestAccountEmail)})'>Approve</button> 
+                                        <button class='item-button' id ='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} , ${requestAccountId} , ${JSON.stringify(requestAccountEmail)} )'> Reject</button>
                                     </div>`; 
 
                             return buttons
@@ -164,7 +164,7 @@ function GetDocument(prerequisiteIds, employeeId) {
 //#endregion
 
 //#region ManagerOption
-function UpdatRequestState(enrollmentParameter, requestEmployeeId ) {
+function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestAccountEmail) {
     let data = { enrollment: enrollmentParameter }  ;
     $.ajax({
         type: "POST",
@@ -173,7 +173,7 @@ function UpdatRequestState(enrollmentParameter, requestEmployeeId ) {
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
-                GetRequestByEmployee(requestEmployeeId)
+                GetRequestByEmployee(requestEmployeeId,requestAccountEmail)
                 GetEnrollment()
             }
             else {
@@ -200,7 +200,7 @@ function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAc
         data: { enrollmentId: requestEnrollmentId, email: requestAccountEmail,comment: rejectionComment },
         success: function (result) {
             if (result.Success == true) {
-                UpdatRequestState(enrollmentParameter, requestEmployeeId);
+                UpdatRequestState(enrollmentParameter, requestEmployeeId, requestAccountEmail);
                 rejectionComment.value = "";
                 CloseTextArea();
             }

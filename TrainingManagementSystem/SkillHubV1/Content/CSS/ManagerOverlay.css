@@ -46,12 +46,12 @@ request-list {
 }
 
 .comment-container {
-    width: 60%;
-    display: flex;
-    flex-wrap: wrap;
+    width: 50%;
+    text-align: center;
     background-color: rgb(250, 250, 250);
-    padding: 2%;
-    margin: 300px 19%;
+    border-radius: 5px;
+    padding: 1%;
+    margin: 300px 24.5%;
 }
 
 .rejection-textArea {

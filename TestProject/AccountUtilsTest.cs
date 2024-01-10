@@ -70,13 +70,16 @@ namespace TestProject
 
             _stubAccountRepository = new Mock<IAccountRepository>();
 
-            _stubAccountRepository.Setup(accountRepository => accountRepository.AddAsync(It.IsAny<Account>())).ReturnsAsync(new Response<bool> { Success = true, Data = { true } });
-
-            _stubAccountRepository.Setup(accountRepository => accountRepository.AuthenticateAsync(It.IsAny<string>())).
-                ReturnsAsync((string userEmail) => {
-                    return new Response<Account>() { Success = true, Data = { _accountList.FirstOrDefault(account => account.Email == userEmail) } };
+            _stubAccountRepository.Setup(accountRepository => accountRepository.AddAsync(It.IsAny<Account>()))
+                .ReturnsAsync((Account accountInstance) =>
+                {
+                    _accountList.Add(accountInstance);
+                    return new Response<bool> { Success = true, Data = { true } };
                 });
 
+            _stubAccountRepository.Setup(accountRepository => accountRepository.AuthenticateAsync(It.IsAny<string>())).
+                ReturnsAsync((string userEmail) => 
+                    new Response<Account>() { Success = true, Data = { _accountList.FirstOrDefault(account => account.Email == userEmail) } });
             _stubAccountRepository.Setup(accountRepository => accountRepository.DuplicatedAsync(It.IsAny<Dictionary<string, object>>())).
                 ReturnsAsync((Dictionary<string, object> conditions) =>
                 {
@@ -105,31 +108,67 @@ namespace TestProject
                     string attribute = dictionary.Keys.First() ?? string.Empty;
                     var value = dictionary.Values.First() ?? string.Empty;
 
-                    return (attribute.Equals(string.Empty) && value.Equals(string.Empty)) ?
-                     new Response<Account>()
-                     { Success = true, Data = _accountList }:
+                    try
+                    {
+                        return (attribute.Equals(string.Empty) && value.Equals(string.Empty)) ?
+                        new Response<Account>()
+                        { Success = true, Data = _accountList } :
 
-                    new Response<Account>()
-                    {Success = true,
-                        Data = _accountList.Where(account => account.GetType().GetProperty(attribute, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(account).Equals(value)).ToList(),
-                    };
+                        new Response<Account>()
+                        {
+                            Success = true,
+                            Data = _accountList.Where(account => account.GetType().GetProperty(attribute, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(account).Equals(value)).ToList(),
+                        };
+                    }
+                    catch
+                    {
+                        return new Response<Account>() { Success = false, Data = new List<Account>() };
+                    }
+                    
                 });
             _stubAccountRepository.Setup(accountRepository => accountRepository.GetActiveRequestEmployeeAsync(It.IsAny<int>())).
                 ReturnsAsync((int managerId) =>
-                {
-                    return new Response<Account>()
+                    new Response<Account>()
                     {
                         Success = true,
                         Data = _accountList.Where(account => account.ManagerId == managerId).ToList(),
-                    };
-                });
+                    });
             _stubAccountRepository.Setup(accountRepository => accountRepository.GetManagerListAsync()).
-                ReturnsAsync(new Response<Account>() { Success = true, Data = _accountList.Where(account =>
-                account.RoleId == (int)RoleEnum.Manager || 
-                account.RoleId == (int)RoleEnum.Administrator
-                ).ToList() });
+                ReturnsAsync(
+                    new Response<Account>()
+                {
+                    Success = true,
+                    Data = _accountList.Where(account =>
+                    account.RoleId == (int)RoleEnum.Manager ||
+                    account.RoleId == (int)RoleEnum.Administrator
+                    ).ToList()
+                } );
 
             _accountBusinessLogic = new AccountBusinessLogic(_stubAccountRepository.Object, null);
+        }
+
+        [Test]
+        public async Task Test_AddAccountAsync()
+        {
+            //Arrange
+            Account accountInstance = new Account()
+            {
+                AccountId = 4,
+                FirstName = "TestFirstName",
+                OtherName = "",
+                LastName = "TestLastName",
+                NationalIdentificationNumber = "T1234567890123",
+                MobileNumber = "56543217",
+                Email = "Test@email.com",
+                DepartmentId = (int)DepartmentEnum.Product_and_Technology,
+                Password = "tess_password!", 
+                RoleId = (int)RoleEnum.Employee
+            };
+            //Act 
+            Response<bool> response = await _accountBusinessLogic.AddAccountAsync(accountInstance);
+            Account lastAddedAccount = _accountList.Last();
+            //Assert
+            Assert.AreEqual(accountInstance.AccountId, lastAddedAccount.AccountId);
         }
 
         [Test]
@@ -156,7 +195,6 @@ namespace TestProject
             //Assert
             return response.Data.Any(value => value == true);
         }
-
 
         [Test]
         [TestCase("Email", "AAADDD@email.com", ExpectedResult = true)]
@@ -187,6 +225,7 @@ namespace TestProject
             //Assert
             return response.Data.Count();
         }
+
         [Test]
         [TestCase("AAADDD@email.com", ExpectedResult = true)]
         [TestCase("FakeEmail", ExpectedResult = false)]
@@ -198,6 +237,7 @@ namespace TestProject
             //Assert
             return response.Data.Any(value => value.Email == email);
         }
+
         [Test]
         public async Task Test_GetManagerListAsync()
         {

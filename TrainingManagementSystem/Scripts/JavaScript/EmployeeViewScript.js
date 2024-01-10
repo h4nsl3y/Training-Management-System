@@ -1,19 +1,20 @@
 ﻿$(window).on('load', function () {
-    GetDepartmentList(),
-        GetUnenrolledTrainingList(),
-        GetStateList(),
-        GetPrerequisiteFiles(),
-        HideTab()
+    HideTab();
+    GetDepartmentList();
+    GetAvailableTrainingList();
+    GetStateList();
+    GetPrerequisiteFiles();
 });
 //GLOBAL VARIABLE
 var index = 0;
 var departmentList = [] ;
 
 //#region DataTable
-function GetUnenrolledTrainingList() {
+function GetAvailableTrainingList() {
+    DisplaySpinner()
     $.ajax({
         type: 'GET',
-        url: "/Training/GetUnenrolledTraining",
+        url: "/Training/GetAvailableTraining",
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
@@ -40,10 +41,15 @@ function GetUnenrolledTrainingList() {
                         }
                     ],
                 });
+               
             }
-            else { ShowNotification(false, "Error", result.Message); }
+            else {
+                ShowNotification(false, "Error", result.Message);
+            }
+            RemoveSpinnner();
         },
         error: function (error) {
+            RemoveSpinnner();
             ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
@@ -153,6 +159,7 @@ function GetEnrolledTrainingList(stateList) {
     });
 };
 function GetPrerequisiteFiles() {
+    DisplaySpinner();
     $.ajax({
         type: "GET",
         url: "/Prerequisite/GetPrerequisiteFile",
@@ -168,6 +175,7 @@ function GetPrerequisiteFiles() {
             ShowNotification(false, "Error", "Communication has been interupted");
         }
     })
+    RemoveSpinnner();
 }
 function GetAllPrerequisite(setPrerequisite) {
     $.ajax({
@@ -216,7 +224,6 @@ function GetAllPrerequisite(setPrerequisite) {
         }
     });
 }
-
 function UpdateStateToCancel(enrollmentParameter) {
     let data = { enrollment: enrollmentParameter };
     $.ajax({
@@ -376,7 +383,7 @@ function Enroll(trainingId) {
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
-                GetUnenrolledTrainingList();
+                GetAvailableTrainingList();
                 GetStateList();
                 ShowNotification(true, "Success", "Successfully enrolled")
                 let overlay = document.getElementById("screenOverlay");
@@ -590,6 +597,8 @@ function Upload(prerequisiteId) {
     });
 }
 //#endregion
+
+//#region function
 function DisplayTab(event, tabId) {
     let tabs = document.getElementsByName("tabArea")
     tabs.forEach((tab) => tab.style.display = 'none')
@@ -613,4 +622,5 @@ function HideTab() {
     let tabButtons = document.getElementsByName("tabButton")
     tabButtons[0].style.backgroundColor = "#ffffff";
 }
+//#endregion
 

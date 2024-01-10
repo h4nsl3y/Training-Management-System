@@ -34,8 +34,8 @@ namespace TrainingManagementSystem.Controllers
         public async Task<JsonResult> GetAllTraining() 
             => Json(await _trainingBusinessLogic.GetAllTrainingAsync(), JsonRequestBehavior.AllowGet);
         [HttpGet] 
-        public async Task<JsonResult> GetUnenrolledTraining() 
-            => Json(await _trainingBusinessLogic.GetUnenrolledTrainingAsync((int)Session["AccountId"]), JsonRequestBehavior.AllowGet) ;
+        public async Task<JsonResult> GetAvailableTraining() 
+            => Json(await _trainingBusinessLogic.GetAvailableTrainingAsync((int)Session["AccountId"]), JsonRequestBehavior.AllowGet) ;
         [HttpPost]
         public async Task<JsonResult> UpdateTraining(Training training, List<int> prerequisiteList) 
             => Json(await _trainingBusinessLogic.UpdateTrainingAsync(training,prerequisiteList), JsonRequestBehavior.AllowGet);

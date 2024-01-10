@@ -95,7 +95,6 @@ namespace TrainingManagementSystem.Controllers
             }
             else
             {
-                newAccount.Password = await Task.Run(() =>_accountBusinessLogic.Encrypt(newAccount.Password));
                 Response<bool> addResult = await _accountBusinessLogic.AddAccountAsync(newAccount);
                 if (addResult.Success)
                 {
