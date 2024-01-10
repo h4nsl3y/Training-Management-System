@@ -16,6 +16,7 @@ form {
     display: flex;
     flex-wrap: wrap;
     border-radius: 5px;
+    justify-content: center;
 }
 .image-container {
     background-color: blue;
@@ -54,9 +55,6 @@ form {
 .notification {
     color: red;
     text-align:center;
-}
-h2 {
-    margin-left: 10%;
 }
 .input-container{
     width: 100%;

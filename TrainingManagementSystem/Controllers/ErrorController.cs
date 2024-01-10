@@ -8,9 +8,7 @@ namespace TrainingManagementSystem.Controllers
 {
     public class ErrorController : Controller
     {
-        public ActionResult NotFound()
-        {
-            return View();
-        }
+        public ActionResult NotFound() => View();
+        public ActionResult ServerError() => View();
     }
 }

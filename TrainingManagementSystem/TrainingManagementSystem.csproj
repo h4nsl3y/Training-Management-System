@@ -202,7 +202,8 @@
     <Content Include="Content\CSS\RoleSelectorStyleSheet.css" />
     <Content Include="Content\CSS\SpinnerStyleSheet.css" />
     <Content Include="Content\CSS\UserViewStyleSheet.css" />
-    <Content Include="Content\image\Arrow.png" />
+    <Content Include="Content\image\404_Error_page_not_found.svg" />
+    <Content Include="Content\image\500_Internal_Server_Error.svg" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -254,6 +255,7 @@
     <Content Include="Views\User\ManagerViewPage.cshtml" />
     <Content Include="Views\User\AdministratorViewPage.cshtml" />
     <Content Include="Views\Account\RoleSelectionPage.cshtml" />
+    <Content Include="Views\Error\ServerError.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
