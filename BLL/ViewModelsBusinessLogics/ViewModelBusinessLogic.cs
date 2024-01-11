@@ -13,15 +13,13 @@ namespace BLL.ViewModelsBusinessLogics
     public class ViewModelBusinessLogic<T> : IViewModelBusinesslogic<T>
     {
         private readonly IViewModelRepository<T> _viewModelRepository;
-        private ILogger _logger;
-        private Response<T> _resultError;
-        private Response<bool> _resultBoolError;
+        private readonly ILogger _logger;
+        private readonly Response<T> _resultError;
         public ViewModelBusinessLogic(IViewModelRepository<T> viewModelRepository, ILogger logger)
         {
             _viewModelRepository = viewModelRepository;
             _logger = logger;
             _resultError = new Response<T> { Success = false, Message = "an Error has been encounter" };
-            _resultBoolError = new Response<bool> { Success = false, Message = "an Error has been encounter" };
         }
         public async Task<Response<T>> GetTrainingEnrollmentView(int accountId)
         {

@@ -1,6 +1,7 @@
 ﻿using DAL.Entity;
 using DAL.Logger;
 using DAL.Repository.EnrollmentRepositories;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,5 +34,6 @@ namespace BLL.EnrollmentBusinesslogics
                 return  new Response<Enrollment> { Success = false , Message = "An error has occured" };
             }
         }
+       
     }
 }

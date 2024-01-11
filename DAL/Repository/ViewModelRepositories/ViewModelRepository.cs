@@ -15,7 +15,7 @@ namespace DAL.Repository.ViewModelRepositories
         private readonly IDataBaseHelper<T> _dataBaseHelper;
         public ViewModelRepository(IDataBaseHelper<T> dataBaseHelper) 
         { 
-            dataBaseHelper = dataBaseHelper;
+            _dataBaseHelper = dataBaseHelper;
         }
         public async Task<Response<T>> GetTrainingEnrollmentView(int accountId)
         {

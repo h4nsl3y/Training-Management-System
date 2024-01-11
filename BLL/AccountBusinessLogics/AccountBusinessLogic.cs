@@ -21,8 +21,8 @@ namespace BLL.AccountBusinessLogics
     {
         private readonly IAccountRepository _accountRepository;
         private readonly ILogger _logger;
-        private Response<Account> _resultError;
-        private Response<bool> _resultBoolError;
+        private readonly Response<Account> _resultError;
+        private readonly Response<bool> _resultBoolError;
         public AccountBusinessLogic( IAccountRepository accountRepository, ILogger logger)
         {
             _accountRepository = accountRepository;
@@ -52,7 +52,7 @@ namespace BLL.AccountBusinessLogics
                     {"EMAIL", email }
                 };
                 Response<Account> result = await _accountRepository.GetAsync(conditions);
-                if (result.Success && result.Data.Any())
+                if (result.Success && result.Data.Any() && result.Data.First()!= null)
                 {
                     object passwordHash = result.Data.FirstOrDefault().Password;
                     bool authenticateFlag = BCrypt.Net.BCrypt.EnhancedVerify(password, passwordHash.ToString());

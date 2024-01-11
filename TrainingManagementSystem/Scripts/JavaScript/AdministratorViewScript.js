@@ -450,10 +450,10 @@ function GetTrainingList(departmentList) {
             else {
                 ShowNotification(false, "Error", result.Message);
             };
-            RemoveSpinnner();
+            RemoveSpinner();
         },
         error: function () {
-            RemoveSpinnner();
+            RemoveSpinner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
@@ -478,10 +478,10 @@ function GetPrerequisiteDataList() {
             else {
                 ShowNotification(false, "Error", result.Message);
             }
-            RemoveSpinnner();
+            RemoveSpinner();
         },
         error: function (error) {
-            RemoveSpinnner();
+            RemoveSpinner();
             ShowNotification(false, "Error", "Communication has been interupted");
         }
     });

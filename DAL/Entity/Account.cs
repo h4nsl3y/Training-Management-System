@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -28,7 +29,8 @@ namespace DAL.Entity
         public int? ManagerId { get; set; }
         [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
-        public int RoleId { get; set; } = 1;
+        [Required(ErrorMessage = "Role is required.")]
+        public int RoleId { get; set; } = (int)RoleEnum.Employee;
 
     }
 }

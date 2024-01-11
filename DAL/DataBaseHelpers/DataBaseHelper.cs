@@ -113,17 +113,10 @@ namespace DAL.DataBaseHelpers
         }
         private async Task ConnectAsync()
         {
-            try
+            if (_connection == null || _connection.State != ConnectionState.Open)
             {
-                if (_connection == null || _connection.State != ConnectionState.Open)
-                {
-                    _connection = new SqlConnection(_connString);
-                    await _connection.OpenAsync();
-                }
-            }
-            catch(Exception exception) 
-            {
-                throw;
+                _connection = new SqlConnection(_connString);
+                await _connection.OpenAsync();
             }
         }
         private void Disconnect()
@@ -135,7 +128,6 @@ namespace DAL.DataBaseHelpers
         }
         private T MapObject(IDataReader reader)
         {
-            Type type = typeof(T);
             T objectInstance = Activator.CreateInstance<T>();
             for (int columnIndex = 0; columnIndex < reader.FieldCount; columnIndex++)
             {

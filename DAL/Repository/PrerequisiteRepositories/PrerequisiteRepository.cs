@@ -18,7 +18,6 @@ namespace DAL.Repository.PrerequisiteRepositories
         public PrerequisiteRepository(IDataBaseHelper<Prerequisite> dataBaseHelper)
         {
             _dataBaseHelper = dataBaseHelper;
-            PropertyInfo[] properties = typeof(Prerequisite).GetProperties();
         }
         public async Task<Response<Prerequisite>> GetPrequisiteAsync(int trainingId)
         {

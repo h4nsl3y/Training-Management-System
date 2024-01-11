@@ -12,7 +12,7 @@
     bodyElement.appendChild(containerElement);
 }
 
-function RemoveSpinnner() {
+function RemoveSpinner() {
     let containerElement = document.getElementById("spinnerContainer")
     containerElement.remove();
 }

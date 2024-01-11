@@ -55,17 +55,19 @@ namespace TrainingManagementSystem.Controllers
                         Session["TrueRole"] = user.RoleId;
                         return Json(new { Success = true });
                     }
-                    else { return Json(new { Success = false, Message = _accountResult.Message }); }
+                    else { return Json(new { Success = false, _accountResult.Message }); }
                 }
                 else{ return Json(new { Success = false, Message = "Wrong email or password" });};
             }
-            else { return Json(new { Success = false, Message = boolResult.Message }); }
+            else { return Json(new { Success = false, boolResult.Message }); }
         }
         [HttpGet]
         public async Task<JsonResult> GetAccount(int accountId)
         {
-            Dictionary<string, object> conditions = new Dictionary<string, object>();
-            conditions.Add(primaryKey, accountId);
+            Dictionary<string, object> conditions = new Dictionary<string, object>
+            {
+                { primaryKey, accountId }
+            };
             Response<Account> accountResult = await _accountBusinessLogic.GetAccountAsync(conditions);
             return Json(accountResult, JsonRequestBehavior.AllowGet);
         }
@@ -112,7 +114,7 @@ namespace TrainingManagementSystem.Controllers
                         Session["TrueRole"] = user.RoleId;
                         return Json(new { Success = true });
                     }
-                    else { return Json(new { Success = false, Message = accountResult.Message }); };
+                    else { return Json(new { Success = false, accountResult.Message }); };
                 }
                 else
                 {
@@ -135,8 +137,8 @@ namespace TrainingManagementSystem.Controllers
             Response<Account> result = await _accountBusinessLogic.GetManagerListAsync();
             var managerNames = result.Data.Select(manager => new {Fullname = $"{manager.FirstName} {manager.OtherName} {manager.LastName}",Value = manager.AccountId}).ToList();
             return  (result.Success) ?
-                Json(new { Success = result.Success, Data = managerNames }, JsonRequestBehavior.AllowGet):
-                Json(new { Success = result.Success, Message = result.Message }, JsonRequestBehavior.AllowGet);
+                Json(new { result.Success, Data = managerNames }, JsonRequestBehavior.AllowGet):
+                Json(new { result.Success, result.Message }, JsonRequestBehavior.AllowGet);
         }
     }
 }

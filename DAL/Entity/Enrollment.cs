@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DAL.Entity
         public int AccountId { get; set; }
         [Required(ErrorMessage = "Training infromation are required. ")]
         public int TrainingId { get; set; }
-        public int StateId { get; set; } = 1;
+        public int StateId { get; set; } = (int)EnrollmentStateEnum.Waiting_For_Approval;
         public DateTime SubmissionDate { get; set; } = DateTime.Now;
     }
 }

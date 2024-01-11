@@ -1,9 +1,11 @@
-﻿using BLL.EnrollmentBusinesslogics;
+﻿using BLL.AccountTrainingBusinessLogics;
+using BLL.EnrollmentBusinesslogics;
 using BLL.GenericBusinessLogics;
 using DAL.Entity;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 using System.Web.Mvc;
 
 namespace TrainingManagementSystem.Controllers
@@ -12,10 +14,14 @@ namespace TrainingManagementSystem.Controllers
     {
         private readonly IGenericBusinessLogic<Enrollment> _genericBusinessLogic;
         private readonly IEnrollmentBusinessLogic _enrollmentBusinessLogic;
-        public EnrollmentController(IGenericBusinessLogic<Enrollment> genericBusinessLogic, IEnrollmentBusinessLogic enrollmentBusinessLogic)
+        private readonly IApplicationProcessBusinessLogic _applicationProcessBusinessLogic;
+        public EnrollmentController(IGenericBusinessLogic<Enrollment> genericBusinessLogic, 
+                                    IEnrollmentBusinessLogic enrollmentBusinessLogic,
+                                    IApplicationProcessBusinessLogic applicationProcessBusinessLogic)
         {
             _genericBusinessLogic = genericBusinessLogic;
             _enrollmentBusinessLogic = enrollmentBusinessLogic; 
+            _applicationProcessBusinessLogic = applicationProcessBusinessLogic;
         }
         [HttpGet]
         public async Task<JsonResult> GetEnrollment(int enrollmentId)
@@ -36,9 +42,10 @@ namespace TrainingManagementSystem.Controllers
             return Json(await _genericBusinessLogic.AddAsync(enrollment), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public async Task<ActionResult> UpdateState(Enrollment enrollment) 
-        { 
-            return Json(await _genericBusinessLogic.UpdateAsync(enrollment), JsonRequestBehavior.AllowGet);      
+        public async Task<ActionResult> UpdateState(Enrollment enrollment,string trainingTitle, string email, string comment ) 
+        {
+            _ = Task.Run(() => _applicationProcessBusinessLogic.SendEmail(enrollment, trainingTitle, email, comment));
+            return Json(await _genericBusinessLogic.UpdateAsync(enrollment), JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -35,22 +35,22 @@ function GetEnrollment() {
                             }
                         }
                     ],
-
                 });
             }
             else {
                 ShowNotification(false, "Error", result.Message);
             };
-            RemoveSpinnner();
+            RemoveSpinner();
         },
         error: function () {
-            RemoveSpinnner();
+            RemoveSpinner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
 function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
-    let buttonIndex = 0;
+    let buttonObject = [];
+    let actualId = 0;
     DisplaySpinner();
     $.ajax({
         type: "GET",
@@ -78,9 +78,11 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
                         {
                             render: function (data, type, row) {
                                 if (row.PrerequisiteId > 0) {
-                                    GetPrerequisiteByTraining(row.TrainingId, row.AccountId, `viewDocumentBtn${buttonIndex}`);
-                                    let button = `<button class='item-button' id='viewDocumentBtn${buttonIndex}' >Document(s)</button>`
-                                    buttonIndex += 1;
+                                    let button = `<button  class='item-button' id='viewDocumentBtn${row.TrainingId}' >Document(s)</button>`
+                                    if (actualId != row.TrainingId) {
+                                        buttonObject.push({ trainingId: row.TrainingId, accountId: row.AccountId, buttonId: `viewDocumentBtn${row.TrainingId}` })
+                                        actualId = row.TrainingId
+                                    }
                                     return button;
                                 }
                                 else {
@@ -106,34 +108,36 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
                                     , SubmissionDate: row.SubmissionDate
                                 };
                                 rejectEnrollmentParameter = JSON.stringify(rejectEnrollmentParameter);
+                                let comment = "_"
                                 let buttons =
                                     `<div class='split-Area'>
-                                        <button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${approvedEnrollmentParameter} , ${requestAccountId} ,  ${JSON.stringify(requestAccountEmail)})'>Approve</button> 
-                                        <button class='item-button' id ='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} , ${requestAccountId} , ${JSON.stringify(requestAccountEmail)} )'> Reject</button>
+                                        <button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${approvedEnrollmentParameter} ,${requestAccountId}, ${JSON.stringify(row.Title)}, ${JSON.stringify(requestAccountEmail)}, ${comment} )'>Approve</button> 
+                                        <button class='item-button' id='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} ,${row.TrainingId}, ${requestAccountId}, ${JSON.stringify(row.Title)} , ${JSON.stringify(requestAccountEmail)} )'> Reject</button>
                                     </div>`; 
 
                             return buttons
-                                
                             }
                         },
                     ],
                 });
+                buttonObject.forEach((button) => {
+                    GetPrerequisiteByTraining(button.trainingId, button.accountId, button.buttonId);
+                })
             }
             else {
                 ShowNotification(false, "Error", result.Message);
             };
             let overlay = document.getElementById("screenOverlay");
             overlay.style.visibility = "visible";
-            RemoveSpinnner();
+            RemoveSpinner();
         },
         error: function () {
-            RemoveSpinnner();
+            RemoveSpinner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
 //#endregion
-
 //#region  Overlay
 function CloseTextArea() {
     let rejectionComment = document.getElementById("rejectionReasonid");
@@ -165,15 +169,13 @@ function GetDocument(prerequisiteIds, employeeId) {
     }); 
 }
 //#endregion
-
 //#region ManagerOption
-function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestAccountEmail) {
-    let data = { enrollment: enrollmentParameter };
+function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTrainingTitle, requestAccountEmail, comment ) {
     DisplaySpinner()
     $.ajax({
         type: "POST",
         url: "/Enrollment/UpdateState",
-        data: data,
+        data: { enrollment: enrollmentParameter, trainingTitle: requestTrainingTitle, email: requestAccountEmail , comment: comment},
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
@@ -183,41 +185,41 @@ function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestAccoun
             else {
                 ShowNotification(false, "Error", result.Message);
             };
-            RemoveSpinnner();
+            RemoveSpinner();
         },
         error: function () {
-            RemoveSpinnner();
+            RemoveSpinner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
 };
-function RejectRequest(enrollmentParameter, requestEmployeeId, requestAccountEmail) {
+function RejectRequest(enrollmentParameter, requestEmployeeId, requestTrainingTitle, requestAccountEmail) {
     let overlay = document.getElementById("commentContainerId");
     enrollmentParameter = JSON.stringify(enrollmentParameter);
     overlay.style.visibility = "visible";
-    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", `SubmitRejectionReason( ${enrollmentParameter} , ${requestEmployeeId} , ${JSON.stringify(requestAccountEmail)} );`);
+    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", `SubmitRejectionReason( ${enrollmentParameter} , ${requestTrainingTitle} , ${requestEmployeeId} , ${JSON.stringify(requestAccountEmail)} );`);
 };
-function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAccountEmail) {
+function SubmitRejectionReason(enrollmentParameter, requestTrainingTitle, requestEmployeeId, trainingTitle, requestAccountEmail) {
     let rejectionComment = document.getElementById("rejectionReasonid").value;
     let requestEnrollmentId = enrollmentParameter.EnrollmentId;
     DisplaySpinner();
     $.ajax({
         type: "POST",
         url: "/Rejection/SetRejectionComment",
-        data: { enrollmentId: requestEnrollmentId, email: requestAccountEmail,comment: rejectionComment },
+        data: { enrollmentId: requestEnrollmentId,comment: rejectionComment },
         success: function (result) {
             if (result.Success == true) {
-                UpdatRequestState(enrollmentParameter, requestEmployeeId, requestAccountEmail);
+                UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTrainingTitle ,requestAccountEmail, rejectionComment);
                 rejectionComment.value = "";
                 CloseTextArea();
             }
             else {
                 ShowNotification(false, "Error", result.Message);
             };
-            RemoveSpinnner();
+            RemoveSpinner();
         },
         error: function (result) {
-            RemoveSpinnner();
+            RemoveSpinner();
             ShowNotification(false, "Error", "Communication has been interupted");
         },
     });
@@ -226,7 +228,6 @@ function SubmitRejectionReason(enrollmentParameter, requestEmployeeId, requestAc
 function GetPrerequisiteByTraining(trainingId, accountId, buttonId) {
     let prerequisiteList = "[";
     let index = 0;
-    DisplaySpinnner();
     $.ajax({
         type: "GET",
         url: "/Prerequisite/GetPrerequisiteByTraining",
@@ -245,10 +246,8 @@ function GetPrerequisiteByTraining(trainingId, accountId, buttonId) {
             else {
                 ShowNotification(false, "Error", result.Message);
             };
-            RemoveSpinnner();
         },
         error: function () {
-            RemoveSpinnner();
             ShowNotification(false, "Error", "File could not be load");
         }
     });

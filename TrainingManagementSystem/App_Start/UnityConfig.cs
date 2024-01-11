@@ -5,7 +5,6 @@ using BLL.AutomaticProcess;
 using BLL.EnrollmentBusinesslogics;
 using BLL.GenericBusinessLogics;
 using BLL.PrerequisiteBusinesslogics;
-using BLL.RejectionBusinessLogics;
 using BLL.RequiredFileBusinessLogics;
 using BLL.TrainingBusinessLogics;
 using BLL.ViewModelsBusinessLogics;
@@ -82,7 +81,6 @@ namespace TrainingManagementSystem
             container.RegisterType<IPrerequisiteBusinessLogic,PrequisiteBusinessLogic>();
             container.RegisterType<IRequiredFileBusinessLogic,RequiredFileBusinessLogic>();
             container.RegisterType<IEnrollmentBusinessLogic, EnrollmentBusinesslogic>();
-            container.RegisterType<IRejectionBusinessLogic, RejectionBusinessLogic>();
             container.RegisterType<IApplicationProcessRepository, ApplicationProcessRepository>();
             container.RegisterType<IJob, BackgroundJob>();
             container.RegisterType(typeof(IViewModelBusinesslogic<>), typeof(ViewModelBusinessLogic<>));

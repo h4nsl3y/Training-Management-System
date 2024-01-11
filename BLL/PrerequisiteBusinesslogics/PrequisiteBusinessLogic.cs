@@ -14,16 +14,13 @@ namespace BLL.PrerequisiteBusinesslogics
 {
     public class PrequisiteBusinessLogic : IPrerequisiteBusinessLogic
     {
-        private readonly IGenericRepository<Prerequisite> _genericRepository;
         private readonly IPrerequisiteRepository _prerequisiteRepository;
         private readonly ILogger _logger;
-        private Response<Prerequisite> _resultError;
-        Response<int> _errorResult;
+        private readonly Response<Prerequisite> _resultError;
+        private readonly Response<int> _errorResult;
         public PrequisiteBusinessLogic(IPrerequisiteRepository prerequisiteRepository, 
-                                        IGenericRepository<Prerequisite> genericRepository,
                                         ILogger logger)
         {
-            _genericRepository = genericRepository; 
             _prerequisiteRepository = prerequisiteRepository;
             _logger = logger;
             _resultError = new Response<Prerequisite> { Success = false, Message = "an Error has been encounter" };

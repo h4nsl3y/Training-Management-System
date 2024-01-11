@@ -20,7 +20,7 @@ namespace TestProject
     public class UnitTest
     {
         private Mock<IAccountRepository> _stubAccountRepository;
-        private AccountBusinessLogic _accountBusinessLogic;
+        private readonly AccountBusinessLogic _accountBusinessLogic;
 
         private List<Account> _accountList;
 
@@ -83,7 +83,7 @@ namespace TestProject
             _stubAccountRepository.Setup(accountRepository => accountRepository.DuplicatedAsync(It.IsAny<Dictionary<string, object>>())).
                 ReturnsAsync((Dictionary<string, object> conditions) =>
                 {
-                    Response<bool> result = new Response<bool>() { Success = true };
+                    Response<bool> result = new() { Success = true };
                     foreach (var condition in conditions)
                     {
                         bool isDuplicate = _accountList.Any(account => account.GetType().GetProperty(condition.Key, 
@@ -150,7 +150,7 @@ namespace TestProject
         public async Task Test_AddAccountAsync()
         {
             //Arrange
-            Account accountInstance = new Account()
+            Account accountInstance = new()
             {
                 AccountId = 4,
                 FirstName = "TestFirstName",
@@ -167,7 +167,7 @@ namespace TestProject
             Response<bool> response = await _accountBusinessLogic.AddAccountAsync(accountInstance);
             Account lastAddedAccount = _accountList.Last();
             //Assert
-            Assert.AreEqual(accountInstance.AccountId, lastAddedAccount.AccountId);
+            Assert.IsTrue(response.Success && accountInstance.AccountId == lastAddedAccount.AccountId);
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace TestProject
         public async Task<bool> Test_GetAccountAsync(string columnName, object value)
         {
             //Arrange
-            Dictionary<string, object> dictionary = new Dictionary<string, object>() { { columnName, value } };
+            Dictionary<string, object> dictionary = new () { { columnName, value } };
             //Act 
             Response<Account> response = await _accountBusinessLogic.GetAccountAsync(dictionary);
             //Assert
@@ -218,11 +218,11 @@ namespace TestProject
         public async Task<int> Test_GetAllAccountAsync(string columnName, object value)
         {
             //Arrange
-            Dictionary<string, object> dictionary = new Dictionary<string, object>() { { columnName, value } };
+            Dictionary<string, object> dictionary = new() { { columnName, value } };
             //Act
             Response<Account> response = await _accountBusinessLogic.GetAllAccountAsync(dictionary);
             //Assert
-            return response.Data.Count();
+            return response.Data.Count;
         }
 
         [Test]

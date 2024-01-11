@@ -13,13 +13,9 @@ namespace TrainingManagementSystem.Controllers
     public class ViewModelController : Controller
     {
         private readonly IViewModelBusinesslogic<TrainingEnrollmentViewModel> _viewModelBusinesslogic;
-        private Response<TrainingEnrollmentViewModel> _viewModelResult;
-        private Response<bool> _boolResult;
         public ViewModelController(IViewModelBusinesslogic<TrainingEnrollmentViewModel> viewModelBusinesslogic)
         {
             _viewModelBusinesslogic = viewModelBusinesslogic;
-            _viewModelResult = new Response<TrainingEnrollmentViewModel>();
-            _boolResult = new Response<bool>();
         }
         [HttpGet]
         public async Task<JsonResult> GetTrainingEnrollmentViewModel(int accountId) 

@@ -12,6 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Media;
+using DAL.Enum;
+using System.Security.Cryptography.X509Certificates;
+using Quartz.Impl.Triggers;
 
 namespace BLL.ApplicationProcessBusinessLogics
 {
@@ -29,60 +32,65 @@ namespace BLL.ApplicationProcessBusinessLogics
             try
             {
                 Response<AccountTraining> response = await _applicationProcessRepository.GetAccountTrainingData(trainingId);
-
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using (ExcelPackage excelPackage = new ExcelPackage())
                 {
                     ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Data");
-
                     worksheet.Cells[1, 1].Value = $"Training title : {response.Data[0].Title}";
                     DateTime dateTime = response.Data[0].StartDate;
                     string startDate = dateTime.ToString("yyyy-MM-dd HH:mm");
                     worksheet.Cells[1, 2].Value = $"Date : {startDate}";
-
                     worksheet.Cells[2, 1].Value = "User Name";
                     worksheet.Cells[2, 2].Value = "Mobilenumber";
                     worksheet.Cells[2, 3].Value = "Email";
                     worksheet.Cells[2, 4].Value = "Department";
                     worksheet.Cells[2, 5].Value = "Manager Name";
-
                     worksheet.Cells[1,1].Style.Font.Bold = true;
-                    worksheet.Cells["A3:E3"].Style.Font.Bold = true;
-
+                    worksheet.Cells["A2:E2"].Style.Font.Bold = true;
                     worksheet.Cells["A1:B1"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                     worksheet.Cells["A1:B1"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
                     worksheet.Cells["A2:E2"].Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                     worksheet.Cells["A2:E2"].Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
-
                     for (int i = 0; i < response.Data.Count(); i++)
                     {
                         AccountTraining data = response.Data[i];
-
                         worksheet.Cells[i + 3, 1].Value = data.UserName;
                         worksheet.Cells[i + 3, 2].Value = data.MobileNumber;
                         worksheet.Cells[i + 3, 3].Value = data.Email;
                         worksheet.Cells[i + 3, 4].Value = data.DepartmentName;
                         worksheet.Cells[i + 3, 5].Value = data.ManagerName;
-
                         worksheet.Cells.AutoFitColumns();
-
-
                     }
                     return new Response<byte[]> { Success = true, Data = { excelPackage.GetAsByteArray() } }; 
                 }
             }
-
-            
             catch (Exception exception)
             {
                 _logger.Log(exception);
                 return new Response<byte[]> { Success = false , Message = "File could not be generated"};
             }
         }
-
-        
-        public bool SendEmail(string Subject, string Body, string recipientEmail)
+        public void SendEmail(Enrollment enrollment, string trainingTitle, string recipientEmail, string comment = null)
         {
+            string subject = "";
+            string body = "";
+            switch (enrollment.StateId)
+            {
+                case (short)EnrollmentStateEnum.Rejected:
+                    subject = "Rejection";
+                    body = $"Your request for the training :{trainingTitle} has been rejected due to :\n '{comment}'";
+                    break;
+                case (short)EnrollmentStateEnum.Approved:
+                    subject = "Approval";
+                    body = $"Your request for the training :{trainingTitle} has been approved by your manager";
+                    break;
+                case (short)EnrollmentStateEnum.Confirmed:
+                    subject = "Confirmation";
+                    body = $"Your enrollment reguarding the training :{trainingTitle} has been confirmed.";
+                    break;
+
+            }
+
             string senderEmail = "TrainingManagementSystem@ceridian.com";
             var smtpClent = new SmtpClient("relay.ceridian.com")
             {
@@ -92,19 +100,17 @@ namespace BLL.ApplicationProcessBusinessLogics
             };
             var mailMessage = new MailMessage(senderEmail, recipientEmail)
             {
-                Subject = Subject,
-                Body = Body,
+                Subject = subject,
+                Body = body,
                 IsBodyHtml = true
             };
             try
             {
                 smtpClent.Send(mailMessage);
-                return true;
             }
             catch (Exception exception)
             {
                 _logger.Log(exception);
-                return false;
             }
         }
 
