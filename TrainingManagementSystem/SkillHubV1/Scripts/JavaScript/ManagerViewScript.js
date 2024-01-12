@@ -21,10 +21,10 @@ function GetEnrollment() {
                         {
                             render: function (data, type, row) {
                                 if (row.OtherName == null) {
-                                    return row.FirstName + ' ' + row.LastName;
+                                    return `${row.FirstName} ${row.LastName}`;
                                 }
                                 else {
-                                    return row.FirstName + ' ' + row.OtherName + ' ' + row.LastName;
+                                    return `${row.FirstName} ${row.OtherName} ${row.LastName}`;
                                 }
                             }
                         },
@@ -112,7 +112,7 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
                                 let buttons =
                                     `<div class='split-Area'>
                                         <button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${approvedEnrollmentParameter} ,${requestAccountId}, ${JSON.stringify(row.Title)}, ${JSON.stringify(requestAccountEmail)}, ${comment} )'>Approve</button> 
-                                        <button class='item-button' id='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} ,${row.TrainingId}, ${requestAccountId}, ${JSON.stringify(row.Title)} , ${JSON.stringify(requestAccountEmail)} )'> Reject</button>
+                                        <button class='item-button' id='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} , ${requestAccountId}, ${JSON.stringify(row.Title)} , ${JSON.stringify(requestAccountEmail)} )'> Reject</button>
                                     </div>`; 
 
                             return buttons
@@ -197,9 +197,9 @@ function RejectRequest(enrollmentParameter, requestEmployeeId, requestTrainingTi
     let overlay = document.getElementById("commentContainerId");
     enrollmentParameter = JSON.stringify(enrollmentParameter);
     overlay.style.visibility = "visible";
-    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", `SubmitRejectionReason( ${enrollmentParameter} , ${requestTrainingTitle} , ${requestEmployeeId} , ${JSON.stringify(requestAccountEmail)} );`);
+    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", `SubmitRejectionReason( ${enrollmentParameter} , ${JSON.stringify(requestTrainingTitle)} , ${requestEmployeeId} , ${JSON.stringify(requestAccountEmail)} );`);
 };
-function SubmitRejectionReason(enrollmentParameter, requestTrainingTitle, requestEmployeeId, trainingTitle, requestAccountEmail) {
+function SubmitRejectionReason(enrollmentParameter, requestTrainingTitle, requestEmployeeId, requestAccountEmail) {
     let rejectionComment = document.getElementById("rejectionReasonid").value;
     let requestEnrollmentId = enrollmentParameter.EnrollmentId;
     DisplaySpinner();
@@ -209,7 +209,7 @@ function SubmitRejectionReason(enrollmentParameter, requestTrainingTitle, reques
         data: { enrollmentId: requestEnrollmentId,comment: rejectionComment },
         success: function (result) {
             if (result.Success == true) {
-                UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTrainingTitle ,requestAccountEmail, rejectionComment);
+                UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTrainingTitle, requestAccountEmail, rejectionComment);
                 rejectionComment.value = "";
                 CloseTextArea();
             }

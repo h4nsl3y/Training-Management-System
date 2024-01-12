@@ -14,15 +14,10 @@ namespace TrainingManagementSystem.Controllers
 {
     public class TrainingController : Controller
     {
-        private readonly IGenericBusinessLogic<Training> _genericBusinessLogic;
         private readonly ITrainingBusinesslogic _trainingBusinessLogic;
-        private readonly string primaryKey;
-        public TrainingController(IGenericBusinessLogic<Training> genericBusinessLogic,ITrainingBusinesslogic trainingBusinesslogic)
+        public TrainingController(ITrainingBusinesslogic trainingBusinesslogic)
         {
-            _genericBusinessLogic = genericBusinessLogic;
             _trainingBusinessLogic = trainingBusinesslogic;
-            PropertyInfo[] properties = typeof(Training).GetProperties();
-            primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault().Name;
         }
         [HttpPost]
         public async Task<JsonResult> DeleteTraining(int trainingId)

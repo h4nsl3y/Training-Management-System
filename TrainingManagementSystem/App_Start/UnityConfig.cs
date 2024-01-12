@@ -1,9 +1,8 @@
 using BLL.AccountBusinessLogics;
-using BLL.AccountTrainingBusinessLogics;
-using BLL.ApplicationProcessBusinessLogics;
 using BLL.AutomaticProcess;
 using BLL.EnrollmentBusinesslogics;
 using BLL.GenericBusinessLogics;
+using BLL.NotificationBusinessLogics;
 using BLL.PrerequisiteBusinesslogics;
 using BLL.RequiredFileBusinessLogics;
 using BLL.TrainingBusinessLogics;
@@ -14,6 +13,7 @@ using DAL.Repository.AccountRepositories;
 using DAL.Repository.ApplicationProcessRepositories;
 using DAL.Repository.EnrollmentRepositories;
 using DAL.Repository.GenericRepositories;
+using DAL.Repository.NotificationRepositories;
 using DAL.Repository.PrerequisiteRepositories;
 using DAL.Repository.RequiredFileRepositories;
 using DAL.Repository.TrainingRepositories;
@@ -63,27 +63,48 @@ namespace TrainingManagementSystem
 
             // TODO: Register your type's mappings here.
             // container.RegisterType<IProductRepository, ProductRepository>();
+            
+            //Database Helper
             container.RegisterType(typeof(IDataBaseHelper<>), typeof(DataBaseHelper<>));
             container.RegisterType<ILogger, Logger>();
 
+            //Generic
             container.RegisterType(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            container.RegisterType<IAccountRepository, AccountRepository>();
-            container.RegisterType<ITrainingRepository, TrainingRepository>();
-            container.RegisterType<IPrerequisiteRepository,PrerequisiteRepository>();
-            container.RegisterType<IEnrollmentRepository, EnrollmentRepository>();
-            container.RegisterType<IApplicationProcessBusinessLogic, ApplicationProcessBusinessLogic>();
-            container.RegisterType(typeof(IViewModelRepository<>), typeof(ViewModelRepository<>));
-            
             container.RegisterType(typeof(IGenericBusinessLogic<>), typeof(GenericBusinessLogic<>));
-            container.RegisterType<IRequiredFilesRepository,RequiredFilesRepository>();
-            container.RegisterType<IAccountBusinesslogic,AccountBusinessLogic>();
-            container.RegisterType<ITrainingBusinesslogic,TrainingBusinesslogic>();
-            container.RegisterType<IPrerequisiteBusinessLogic,PrequisiteBusinessLogic>();
-            container.RegisterType<IRequiredFileBusinessLogic,RequiredFileBusinessLogic>();
+
+            //Account
+            container.RegisterType<IAccountRepository, AccountRepository>();
+            container.RegisterType<IAccountBusinesslogic, AccountBusinessLogic>();
+
+            //Enrollment
+            container.RegisterType<IEnrollmentRepository, EnrollmentRepository>();
             container.RegisterType<IEnrollmentBusinessLogic, EnrollmentBusinesslogic>();
-            container.RegisterType<IApplicationProcessRepository, ApplicationProcessRepository>();
-            container.RegisterType<IJob, BackgroundJob>();
+
+            //Training
+            container.RegisterType<ITrainingRepository, TrainingRepository>();
+            container.RegisterType<ITrainingBusinesslogic, TrainingBusinesslogic>();
+
+            //Required file
+            container.RegisterType<IRequiredFilesRepository, RequiredFilesRepository>();
+            container.RegisterType<IRequiredFileBusinessLogic, RequiredFileBusinessLogic>();
+
+            //Prerequisite
+            container.RegisterType<IPrerequisiteRepository,PrerequisiteRepository>();
+            container.RegisterType<IPrerequisiteBusinessLogic, PrequisiteBusinessLogic>();
+
+            //Notification
+            container.RegisterType<INotificationRepository, NotificationRepository>();
+            container.RegisterType<INotificationBusinessLogic, NotificationBusinessLogic>();
+
+            //ViewModels
+            container.RegisterType(typeof(IViewModelRepository<>), typeof(ViewModelRepository<>));
             container.RegisterType(typeof(IViewModelBusinesslogic<>), typeof(ViewModelBusinessLogic<>));
+
+            //Application process
+            container.RegisterType<IApplicationProcessRepository, ApplicationProcessRepository>();
+
+            //Background Job
+            container.RegisterType<IJob, BackgroundJob>();
         }
     }
 }

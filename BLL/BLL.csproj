@@ -112,8 +112,6 @@
   <ItemGroup>
     <Compile Include="AccountBusinessLogics\AccountBusinessLogic.cs" />
     <Compile Include="AccountBusinessLogics\IAccountBusinesslogic.cs" />
-    <Compile Include="ApplicationProcessBusinessLogics\ApplicationProcessBusinessLogic.cs" />
-    <Compile Include="ApplicationProcessBusinessLogics\IApplicationProcessBusinessLogic.cs" />
     <Compile Include="AutomaticProcess\BackgroundJob.cs" />
     <Compile Include="AutomaticProcess\JobScheduler.cs" />
     <Compile Include="AutomaticProcess\MyJobFactory.cs" />
@@ -121,6 +119,8 @@
     <Compile Include="EnrollmentBusinesslogics\IEnrollmentBusinessLogic.cs" />
     <Compile Include="GenericBusinessLogics\GenericBusinessLogic.cs" />
     <Compile Include="GenericBusinessLogics\IGenericBusinessLogic.cs" />
+    <Compile Include="NotificationBusinessLogics\INotificationBusinessLogic.cs" />
+    <Compile Include="NotificationBusinessLogics\NotificationBusinessLogic.cs" />
     <Compile Include="PrerequisiteBusinesslogics\IPrerequisiteBusinessLogic.cs" />
     <Compile Include="PrerequisiteBusinesslogics\PrequisiteBusinessLogic.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

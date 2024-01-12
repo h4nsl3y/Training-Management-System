@@ -170,15 +170,17 @@ function GetDocument(prerequisiteIds, employeeId) {
 }
 //#endregion
 //#region ManagerOption
-function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTrainingTitle, requestAccountEmail, comment ) {
+function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTrainingTitle, requestAccountEmail) {
+    let rejectionComment = document.getElementById("rejectionReasonid").value;
     DisplaySpinner()
     $.ajax({
         type: "POST",
         url: "/Enrollment/UpdateState",
-        data: { enrollment: enrollmentParameter, trainingTitle: requestTrainingTitle, email: requestAccountEmail , comment: comment},
+        data: { enrollment: enrollmentParameter, trainingTitle: requestTrainingTitle, email: requestAccountEmail, comment: rejectionComment },
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
+                CreateNotification(requestEmployeeId, enrollmentParameter.StateId, requestTrainingTitle, rejectionComment, requestAccountEmail )
                 GetRequestByEmployee(requestEmployeeId,requestAccountEmail)
                 GetEnrollment()
             }
@@ -197,33 +199,8 @@ function RejectRequest(enrollmentParameter, requestEmployeeId, requestTrainingTi
     let overlay = document.getElementById("commentContainerId");
     enrollmentParameter = JSON.stringify(enrollmentParameter);
     overlay.style.visibility = "visible";
-    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", `SubmitRejectionReason( ${enrollmentParameter} , ${JSON.stringify(requestTrainingTitle)} , ${requestEmployeeId} , ${JSON.stringify(requestAccountEmail)} );`);
+    document.getElementById("submitRejectionCommentBtn").setAttribute("onclick", `UpdatRequestState( ${enrollmentParameter} ,${requestEmployeeId}, ${JSON.stringify(requestTrainingTitle)} , ${JSON.stringify(requestAccountEmail)} );`);
 };
-function SubmitRejectionReason(enrollmentParameter, requestTrainingTitle, requestEmployeeId, requestAccountEmail) {
-    let rejectionComment = document.getElementById("rejectionReasonid").value;
-    let requestEnrollmentId = enrollmentParameter.EnrollmentId;
-    DisplaySpinner();
-    $.ajax({
-        type: "POST",
-        url: "/Rejection/SetRejectionComment",
-        data: { enrollmentId: requestEnrollmentId,comment: rejectionComment },
-        success: function (result) {
-            if (result.Success == true) {
-                UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTrainingTitle, requestAccountEmail, rejectionComment);
-                rejectionComment.value = "";
-                CloseTextArea();
-            }
-            else {
-                ShowNotification(false, "Error", result.Message);
-            };
-            RemoveSpinner();
-        },
-        error: function (result) {
-            RemoveSpinner();
-            ShowNotification(false, "Error", "Communication has been interupted");
-        },
-    });
-}
 //#endregion
 function GetPrerequisiteByTraining(trainingId, accountId, buttonId) {
     let prerequisiteList = "[";

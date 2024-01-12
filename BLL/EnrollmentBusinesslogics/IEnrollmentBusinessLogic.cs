@@ -9,6 +9,8 @@ namespace BLL.EnrollmentBusinesslogics
 {
     public interface IEnrollmentBusinessLogic
     {
+        Task<Response<bool>> AddEnrollmentAsync(Enrollment enrollment, string trainingTitle, string email, string comment);
         Task<Response<Enrollment>> GetEnrollmentByAccountAsync(int accountId);
+        Task<Response<byte[]>> CreateExcelFile(int trainingId);
     }
 }

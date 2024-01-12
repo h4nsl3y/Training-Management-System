@@ -72,6 +72,7 @@
     <Compile Include="DataBaseHelpers\IDataBaseHelper.cs" />
     <Compile Include="Entity\Account.cs" />
     <Compile Include="Entity\AccountTraining.cs" />
+    <Compile Include="Entity\Notification.cs" />
     <Compile Include="Entity\State.cs" />
     <Compile Include="Entity\Department.cs" />
     <Compile Include="Entity\Enrollment.cs" />
@@ -96,6 +97,8 @@
     <Compile Include="Repository\EnrollmentRepositories\IEnrollmentRepository.cs" />
     <Compile Include="Repository\GenericRepositories\GenericRepository.cs" />
     <Compile Include="Repository\GenericRepositories\IGenericRepository.cs" />
+    <Compile Include="Repository\NotificationRepositories\INotificationRepository.cs" />
+    <Compile Include="Repository\NotificationRepositories\NotificationRepository.cs" />
     <Compile Include="Repository\PrerequisiteRepositories\PrerequisiteRepository.cs" />
     <Compile Include="Repository\PrerequisiteRepositories\IPrerequisiteRepository.cs" />
     <Compile Include="Repository\RepositoryService.cs" />

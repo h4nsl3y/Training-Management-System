@@ -24,7 +24,7 @@ function ShowNotification(isPositive, title, message) {
     var body = document.getElementsByTagName("BODY")[0];
     body.appendChild(notificationDiv);
     
-   /* setTimeout(function () {
+   setTimeout(function () {
         notificationDiv.remove();
-    }, 500000);*/
+    }, 5000);
 }

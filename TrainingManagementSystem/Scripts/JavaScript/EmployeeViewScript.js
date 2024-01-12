@@ -46,10 +46,10 @@ function GetAvailableTrainingList() {
             else {
                 ShowNotification(false, "Error", result.Message);
             }
-            RemoveSpinnner();
+            RemoveSpinner();
         },
         error: function (error) {
-            RemoveSpinnner();
+            RemoveSpinner();
             ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
@@ -143,10 +143,10 @@ function GetEnrolledTrainingList(stateList) {
                     else if (data.StateId == cancelState) {
                         $(this.node()).css('background-color', '#ffffab');
                     }
-                    else if (data.StateId == rejectedState) {
+                    else if (data.StateId == approveState) {
                         $(this.node()).css('background-color', '#abffac');
                     }
-                    else if (data.StateId == approveState) {
+                    else if (data.StateId == rejectedState) {
                         $(this.node()).css('background-color', '#ffabab');
                     }
                 });
@@ -175,7 +175,7 @@ function GetPrerequisiteFiles() {
             ShowNotification(false, "Error", "Communication has been interupted");
         }
     })
-    RemoveSpinnner();
+    RemoveSpinner();
 }
 function GetAllPrerequisite(setPrerequisite) {
     $.ajax({

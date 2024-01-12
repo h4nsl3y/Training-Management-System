@@ -14,8 +14,8 @@ namespace BLL.GenericBusinessLogics
     {
         private readonly IGenericRepository<T> _genericRepository;
         private readonly ILogger _logger;
-        private Response<T> _resultError;
-        private Response<bool> _resultBoolError;
+        private readonly Response<T> _resultError;
+        private readonly Response<bool> _resultBoolError;
         public GenericBusinessLogic(IGenericRepository<T> genericRepository, ILogger logger)
         {
             _genericRepository = genericRepository;
