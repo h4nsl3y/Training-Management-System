@@ -2,6 +2,9 @@ body {
   font-family: 'Trebuchet MS', sans-serif;
   background-color: #f0f0f0;
 }
+.bold-text{
+    font-weight: bold;
+}
 body .account-area {
   background-color: #fff;
   height: 80px;
@@ -10,7 +13,7 @@ body .account-area {
   min-width: 800px;
   margin: 5px 10%;
   display: grid;
-  grid-template-columns: 10% 70% 20%;
+  grid-template-columns: 10% 80% 10%;
 }
 body .account-area .account-img-container {
   text-align: center;
@@ -31,13 +34,17 @@ body .account-area .account-fullname-container .account-fullname {
 }
 body .account-area .log-out-container {
   margin: 25px 0px;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  justify-content: center;
 }
 body .account-area .log-out-container .log-out-button {
-  width: 80%;
-  margin: 10px 10%;
+  display:flex;
+  flex-wrap:wrap;
+  margin: 10px 10px;
   background-color: #3982e8;
   border: none;
-  padding: 5px 10px;
+  padding: 5px 5px;
   border-radius: 20px;
   color: #fff;
 }
@@ -111,9 +118,12 @@ select {
   display: inline-block;
   border-radius: 5px;
 }
+.navbar-image{
+    width: 30px;
+}
 .item-button:active,
 .log-out-button:active {
-  background-color: #185dbe;
+    background-color: #185dbe;
 }
 .tab-button {
   display: grid;
@@ -133,8 +143,33 @@ select {
   height: 25px;
   color: #000;
 }
+.inbox-message {
+    background: white;
+    position: fixed;
+    right: 5%;
+    visibility: hidden;
+    width: 20%;
+    display: flex;
+    flex-wrap: wrap;
+    z-index: 2;
+}
+.message-container {
+    background: white;
+    display: grid;
+    grid-template-columns: 20% 80%;
+    transition: transform 0.2s;
+}
+.message-container p {
+    padding: 3px;
+}
+.message-container:hover {
+    transform: scale(1.1);
+}
+.message-title {
+    border-right: solid rgba(0,0,0,0.1);
+}
 .dataTables_wrapper {
-  width: 100%;
+    width: 100%;
 }
 .split-Area {
   display: grid;

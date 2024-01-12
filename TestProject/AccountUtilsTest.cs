@@ -20,7 +20,7 @@ namespace TestProject
     public class UnitTest
     {
         private Mock<IAccountRepository> _stubAccountRepository;
-        private readonly AccountBusinessLogic _accountBusinessLogic;
+        private AccountBusinessLogic _accountBusinessLogic;
 
         private List<Account> _accountList;
 
@@ -144,6 +144,7 @@ namespace TestProject
                     ).ToList()
                 } );
 
+            _accountBusinessLogic = new AccountBusinessLogic(_stubAccountRepository.Object, null);
         }
 
         [Test]

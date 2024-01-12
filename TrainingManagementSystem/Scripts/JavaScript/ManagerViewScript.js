@@ -180,9 +180,10 @@ function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTraini
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
-                CreateNotification(requestEmployeeId, enrollmentParameter.StateId, requestTrainingTitle, rejectionComment, requestAccountEmail )
-                GetRequestByEmployee(requestEmployeeId,requestAccountEmail)
-                GetEnrollment()
+                CreateNotification(requestEmployeeId, enrollmentParameter.StateId, requestTrainingTitle, rejectionComment, requestAccountEmail);
+                GetRequestByEmployee(requestEmployeeId, requestAccountEmail);
+                GetEnrollment();
+                CloseTextArea();
             }
             else {
                 ShowNotification(false, "Error", result.Message);
