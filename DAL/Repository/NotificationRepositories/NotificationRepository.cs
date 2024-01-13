@@ -29,15 +29,14 @@ namespace DAL.Repository.NotificationRepositories
             };
             return await _dataBaseHelper.AffectedRowsAsync(query, parameters);
         }
-
         public async Task<Response<Notification>> GetNotificationAsync(int accountId)
         {
             string query = @"SELECT * FROM  NOTIFICATION
-                             WHERE ACCOUNTID = @ACCOUNTID;";
+                             WHERE ACCOUNTID = @ACCOUNTID
+                             ORDER BY DATE ASC;";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@ACCOUNTID", accountId) };
             return await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
         }
-
         public async Task<Response<bool>> UpdateStateNotificationNotificationAsync(int notificationId)
         {
             string query = @"UPDATE NOTIFICATION SET HASREAD = 1 WHERE NOTIFICATIONID = @NOTIFICATIONID";

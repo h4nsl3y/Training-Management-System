@@ -29,22 +29,3 @@ namespace TrainingManagementSystem.Controllers
             => Json(await _notificationBusinessLogic.UpdateStateNotificationNotificationAsync(notificationId), JsonRequestBehavior.AllowGet);
     }
 }
-/*
-string subject = "";
-string body = "";
-switch (enrollment.StateId)
-{
-    case (short)EnrollmentStateEnum.Approved:
-        subject = "Approval";
-        body = $"Your request for the training :{trainingTitle} has been approved by your manager";
-        break;
-    case (short)EnrollmentStateEnum.Confirmed:
-        subject = "Confirmation";
-        body = $"Your enrollment reguarding the training :{trainingTitle} has been confirmed.";
-        break;
-    default:
-        subject = "Rejection";
-        body = $"Your request for the training :{trainingTitle} has been rejected due to :\n '{comment}'";
-        break;
-}
-_ = Task.Run(() => _notificationBusinessLogic.SendEmail(email, subject, body));*/

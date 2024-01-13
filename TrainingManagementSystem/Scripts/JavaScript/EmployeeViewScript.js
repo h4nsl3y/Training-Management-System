@@ -263,7 +263,7 @@ function GetTrainingDetail(id, displayButton) {
             else { ShowNotification(false, "Error",result.Message); }
         },
         error: function (error) {
-            console.log(error);
+            ShowNotification(false, "Error", "Communication has been interupted");
         }
     });
 };
@@ -363,7 +363,6 @@ function CheckPrerequisiteFiles(prerequisiteIdList, trainingId) {
         success: function (result) {
             if (result.Success == true) {
                 if (result.Data == prerequisiteIdList.length) {
-                    console.log(result.Data,prerequisiteIdList.length)
                     Enroll(trainingId);
                 } else {
                     ShowNotification(false, "Error", "File(s) are missing for this training");
@@ -608,8 +607,6 @@ function DisplayTab(event, tabId) {
 
     let displayTab = document.getElementById(tabId);
     displayTab.style.display = "inherit";
-
-    console.log(displayTab.style.display)
 
     event.currentTarget.style.backgroundColor = "#ffffff";
 }

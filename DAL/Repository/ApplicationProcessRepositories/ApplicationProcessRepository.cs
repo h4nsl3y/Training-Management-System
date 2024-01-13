@@ -18,15 +18,41 @@ namespace DAL.Repository.ApplicationProcessRepositories
         {
             _dataBaseHelper = dataBaseHelper;
         }
-        public async Task<Response<AccountTraining>> GetAccountTrainingData(int trainingId)
+        public async Task<Response<AccountTraining>> GetAccountTraining()
         {
             string query = @"SELECT CONCAT(A1.FIRSTNAME,' ',A1.OTHERNAME,' ',A1.LASTNAME) AS USERNAME,
+                                    A1.ACCOUNTID,
                                     A1.MOBILENUMBER,
                                     A1.EMAIL,
                                     CONCAT(A2.FIRSTNAME,' ',A2.OTHERNAME,' ',A2.LASTNAME) AS MANAGERNAME,
                                     T.TITLE,
                                     T.STARTDATE, 
-                                    D.DEPARTMENTNAME
+                                    D.DEPARTMENTNAME,
+                                    E.STATEID
+                            FROM ACCOUNT A1
+                            JOIN ACCOUNT A2 ON A1.MANAGERID = A2.ACCOUNTID
+                            JOIN ENROLLMENT E ON E.ACCOUNTID = A1.ACCOUNTID
+                            JOIN TRAINING T ON T.TRAININGID = E.TRAININGID
+                            JOIN DEPARTMENT D ON D.DEPARTMENTID = A1.DEPARTMENTID
+                            WHERE E.STATEID = @STATEID
+					        AND T.DEADLINE = CAST(GETDATE() AS DATE)";
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+               new SqlParameter("@STATEID",EnrollmentStateEnum.Confirmed)
+            };
+            return await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
+        }
+        public async Task<Response<AccountTraining>> GetAccountTrainingByTraining(int trainingId)
+        {
+            string query = @"SELECT CONCAT(A1.FIRSTNAME,' ',A1.OTHERNAME,' ',A1.LASTNAME) AS USERNAME,
+                                    A1.ACCOUNTID
+                                    A1.MOBILENUMBER,
+                                    A1.EMAIL,
+                                    CONCAT(A2.FIRSTNAME,' ',A2.OTHERNAME,' ',A2.LASTNAME) AS MANAGERNAME,
+                                    T.TITLE,
+                                    T.STARTDATE, 
+                                    D.DEPARTMENTNAME,
+                                    E.STATEID
                             FROM ACCOUNT A1
                             JOIN ACCOUNT A2 ON A1.MANAGERID = A2.ACCOUNTID
                             JOIN ENROLLMENT E ON E.ACCOUNTID = A1.ACCOUNTID
@@ -37,7 +63,7 @@ namespace DAL.Repository.ApplicationProcessRepositories
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@TRAININGID",trainingId),
-                 new SqlParameter("@STATEID",EnrollmentStateEnum.Confirmed)
+                new SqlParameter("@STATEID",EnrollmentStateEnum.Confirmed)
             };
             return await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
         }

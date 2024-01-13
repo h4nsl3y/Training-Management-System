@@ -59,7 +59,7 @@ namespace BLL.EnrollmentBusinesslogics
         {
             try
             {
-                Response<AccountTraining> response = await _applicationProcessRepository.GetAccountTrainingData(trainingId);
+                Response<AccountTraining> response = await _applicationProcessRepository.GetAccountTrainingByTraining(trainingId);
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 using (ExcelPackage excelPackage = new ExcelPackage())
                 {

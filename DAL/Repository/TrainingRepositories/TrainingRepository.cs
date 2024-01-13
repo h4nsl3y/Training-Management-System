@@ -58,6 +58,13 @@ namespace DAL.Repository.TrainingRepositories
             };
             return await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
         }
+        public async Task<Response<Training>> GetTrainingByDeadlineAsync()
+        {
+            string query = @"SELECT TRAININGID FROM TRAINING 
+                            WHERE ISACTIVE = 1 
+                            AND DEADLINE = CAST(GETDATE() AS DATE) ;";
+            return await _dataBaseHelper.ExecuteQueryAsync(query);
+        }
         public async Task<Response<bool>> IsAnyEnrollmentByTrainingAsync(int trainingId)
         {
             string query = @"SELECT TOP 1 * FROM ENROLLMENT WHERE TRAININGID = @TRAININGID; ";

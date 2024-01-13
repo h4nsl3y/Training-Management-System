@@ -27,11 +27,7 @@ namespace BLL.TrainingBusinessLogics
         {
             try
             {
-                Response<bool> boolResponse = await _trainingRepository.IsAnyEnrollmentByTrainingAsync(trainingId);
-                bool IsAnyEnrollment = boolResponse.Data.FirstOrDefault();
-                return IsAnyEnrollment ?
-                        new Response<bool> { Success = false, Message = "Some users has already registered for this training" } :
-                        await _trainingRepository.DeleteTrainingAsync(trainingId);
+                return await _trainingRepository.DeleteTrainingAsync(trainingId);
             }
             catch (Exception exception)
             {
@@ -91,7 +87,11 @@ namespace BLL.TrainingBusinessLogics
         {
             try
             {
-                return await _trainingRepository.IsAnyEnrollmentByTrainingAsync(trainingId);
+                //
+                Response<bool> response = await _trainingRepository.IsAnyEnrollmentByTrainingAsync(trainingId);
+                return response.Data.FirstOrDefault() ?
+                    new Response<bool> { Success = true, Data = { true }, Message = "Some users has already registered for this training" }:
+                    new Response<bool>() { Success = true, Data = { false } };
             }
             catch (Exception exception)
             {

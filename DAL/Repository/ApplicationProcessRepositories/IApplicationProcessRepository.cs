@@ -9,6 +9,7 @@ namespace DAL.Repository.ApplicationProcessRepositories
 {
     public interface IApplicationProcessRepository
     {
-        Task<Response<AccountTraining>> GetAccountTrainingData(int trainingId);
+        Task<Response<AccountTraining>> GetAccountTraining();
+        Task<Response<AccountTraining>> GetAccountTrainingByTraining(int trainingId);
     }
 }

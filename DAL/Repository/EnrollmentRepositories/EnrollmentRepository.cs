@@ -34,15 +34,13 @@ namespace DAL.Repository.EnrollmentRepositories
                                 (SELECT TRAININGID FROM TRAINING WHERE DEADLINE = CAST(GETDATE() AS DATE))";
             return await _dataBaseHelper.ExecuteQueryAsync(query);
         }
-        public async Task SelectTrainingParticipants(Enrollment enrollment)
+        public async Task SelectTrainingParticipants(int trainingId)
         {
-            string query = $@"DELCARE @TRAININGCAPACITY;
-                            SET @TRAINING = SELECT SEATNUMBER FROM TRAINING WHERE TRAININGID = @TRAININGID;
-                            UPDATE ENROLLMENT
+            string query = $@"UPDATE ENROLLMENT
                             SET STATEID = CASE
                                     WHEN ENROLLMENT.ENROLLMENTID IN
 				                            (
-				                            SELECT TOP @TRAININGCAPACITY
+				                            SELECT TOP (SELECT SEATNUMBER FROM TRAINING WHERE TRAININGID = @TRAININGID)
 				                            ENROLLMENTID FROM ENROLLMENT 
 				                            JOIN TRAINING ON ENROLLMENT.TRAININGID = TRAINING.TRAININGID
 				                            JOIN ACCOUNT ON ENROLLMENT.ACCOUNTID = ACCOUNT.ACCOUNTID
@@ -51,7 +49,7 @@ namespace DAL.Repository.EnrollmentRepositories
 				                            AND STATEID = @ENROLLMENTSTATEAPPROVE
 				                            ORDER BY 
 				                            CASE
-					                            WHEN TRAINING.DEPARTMENTID = ACCOUNT.ACCOUNTID
+					                            WHEN TRAINING.DEPARTMENTID = ACCOUNT.DEPARTMENTID 
 					                            THEN 0
 					                            ELSE 1
 				                            END,
@@ -63,8 +61,8 @@ namespace DAL.Repository.EnrollmentRepositories
                             WHERE TRAININGID = @TRAININGID;";
             List<SqlParameter> parameters = new List<SqlParameter>() 
             { 
-                new SqlParameter("@TRAININGID", enrollment.TrainingId) ,
-                new SqlParameter("@ENROLLMENTSTATEAPPROVE", EnrollmentStateEnum.Confirmed),
+                new SqlParameter("@TRAININGID",  trainingId),
+                new SqlParameter("@ENROLLMENTSTATEAPPROVE", EnrollmentStateEnum.Approved),
                 new SqlParameter("@ENROLLMENTSTATECONFIRM", EnrollmentStateEnum.Confirmed),
                 new SqlParameter("@ENROLLMENTSTATEREJECT", EnrollmentStateEnum.Rejected)
             };
