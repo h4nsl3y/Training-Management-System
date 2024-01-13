@@ -89,7 +89,8 @@ namespace BLL.EnrollmentBusinesslogics
                         worksheet.Cells[i + 3, 5].Value = data.ManagerName;
                         worksheet.Cells.AutoFitColumns();
                     }
-                    return new Response<byte[]> { Success = true, Data = { excelPackage.GetAsByteArray() } };
+                    var a =  new Response<byte[]> { Success = true, Data = { excelPackage.GetAsByteArray() } };
+                    return a;
                 }
             }
             catch (Exception exception)

@@ -426,12 +426,7 @@ function GetTrainingList(departmentList) {
                                 let deadline = new Date(Number((row.Deadline).match(/\d+/)[0]));
                                 let today = new Date();
                                 if (deadline < today) {
-                                    buttons =
-                                        `<div class='three-split-Area'>
-                                            <button class='item-button' id='detailBtn' onclick='DisplayTrainingForm(false,${row.TrainingId})'>Edit</button>
-                                            <button class='item-button' id='detailBtn' onclick='DeleteTraining(${row.TrainingId})'>Delete</button>
-                                            <button class='item-button' id='detailBtn' onclick='GenerateCSVFile(${row.TrainingId})'>CSV</button>
-                                        </div>`;
+                                    buttons =`<button class='item-button' id='detailBtn' onclick='GenerateCSVFile(${row.TrainingId})'>CSV</button>`;
                                 }
                                 else {
                                     buttons =
@@ -509,14 +504,17 @@ function DisplayTab(event, tabId) {
 function GenerateCSVFile(trainingId) {
     $.ajax({
         type: "GET",
-        url: "/ApplicationProcess/GenerateCSVFile",
+        url: "/Enrollment/GenerateCSVFile",
         data: { trainingId: trainingId },
-        xhrFields: {
-            responseType: 'blob'
-        },
         success: function (result) {
-            let url = URL.createObjectURL(result);
-            window.open(url, '_blank');
+            var blob = new Blob([result], { type: "application/octet-stream" });
+
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'Data.xlsx'; 
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         },
         error: function (error) {
             ShowNotification(false, "Error", "File could not be load");
