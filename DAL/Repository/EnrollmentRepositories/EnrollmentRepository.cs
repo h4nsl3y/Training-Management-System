@@ -68,6 +68,5 @@ namespace DAL.Repository.EnrollmentRepositories
             };
             await _dataBaseHelper.AffectedRowsAsync(query, parameters);
         }
-
     }
 }

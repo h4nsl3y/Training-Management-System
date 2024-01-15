@@ -22,6 +22,8 @@ namespace BLL.EnrollmentBusinesslogics
         private readonly IEnrollmentRepository _enrollmentRepository;
         private readonly IApplicationProcessRepository _applicationProcessRepository;
         private readonly ILogger _logger;
+        private readonly Response<bool> _resultBoolError;
+        private readonly Response<Enrollment> _resultError;
         public EnrollmentBusinesslogic(IEnrollmentRepository enrollmenyRepository,
             IApplicationProcessRepository applicationProcessRepository, 
             IGenericRepository<Enrollment> genericRepository, ILogger logger)
@@ -30,6 +32,8 @@ namespace BLL.EnrollmentBusinesslogics
             _applicationProcessRepository = applicationProcessRepository;
             _genericRepository = genericRepository;
             _logger = logger;
+            _resultBoolError = new Response<bool> { Success = false, Message = "an Error has been encounter" };
+            _resultError = new Response<Enrollment> { Success = false, Message = "an Error has been encounter" };
         }
         public async Task<Response<bool>> AddEnrollmentAsync(Enrollment enrollment, string trainingTitle, string email, string comment)
         {
@@ -40,7 +44,7 @@ namespace BLL.EnrollmentBusinesslogics
             catch (Exception exception)
             {
                 _logger.Log(exception);
-                return new Response<bool> { Success = false, Message = "An error has occured" };
+                return _resultBoolError;
             }
         }
         public async Task<Response<Enrollment>> GetEnrollmentByAccountAsync(int accountId)
@@ -52,7 +56,7 @@ namespace BLL.EnrollmentBusinesslogics
             catch (Exception exception)
             {
                 _logger.Log(exception);
-                return  new Response<Enrollment> { Success = false , Message = "An error has occured" };
+                return _resultError;
             }
         }
         public async Task<Response<byte[]>> CreateExcelFile(int trainingId)
@@ -89,8 +93,7 @@ namespace BLL.EnrollmentBusinesslogics
                         worksheet.Cells[i + 3, 5].Value = data.ManagerName;
                         worksheet.Cells.AutoFitColumns();
                     }
-                    var a =  new Response<byte[]> { Success = true, Data = { excelPackage.GetAsByteArray() } };
-                    return a;
+                    return new Response<byte[]> { Success = true, Data = { excelPackage.GetAsByteArray() } };
                 }
             }
             catch (Exception exception)

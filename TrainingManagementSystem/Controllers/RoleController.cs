@@ -18,5 +18,10 @@ namespace TrainingManagementSystem.Controllers
         }
         [HttpGet]
         public async Task<JsonResult> GetRoleList() => Json(await _genericBusinessLogic.GetAllAsync(), JsonRequestBehavior.AllowGet) ;
+        public async Task<JsonResult> GetUserSetRoleList()
+        {
+            Dictionary<string, object> dictionary= new Dictionary<string, object>() { {"UserSet", 1 } };
+            return Json(await _genericBusinessLogic.GetAllAsync(dictionary), JsonRequestBehavior.AllowGet);
+        }
     }
 }

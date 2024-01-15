@@ -125,9 +125,7 @@ namespace DAL.Repository.TrainingRepositories
                         SHORTDESCRIPTION = @SHORTDESCRIPTION, 
                         LONGDESCRIPTION = @LONGDESCRIPTION
                         WHERE TRAININGID = @TRAININGID;
-
                         DELETE FROM TRAININGPREREQUISITE WHERE TRAININGID = @TRAININGID;
-                        
                         IF (@PREREQUISITEIDS IS NOT NULL AND LEN(@PREREQUISITEIDS) > 0)
                         BEGIN
                             INSERT INTO TRAININGPREREQUISITE (TRAININGID, PREREQUISITEID)
@@ -149,6 +147,5 @@ namespace DAL.Repository.TrainingRepositories
             };
             return await _dataBaseHelper.ExecuteTransactionAsync(query, parameters);
         }
-
     }
 }

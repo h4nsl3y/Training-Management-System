@@ -11,7 +11,6 @@
     containerElement.append(spinnerElement);
     bodyElement.appendChild(containerElement);
 }
-
 function RemoveSpinner() {
     let containerElement = document.getElementById("spinnerContainer")
     containerElement.remove();

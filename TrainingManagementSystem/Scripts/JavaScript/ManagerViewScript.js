@@ -138,6 +138,7 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
     });
 };
 //#endregion
+
 //#region  Overlay
 function CloseTextArea() {
     let rejectionComment = document.getElementById("rejectionReasonid");
@@ -169,6 +170,7 @@ function GetDocument(prerequisiteIds, employeeId) {
     }); 
 }
 //#endregion
+
 //#region ManagerOption
 function UpdatRequestState(enrollmentParameter, requestEmployeeId, requestTrainingTitle, requestAccountEmail) {
     let rejectionComment = document.getElementById("rejectionReasonid").value;

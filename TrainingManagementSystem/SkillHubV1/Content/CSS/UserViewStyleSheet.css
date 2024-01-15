@@ -5,6 +5,9 @@ body {
 .bold-text{
     font-weight: bold;
 }
+button{
+    border-radius : 5px;
+}
 body .account-area {
   background-color: #fff;
   height: 80px;
@@ -38,31 +41,31 @@ body .account-area .log-out-container {
   grid-template-columns: 50% 50%;
   justify-content: center;
 }
-body .account-area .log-out-container .log-out-button {
-  display:flex;
-  flex-wrap:wrap;
-  margin: 10px 10px;
-  background-color: #3982e8;
-  border: none;
-  padding: 5px 5px;
-  border-radius: 20px;
-  color: #fff;
+body .account-area .log-out-container .navbar-button {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 10px 10px;
+    background-color: #3982e8;
+    border: none;
+    padding: 5px 5px;
+    border-radius: 20px;
+    color: #fff;
 }
 .List-area {
-  width: 80%;
-  min-height: 500px;
-  min-width: 800px;
-  height: fit-content;
-  margin: 0px 10%;
+    width: 80%;
+    min-height: 500px;
+    min-width: 800px;
+    height: fit-content;
+    margin: 0px 10%;
 }
 .area-container {
-  background-color: #fff;
-  width: 100%;
-  border: 2px solid #fff;
-  height: fit-content;
-  margin: 0px 0px;
-  display: none;
-  border-radius: 0px 10px 10px 10px;
+    background-color: #fff;
+    width: 100%;
+    border: 2px solid #fff;
+    height: fit-content;
+    margin: 0px 0px;
+    display: none;
+    border-radius: 0px 10px 10px 10px;
 }
 .container-title {
   margin: 20px 20px;
@@ -122,7 +125,7 @@ select {
     width: 30px;
 }
 .item-button:active,
-.log-out-button:active {
+.navbar-button:active {
     background-color: #185dbe;
 }
 .tab-button {
@@ -149,11 +152,13 @@ select {
     right: 5%;
     visibility: hidden;
     width: 20%;
-    display: flex;
-    flex-wrap: wrap;
+    /* display: flex;
+    flex-wrap: wrap;*/
+    height: fit-content;
     z-index: 2;
+    overflow-y: auto; 
+    overflow-x: hidden;
     max-height: 60vh !important;
-    overflow-y: visible;
 }
 .message-container {
     background: white;
@@ -171,9 +176,6 @@ select {
 }
 .message-container p {
     padding: 3px;
-}
-.message-container:hover {
-    transform: scale(1.1);
 }
 .message-title {
     border-right: solid rgba(0,0,0,0.1);

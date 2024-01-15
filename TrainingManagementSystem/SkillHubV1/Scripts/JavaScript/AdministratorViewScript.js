@@ -132,6 +132,37 @@ function FillTrainingDetail(trainingId) {
         }
     });
 };
+function IsAnyEnrollmentByTrainingAsync(trainingId,purpose) {
+    $.ajax({
+        type: "GET",
+        url: "/Training/IsAnyEnrollmentByTrainingAsync",
+        data: { trainingId: trainingId },
+        dataType: 'json',
+        success: function (result) {
+            if (result.Success == true) {
+                if (result.Data.at(0) == true) {
+                    ShowNotification(false, 'warning', result.Message);
+                }
+                else {
+                    switch (purpose) {
+                        case "delete":
+                            DeleteTraining(trainingId)
+                            break;
+                        default:
+                            DisplayTrainingForm(false, trainingId)
+                            break;
+                    }
+                }
+            }
+            else {
+                ShowNotification(false, 'Error', "Some error has been encountered while retrieving informations");
+            }
+        },
+        error: function () {
+            ShowNotification(false, 'Error', "Some error has been encountered")
+        }
+    });
+}
 function RegisterTraining() {
     let index = 0;
     let prerequisiteList = {};
@@ -363,15 +394,15 @@ function RegisterPrerequisite() {
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
-                ShowNotification('Success', "Prerequisite has been successfully registered");
+                ShowNotification(true, 'Success', "Prerequisite has been successfully registered");
                 GetPrerequisiteDataList();
             }
             else {
-                ShowNotification('Error', "Some error has been encountered while registering the prerequisite");
+                ShowNotification(false ,'Error', "Some error has been encountered while registering the prerequisite");
             }
         },
         error: function () {
-            ShowNotification('Error', "Some error has been encountered")
+            ShowNotification(false, 'Error', "Some error has been encountered")
         }
     });
     CloseTrainingCreationForm();
@@ -426,16 +457,15 @@ function GetTrainingList(departmentList) {
                                 let deadline = new Date(Number((row.Deadline).match(/\d+/)[0]));
                                 let today = new Date();
                                 if (deadline < today) {
-                                    buttons =`<button class='item-button' id='detailBtn' onclick='GenerateCSVFile(${row.TrainingId})'>CSV</button>`;
+                                    buttons =`<button class='item-button' id='detailBtn' title='generate excel file' onclick='GenerateCSVFile(${row.TrainingId})'>CSV</button>`;
                                 }
                                 else {
                                     buttons =
                                         `<div class='split-Area'>
-                                            <button class='item-button' id='detailBtn' onclick='DisplayTrainingForm(false,${row.TrainingId})'>Edit</button>
-                                            <button class='item-button' id='detailBtn' onclick='DeleteTraining(${row.TrainingId})'>Delete</button>
+                                            <button class='item-button' id='detailBtn' title='edit the training' onclick='IsAnyEnrollmentByTrainingAsync(${row.TrainingId},"update")'>Edit</button>
+                                            <button class='item-button' id='detailBtn' title='delete the training' onclick='IsAnyEnrollmentByTrainingAsync(${row.TrainingId},"delete")'>Delete</button>
                                         </div>`;
                                 }
-
                                 return buttons;
                             }
                         },

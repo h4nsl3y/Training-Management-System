@@ -11,6 +11,9 @@
     flex-wrap: wrap;
     border-radius: 5px;
 }
+button {
+    border-radius: 5px;
+}
 form {
     background-color: white;
     width: 100%;

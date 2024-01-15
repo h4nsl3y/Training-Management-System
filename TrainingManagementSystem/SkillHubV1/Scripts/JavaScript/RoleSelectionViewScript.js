@@ -6,7 +6,7 @@
 function GetRoleList(roleId) {
     $.ajax({
         type: "GET",
-        url: "/Role/GetRoleList",
+        url: "/Role/GetUserSetRoleList",
         success: function (result) {
             if (result.Success == true) {
                 let roleSelector = document.getElementById("roleSelectorId");
@@ -40,6 +40,11 @@ function GetRoleList(roleId) {
 };
 function GetActualRole(roleId) {
     if (roleId == 1) { window.location.href = '/User/EmployeeViewPage'; }
+    else if (roleId == 3) { window.location.href = "/User/AdministratorViewPage" }
+    else { GetRoleList(roleId) }
+}
+function GetActualRole(roleId) {
+    if (roleId == 1) { window.location.href = '/User/EmployeeViewPage'; }
     else { GetRoleList(roleId) }
 }
 function SetRole() {
@@ -53,7 +58,6 @@ function SetRole() {
                 ShowNotification(true, "Success", "Role has been set");
                 if (roleId == "1") { window.location.href = "/User/EmployeeViewPage" }
                 if (roleId == "2") { window.location.href = "/User/ManagerViewPage" }
-                if (roleId == "3") { window.location.href = "/User/AdministratorViewPage" }
             }
             else {
                 ShowNotification(false, "Error", result.Message);

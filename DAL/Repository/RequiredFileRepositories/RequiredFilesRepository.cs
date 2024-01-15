@@ -41,7 +41,6 @@ namespace DAL.Repository.RequiredFileRepositories
 
             return await _dataBaseHelper.AffectedRowsAsync(query, parameters);
         }
-
         public async Task<Response<int>> CountFilePresentAsync(int trainingId, int accountId)
         {
             string query = @"SELECT FILEDATA FROM REQUIREDFILES

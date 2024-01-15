@@ -43,7 +43,6 @@ namespace BLL.AutomaticProcess
                 };
                 await SetNotification();
             }
-            
         }
         public async Task SetNotification()
         {

@@ -49,7 +49,6 @@ function GetMessage() {
         refreshMessageBox();
     }
 }
-
 function refreshMessageBox() {
     let messageBox = document.getElementById("messageBoxId")
     document.getElementsByName("messageContainer").forEach((element) => element.remove())

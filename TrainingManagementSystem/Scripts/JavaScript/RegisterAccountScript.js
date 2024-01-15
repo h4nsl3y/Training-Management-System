@@ -107,7 +107,7 @@ function GetManagerList() {
 function GetRoleList() {
     $.ajax({
         type: "GET",
-        url: "/Role/GetRoleList",
+        url: "/Role/GetUserSetRoleList",
         success: function (result) {
             if (result.Success == true) {
                 let roleCombobox = document.getElementById("RoleComboBoxId");
@@ -127,7 +127,6 @@ function GetRoleList() {
         }
     });
 };
-
 function GetPrefix(){
     var countryData = window.intlTelInputGlobals.getCountryData(),
         input = document.querySelector("#MobileNumberFieldId"),

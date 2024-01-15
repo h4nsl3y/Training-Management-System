@@ -17,21 +17,18 @@ function CreateNotification(accountId, enrollmentState, trainingTitle, comment, 
     switch (enrollmentState) {
         case 3:
             subject = "Approval";
-            body = `Your request for the training :${trainingTitle} has been approved by your manager`;
+            body = `Your request for the training \n:'${trainingTitle}' \nhas been approved by your manager`;
             break;
         case 4:
             subject = "Cancelled";
-            body = `Your request for the training :${trainingTitle} has been cancelled`;
-            break;
-        case 5:
-            subject = "Confirmation";
-            body = `Your enrollment reguarding the training :${trainingTitle} has been confirmed.`;
+            body = `Your request for the training \n:'${trainingTitle}' \nhas been cancelled`;
             break;
         default:
             subject = "Rejection";
-            body = `Your request for the training :${trainingTitle} has been rejected due to :\n '${comment}'`;
+            body = `Your request for the training \n:'${trainingTitle}' \nhas been rejected due to :\n '${comment}'`;
             break;
     }
+    body = body.concat("\n\nThis message is computer-generated , please do not reply.");
     let notification = { AccountId: accountId, Subject: subject, Body: body};
     $.ajax({
         type: "POST",

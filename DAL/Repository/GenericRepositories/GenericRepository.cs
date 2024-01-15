@@ -61,22 +61,14 @@ namespace DAL.Repository.GenericRepositories
             return new Response<T>() { Success = true, Data = { queryResult.Data.FirstOrDefault() } };
         }
         public async Task<Response<T>> GetAllAsync(Dictionary<string, object> conditions = null)
-        {
-            return (conditions==null) ? await GetDataAsync() :await  GetDataAsync(conditions);
-        }
-        public async Task<Response<bool>> UpdateAsync(T entity)//int Id, Dictionary<string, object> conditions)
+        =>  (conditions==null) ? await GetDataAsync() :await  GetDataAsync(conditions);
+        public async Task<Response<bool>> UpdateAsync(T entity)
         {
             string query = $"UPDATE {typeof(T).Name} SET ";
             List<SqlParameter> parameters = new List<SqlParameter>();
             PropertyInfo[] properties = typeof(T).GetProperties();
             PropertyInfo primaryKey = properties.Where(p => Attribute.IsDefined(p, typeof(KeyAttribute))).FirstOrDefault();
             
-/*            foreach(var condition in conditions)
-            {
-                query += $"{condition.Key} = @{condition.Key} ,";
-                parameters.Add(new SqlParameter($"@{condition.Key}", condition.Value));
-            }*/
-
             foreach (PropertyInfo property in properties.Where(p => !Attribute.IsDefined(p, typeof(KeyAttribute))))
             {
                 if (property.CanWrite) { query += $"{property.Name}  = @{property.Name},"; }

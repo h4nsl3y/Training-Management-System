@@ -130,7 +130,6 @@ namespace TrainingManagementSystem.Controllers
         [HttpGet]
         public async Task<JsonResult> GetEmployeeEnrolled() 
             => Json(await _accountBusinessLogic.GetActiveRequestEmployeeAsync((int)Session["AccountId"]), JsonRequestBehavior.AllowGet) ;
-        
         [HttpGet]
         public async Task<JsonResult> GetManagerList()
         {
