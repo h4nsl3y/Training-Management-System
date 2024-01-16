@@ -43,10 +43,6 @@ function GetActualRole(roleId) {
     else if (roleId == 3) { window.location.href = "/User/AdministratorViewPage" }
     else { GetRoleList(roleId) }
 }
-function GetActualRole(roleId) {
-    if (roleId == 1) { window.location.href = '/User/EmployeeViewPage'; }
-    else { GetRoleList(roleId) }
-}
 function SetRole() {
     let roleId = document.querySelector('input[name="Role"]:checked').value;
     $.ajax({
@@ -68,5 +64,3 @@ function SetRole() {
         }
     });
 }
-
-

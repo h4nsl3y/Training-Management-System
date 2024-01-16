@@ -127,7 +127,6 @@ function GetRoleList() {
         }
     });
 };
-
 function GetPrefix(){
     var countryData = window.intlTelInputGlobals.getCountryData(),
         input = document.querySelector("#MobileNumberFieldId"),

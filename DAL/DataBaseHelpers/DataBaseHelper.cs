@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DAL.DataBaseHelpers
 {
-    public class DataBaseHelper<T> : IDataBaseHelper<T> where T : class
+    public class DataBaseHelper<T> : IDataBaseHelper<T> where T : ISystemEntity
     {
         private readonly string _connString;
         private SqlConnection _connection;
@@ -126,7 +126,7 @@ namespace DAL.DataBaseHelpers
                 _connection.Close();
             }
         }
-        private T MapObject(IDataReader reader)
+        private T MapObject(IDataReader reader) 
         {
             T objectInstance = Activator.CreateInstance<T>();
             for (int columnIndex = 0; columnIndex < reader.FieldCount; columnIndex++)
