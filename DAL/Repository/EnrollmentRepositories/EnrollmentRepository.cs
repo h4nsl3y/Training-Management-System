@@ -44,8 +44,7 @@ namespace DAL.Repository.EnrollmentRepositories
 				                            ENROLLMENTID FROM ENROLLMENT 
 				                            JOIN TRAINING ON ENROLLMENT.TRAININGID = TRAINING.TRAININGID
 				                            JOIN ACCOUNT ON ENROLLMENT.ACCOUNTID = ACCOUNT.ACCOUNTID
-				                            WHERE ENROLLMENT.TRAININGID IN 
-					                            (SELECT TRAININGID FROM TRAINING WHERE DEADLINE = CAST(GETDATE() AS DATE))
+				                            WHERE ENROLLMENT.TRAININGID = @TRAININGID
 				                            AND STATEID = @ENROLLMENTSTATEAPPROVE
 				                            ORDER BY 
 				                            CASE

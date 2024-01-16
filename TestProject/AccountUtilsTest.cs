@@ -31,12 +31,12 @@ namespace TestProject
             {
                 new Account(){
                     AccountId = 1,
-                    FirstName = "AAA",
+                    FirstName = "Hansley",
                     OtherName = "",
-                    LastName = "DDD",
-                    NationalIdentificationNumber = "A1234567890123",
+                    LastName = "Eleonore",
+                    NationalIdentificationNumber = "H1234567890123",
                     MobileNumber = "51234567",
-                    Email = "AAADDD@email.com",
+                    Email = "hansley.eleonore@email.com",
                     DepartmentId = (int)DepartmentEnum.Product_and_Technology ,
                     ManagerId = 2,
                     Password = "$2a$13$xEdplDaM43mKq9xDkSXzr.ytbHFJKLZy/YadSd2/KIS6h0qjWNcXi", // employee
@@ -44,12 +44,12 @@ namespace TestProject
 
                 new Account(){
                     AccountId = 2,
-                    FirstName = "BBB",
+                    FirstName = "Mathew",
                     OtherName = "",
-                    LastName = "DDD",
-                    NationalIdentificationNumber = "B1234567890123",
+                    LastName = "Chan",
+                    NationalIdentificationNumber = "C1234567890123",
                     MobileNumber = "52234567",
-                    Email = "BBBDDD@email.com",
+                    Email = "mathew.chan@email.com",
                     DepartmentId = (int)DepartmentEnum.Product_and_Technology ,
                     ManagerId = 3,
                     Password = "$2a$13$hqDOc5VS7WtZ1l.uFbL/1Oi9aIfTqmEsvRL8VYwADp6hWqeb.z5la", // manager
@@ -57,12 +57,12 @@ namespace TestProject
 
                 new Account(){
                     AccountId = 3,
-                    FirstName = "CCC",
+                    FirstName = "Ashley",
                     OtherName = "",
-                    LastName = "DDD",
-                    NationalIdentificationNumber = "C1234567890123",
+                    LastName = "Kanye",
+                    NationalIdentificationNumber = "K1234567890123",
                     MobileNumber = "53234567",
-                    Email = "CCCDDD@email.com",
+                    Email = "Ashley.Kanye@email.com",
                     DepartmentId = (int)DepartmentEnum.Product_and_Technology ,
                     Password = "$2a$13$H1f8wryG3Lk0KtzV7ayvQ.3I2bsCbFpjw6HysbIJsxkr/M5K8ryOG", // administrator
                     RoleId = (int)RoleEnum.Administrator }
@@ -172,8 +172,8 @@ namespace TestProject
         }
 
         [Test]
-        [TestCase("AAADDD@email.com", "manager", ExpectedResult = false)]
-        [TestCase("AAADDD@email.com", "employee", ExpectedResult = true)]
+        [TestCase("hansley.eleonore@email.com", "manager", ExpectedResult = false)]
+        [TestCase("hansley.eleonore@email.com", "employee", ExpectedResult = true)]
         public async Task<bool> Test_AuthenticateUserError1(string employeeEmail, string password)
         {
             //Arrange
@@ -184,8 +184,8 @@ namespace TestProject
         }
 
         [Test]
-        [TestCase("CCCDDD@email.com", "C1234567890123", "53234567", ExpectedResult = true)]
-        [TestCase("fakeEmail", "C1234567890123", "53234567", ExpectedResult = true)]
+        [TestCase("hansley.eleonore@email.com", "A1234567890123", "51234567", ExpectedResult = true)]
+        [TestCase("fakeEmail", "A1234567890123", "51234567", ExpectedResult = true)]
         [TestCase("fakeEmail", "fakeId", "FakeNumber", ExpectedResult = false)]
         public async Task<bool> Test_IsDuplicatedAsync(string email, string nationalIdentificationNumber, string mobileNumber)
         {
@@ -197,7 +197,7 @@ namespace TestProject
         }
 
         [Test]
-        [TestCase("Email", "AAADDD@email.com", ExpectedResult = true)]
+        [TestCase("Email", "hansley.eleonore@email.com", ExpectedResult = true)]
         [TestCase("Email", "FakeEmail", ExpectedResult = false)]
         [TestCase("AccountId", 1, ExpectedResult = true)]
         [TestCase("AccountID", 100, ExpectedResult = false)]
@@ -213,8 +213,8 @@ namespace TestProject
 
         [Test]
         [TestCase("","",ExpectedResult = 3 )]
-        [TestCase("Email", "AAADDD@email.com", ExpectedResult = 1)]
-        [TestCase("FakeField", "AAADDD@email.com", ExpectedResult = 0)]
+        [TestCase("Email", "hansley.eleonore@email.com", ExpectedResult = 1)]
+        [TestCase("FakeField", "hansley.eleonore@email.com", ExpectedResult = 0)]
         [TestCase("Email", "FakeEmail", ExpectedResult = 0)]
         public async Task<int> Test_GetAllAccountAsync(string columnName, object value)
         {
@@ -227,7 +227,7 @@ namespace TestProject
         }
 
         [Test]
-        [TestCase("AAADDD@email.com", ExpectedResult = true)]
+        [TestCase("hansley.eleonore@email.com", ExpectedResult = true)]
         [TestCase("FakeEmail", ExpectedResult = false)]
         public async Task<bool> Test_GetByEmailAsync(string email)
         {
