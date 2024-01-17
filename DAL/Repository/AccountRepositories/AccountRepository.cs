@@ -26,29 +26,6 @@ namespace DAL.Repository.AccountRepositories
             PropertyInfo[] properties = typeof(Account).GetProperties();
             tableName = typeof(Account).Name;
         }
-        public async Task<Response<bool>> AddAsync (Account account)
-        {
-            string insertAccount = $@"DECLARE @ACCOUNTID INT;
-                                    INSERT INTO ACCOUNT
-                                    (FIRSTNAME, OTHERNAME, LASTNAME, NATIONALIDENTIFICATIONNUMBER, MOBILENUMBER, EMAIL, MANAGERID, DEPARTMENTID, PASSWORD)
-                                    VALUES(@FIRSTNAME,@OTHERNAME,@LASTNAME,@NATIONALIDENTIFICATIONNUMBER,@MOBILENUMBER,@EMAIL,@MANAGERID,@DEPARTMENTID,@PASSWORD);
-                                    SET @ACCOUNTID = SCOPE_IDENTITY(); 
-                                    INSERT INTO ACCOUNTROLE(ACCOUNTID, ROLEID) VALUES(@ACCOUNTID, @ROLEID)";
-            List<SqlParameter> parameters = new List<SqlParameter>()
-            {
-                new SqlParameter("@FIRSTNAME",GetPropertyValue(account.FirstName)),
-                new SqlParameter("@OTHERNAME", GetPropertyValue(account.OtherName)),
-                new SqlParameter("@LASTNAME", GetPropertyValue(account.LastName)),
-                new SqlParameter("@NATIONALIDENTIFICATIONNUMBER", GetPropertyValue(account.NationalIdentificationNumber)),
-                new SqlParameter("@MOBILENUMBER", GetPropertyValue(account.MobileNumber)),
-                new SqlParameter("@EMAIL", GetPropertyValue(account.Email)),
-                new SqlParameter("@MANAGERID", GetPropertyValue(account.ManagerId)),
-                new SqlParameter("@DEPARTMENTID", GetPropertyValue(account.DepartmentId)),
-                new SqlParameter("@PASSWORD", GetPropertyValue(account.Password)),
-                new SqlParameter("@ROLEID", GetPropertyValue(account.RoleId))
-        };
-            return await Task.Run(() => _dataBaseHelper.ExecuteTransactionAsync(insertAccount, parameters));
-        }
         public async Task<Response<Account>> AuthenticateAsync(string email)
         {
             string query = $@"SELECT PASSWORD FROM ACCOUNT WHERE EMAIL = @EMAIL";
@@ -156,6 +133,32 @@ namespace DAL.Repository.AccountRepositories
                 new SqlParameter($"@ROLEID2", RoleEnum.Administrator)
             };
             return await _dataBaseHelper.ExecuteQueryAsync(query,parameters);
+        }
+        public async Task<Response<Account>> RegisterAccountAsync(Account account)
+        {
+            string insertAccount = $@"DECLARE @ACCOUNTID INT;
+                                    INSERT INTO ACCOUNT
+                                    (FIRSTNAME, OTHERNAME, LASTNAME, NATIONALIDENTIFICATIONNUMBER, MOBILENUMBER, EMAIL, MANAGERID, DEPARTMENTID, PASSWORD)
+                                    VALUES(@FIRSTNAME,@OTHERNAME,@LASTNAME,@NATIONALIDENTIFICATIONNUMBER,@MOBILENUMBER,@EMAIL,@MANAGERID,@DEPARTMENTID,@PASSWORD);
+                                    SET @ACCOUNTID = SCOPE_IDENTITY(); 
+
+                                    INSERT INTO ACCOUNTROLE(ACCOUNTID, ROLEID) VALUES(@ACCOUNTID, @ROLEID)
+
+                                    SELECT * FROM ACCOUNT WHERE ACCOUNTID = @ACCOUNTID";
+            List<SqlParameter> parameters = new List<SqlParameter>()
+            {
+                new SqlParameter("@FIRSTNAME",GetPropertyValue(account.FirstName)),
+                new SqlParameter("@OTHERNAME", GetPropertyValue(account.OtherName)),
+                new SqlParameter("@LASTNAME", GetPropertyValue(account.LastName)),
+                new SqlParameter("@NATIONALIDENTIFICATIONNUMBER", GetPropertyValue(account.NationalIdentificationNumber)),
+                new SqlParameter("@MOBILENUMBER", GetPropertyValue(account.MobileNumber)),
+                new SqlParameter("@EMAIL", GetPropertyValue(account.Email)),
+                new SqlParameter("@MANAGERID", GetPropertyValue(account.ManagerId)),
+                new SqlParameter("@DEPARTMENTID", GetPropertyValue(account.DepartmentId)),
+                new SqlParameter("@PASSWORD", GetPropertyValue(account.Password)),
+                new SqlParameter("@ROLEID", GetPropertyValue(account.RoleId))
+            };
+            return await Task.Run(() => _dataBaseHelper.ExecuteTransactionAsync(insertAccount, parameters));
         }
     }
 }

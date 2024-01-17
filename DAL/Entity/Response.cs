@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL.Entity
 {
-    public class Response<T>
+    public class Response<T>   
     {
         public bool Success {  get; set; }
         public string Message {  get; set; }

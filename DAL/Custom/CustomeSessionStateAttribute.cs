@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.Entity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,8 @@ namespace DAL.Custom
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             Controller controller = filterContext.Controller as Controller;
-            if (controller != null && controller.Session["AccountId"] == null)
+            Account userAccount = (Account)controller.Session["Account"];
+            if (controller != null && userAccount.AccountId == null)
             {
                 filterContext.Result = new RedirectToRouteResult(
                     new RouteValueDictionary(

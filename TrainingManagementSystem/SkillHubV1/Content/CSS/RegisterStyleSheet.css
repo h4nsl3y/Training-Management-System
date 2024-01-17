@@ -3,10 +3,10 @@
     background-color: rgb(240, 240, 240);
 }
 .area {
-    width: 40%;
+    width: 60%;
     min-width: 500px;
     min-height: 700px;
-    margin: 0px 30%;
+    margin: 0px 20%;
     display: flex;
     flex-wrap: wrap;
     border-radius: 5px;
@@ -55,10 +55,15 @@ form {
 label {
     font-size: 13px;
 }
+.split-number{
+    display: grid;
+    grid-template-columns: 30% 70%;
+    grid-column-gap:5px;
+}
 input[type=text], input[type=number], input[type=password], input[type=tel], select {
     border: none;
     border-bottom: 1px solid black;
-    max-width:80%;
+    max-width: 100%;
 }
 input[type=tel]{
     width : 100%;

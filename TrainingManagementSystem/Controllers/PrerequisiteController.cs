@@ -22,7 +22,6 @@ namespace TrainingManagementSystem.Controllers
         {
             _genericBusinessLogic = genericBusinessLogic;
             _prerequisiteBusinessLogic = prerequisiteBusinessLogic;
-            PropertyInfo[] properties = typeof(Account).GetProperties();
         }
         [HttpGet]
         public async Task<JsonResult> GetAllPrerequisite() => Json(await _genericBusinessLogic.GetAllAsync(), JsonRequestBehavior.AllowGet);
@@ -37,8 +36,9 @@ namespace TrainingManagementSystem.Controllers
             => Json(await _prerequisiteBusinessLogic.GetPrequisiteAsync(trainingId), JsonRequestBehavior.AllowGet) ;
 
         [HttpGet]
-        public async Task<JsonResult> GetPrerequisiteFile() 
-            => Json(await _prerequisiteBusinessLogic.GetPrerequisiteIdByEmployee((int)Session["AccountId"]), JsonRequestBehavior.AllowGet) ;
+        public async Task<JsonResult> GetPrerequisiteFile()
+            => Json(await _prerequisiteBusinessLogic.GetPrerequisiteIdByEmployee(((Account)Session["Account"]).AccountId), JsonRequestBehavior.AllowGet);
+ 
         [HttpPost]
         public async Task<JsonResult> AddPrerequisite(string prerequisiteDescription)
         {

@@ -233,3 +233,4 @@ function GetPrerequisiteByTraining(trainingId, accountId, buttonId) {
     });
 }
 
+                

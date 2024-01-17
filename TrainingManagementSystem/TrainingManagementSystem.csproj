@@ -160,7 +160,6 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\PrerequisiteController.cs" />
-    <Compile Include="Controllers\RejectionController.cs" />
     <Compile Include="Controllers\RequiredFileController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\StateController.cs" />

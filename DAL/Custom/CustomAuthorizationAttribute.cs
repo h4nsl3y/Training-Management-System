@@ -1,4 +1,5 @@
-﻿using DAL.Enum;
+﻿using DAL.Entity;
+using DAL.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,10 +20,10 @@ namespace DAL.Custom
         public override void OnActionExecuted(ActionExecutedContext filterContext)
         {
             Controller controller = filterContext.Controller as Controller;
-            if (controller != null && controller.Session["Role"] != null)
+            Account userAccount = (Account)controller.Session["Account"];
+            if (controller != null && userAccount.RoleId != null)
             {
-                RoleEnum sessionAccountRole = (RoleEnum)controller.Session["Role"];
-                RoleEnum currentRole = sessionAccountRole;
+                RoleEnum currentRole = (RoleEnum)userAccount.RoleId;
                 if (AuthorizedRole != currentRole)
                 {
                     filterContext.Result = new RedirectToRouteResult(

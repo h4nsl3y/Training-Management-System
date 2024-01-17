@@ -12,8 +12,8 @@ namespace TrainingManagementSystem.Controllers
 {
     public class ViewModelController : Controller
     {
-        private readonly IViewModelBusinesslogic<TrainingEnrollmentViewModel> _viewModelBusinesslogic;
-        public ViewModelController(IViewModelBusinesslogic<TrainingEnrollmentViewModel> viewModelBusinesslogic)
+        private readonly IViewModelBusinessLogic<TrainingEnrollmentViewModel> _viewModelBusinesslogic;
+        public ViewModelController(IViewModelBusinessLogic<TrainingEnrollmentViewModel> viewModelBusinesslogic)
         {
             _viewModelBusinesslogic = viewModelBusinesslogic;
         }

@@ -10,7 +10,7 @@ using System.Web.UI.WebControls;
 
 namespace BLL.TrainingBusinessLogics
 {
-    public class TrainingBusinesslogic : ITrainingBusinesslogic
+    public class TrainingBusinesslogic : ITrainingBusinessLogic
     {
         private readonly ITrainingRepository _trainingRepository;
         private readonly ILogger _logger;
@@ -87,7 +87,6 @@ namespace BLL.TrainingBusinessLogics
         {
             try
             {
-                //
                 Response<bool> response = await _trainingRepository.IsAnyEnrollmentByTrainingAsync(trainingId);
                 return response.Data.FirstOrDefault() ?
                     new Response<bool> { Success = true, Data = { true }, Message = "Some users has already registered for this training" }:

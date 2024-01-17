@@ -4,6 +4,7 @@ using DAL.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Helpers;
@@ -22,8 +23,9 @@ namespace TrainingManagementSystem.Controllers
         public async Task<JsonResult> AddNotification(Notification notification,string email) 
             => Json(await _notificationBusinessLogic.AddNotificationAsync(notification,email), JsonRequestBehavior.AllowGet);
         [HttpGet]
-        public async Task<JsonResult> GetNotification() 
-            => Json(await _notificationBusinessLogic.GetNotificationAsync((int)Session["AccountId"]), JsonRequestBehavior.AllowGet);
+        public async Task<JsonResult> GetNotification()
+         => Json(await _notificationBusinessLogic.GetNotificationAsync(((Account)Session["Account"]).AccountId), JsonRequestBehavior.AllowGet);
+
         [HttpPost]
         public async Task<JsonResult> UpdateNotificationState(int notificationId) 
             => Json(await _notificationBusinessLogic.UpdateStateNotificationNotificationAsync(notificationId), JsonRequestBehavior.AllowGet);

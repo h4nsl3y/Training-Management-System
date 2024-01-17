@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BLL.ViewModelsBusinessLogics
 {
-    public interface IViewModelBusinesslogic<T>
+    public interface IViewModelBusinessLogic<T>
     {
         Task<Response<T>> GetTrainingEnrollmentView(int accountId);
     }

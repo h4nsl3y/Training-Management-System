@@ -17,10 +17,10 @@ namespace TestProject
         private string _mobileNumber = _timestamp.Substring(_timestamp.Length - 8);
         private string _email = $"Test_{_timestamp}@email.com";
         private string _department = $"Product and Technology"; 
-        private string _role = $"Manager";
+        private string _role = $"Employee";
         private string _password = $"*password_{_timestamp}!";
 
-        private string _trainingTitle = $"TestTrainint_{_timestamp}";
+        private string _trainingTitle = $"TestTraining_{_timestamp}";
 
         private const string _URL = "https://localhost:81/";
 
@@ -49,14 +49,14 @@ namespace TestProject
             _seleniumHelper.Click($"//option[text()='{_role}']");
             _seleniumHelper.EnterText("//input[@id='PasswordFieldId']", _password);
             _seleniumHelper.EnterText("//input[@id='ConfirmPasswordFieldId']", _password);
-            _seleniumHelper.Click("//input[@value='Sign Up']");
+            _seleniumHelper.DoubleClick("//input[@value='Sign Up']");
 
-            _seleniumHelper.ExplicitWait($"//label[text()='{_role}']/preceding-sibling::input", 5000);
-            _seleniumHelper.Click($"//label[text()='{_role}']/preceding-sibling::input");
-            _seleniumHelper.Click("//input[@value='Submit']");
+            //_seleniumHelper.ExplicitWait($"//label[text()='{_role}']/preceding-sibling::input", 5000);
+            //_seleniumHelper.Click($"//label[text()='{_role}']/preceding-sibling::input");
+           // _seleniumHelper.Click("//input[@value='Submit']");
 
             _seleniumHelper.WaitForDom(5000);
-
+            _seleniumHelper.ExplicitWait($"//h2[text()='{_firstName} {_lastName}']", 5000);
             Assert.IsTrue(_seleniumHelper.IsElementPresent($"//h2[text()='{_firstName} {_lastName}']"));
             _seleniumHelper.Close();
 
@@ -73,12 +73,13 @@ namespace TestProject
             _seleniumHelper.EnterText("//input[@id='employeePasswordId']", _password);
             _seleniumHelper.Click("//input[@value='Sign In']");
 
-            _seleniumHelper.ExplicitWait("//label[text()='Employee']/preceding-sibling::input", 5000);
-            _seleniumHelper.Click("//label[text()='Employee']/preceding-sibling::input");
-            _seleniumHelper.Click("//input[@value='Submit']");
+            //_seleniumHelper.ExplicitWait("//label[text()='Employee']/preceding-sibling::input", 5000);
+            //_seleniumHelper.Click("//label[text()='Employee']/preceding-sibling::input");
+            //_seleniumHelper.Click("//input[@value='Submit']");
 
             _seleniumHelper.WaitForDom(5000);
 
+            _seleniumHelper.ExplicitWait($"//h2[text()='{_firstName} {_lastName}']", 5000);
             Assert.IsTrue(_seleniumHelper.IsElementPresent($"//h2[text()='{_firstName} {_lastName}']"));
             _seleniumHelper.Close();
         }
@@ -98,9 +99,9 @@ namespace TestProject
             _seleniumHelper.EnterText("//input[@id='employeePasswordId']", _password);
             _seleniumHelper.Click("//input[@value='Sign In']");
 
-            _seleniumHelper.ExplicitWait("//label[text()='Employee']/preceding-sibling::input", 5000);
-            _seleniumHelper.Click("//label[text()='Employee']/preceding-sibling::input");
-            _seleniumHelper.Click("//input[@value='Submit']");
+            //_seleniumHelper.ExplicitWait("//label[text()='Employee']/preceding-sibling::input", 5000);
+            //_seleniumHelper.Click("//label[text()='Employee']/preceding-sibling::input");
+            //_seleniumHelper.Click("//input[@value='Submit']");
 
             _seleniumHelper.WaitForDom(5000);
 

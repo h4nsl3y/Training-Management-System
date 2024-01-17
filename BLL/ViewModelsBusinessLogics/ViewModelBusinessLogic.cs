@@ -10,7 +10,7 @@ using System.Xml.XPath;
 
 namespace BLL.ViewModelsBusinessLogics
 {
-    public class ViewModelBusinessLogic<T> : IViewModelBusinesslogic<T>
+    public class ViewModelBusinessLogic<T> : IViewModelBusinessLogic<T>
     {
         private readonly IViewModelRepository<T> _viewModelRepository;
         private readonly ILogger _logger;

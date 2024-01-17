@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BLL.TrainingBusinessLogics
 {
-    public interface ITrainingBusinesslogic
+    public interface ITrainingBusinessLogic
     {
         Task<Response<bool>> DeleteTrainingAsync(int trainingId);
         Task<Response<Training>> GetAllTrainingAsync();

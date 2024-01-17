@@ -11,7 +11,8 @@ namespace DAL.DataBaseHelpers
     public interface IDataBaseHelper<T>
     {
         Task<Response<T>> ExecuteQueryAsync(string query, List<SqlParameter> parameters = null);
-        Task<Response<bool>> ExecuteTransactionAsync(string query, List<SqlParameter> parameters = null);
+        Task<Response<bool>> ExecuteTransactionAffectedRowAsync(string query, List<SqlParameter> parameters = null);
+        Task<Response<T>> ExecuteTransactionAsync(string query, List<SqlParameter> parameters = null);
         Task<Response<bool>> AffectedRowsAsync(string query, List<SqlParameter> parameters = null);
     }
 }

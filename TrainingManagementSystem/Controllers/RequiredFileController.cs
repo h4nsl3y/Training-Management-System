@@ -34,7 +34,7 @@ namespace TrainingManagementSystem.Controllers
                 HttpPostedFileBase file = Request.Files[0];
                 if (file != null && file.ContentLength > 0)
                 {
-                    int accountId = (int)Session["AccountId"];
+                    int accountId = ((Account)Session["Account"]).AccountId;
                     string path = Path.Combine(Server.MapPath("~/data"), "fileData");
                     file.SaveAs(path);
                     byte[] binaryData = _requiredFileSBusinessLogic.GetFileData(path);
@@ -57,12 +57,12 @@ namespace TrainingManagementSystem.Controllers
         {
             HttpPostedFileBase file = Request.Files[0];
             string path = Path.Combine(Server.MapPath("~/data"), "fileData");
-            return  Json(await _requiredFileSBusinessLogic.UploadFileAsync(file, path, (int)Session["AccountId"], prerequisiteId)) ;
+            return  Json(await _requiredFileSBusinessLogic.UploadFileAsync(file, path, ((Account)Session["Account"]).AccountId, prerequisiteId)) ;
         }
 
         public async Task<ActionResult> GetFile(int prerequisiteId, int accountId = 0)
         {
-            if (accountId == 0) { accountId = (int)Session["AccountId"]; }
+            if (accountId == 0) { accountId = ((Account)Session["Account"]).AccountId; }
             Dictionary<string, object> conditions = new Dictionary<string, object>() { { "PREREQUISITEID", prerequisiteId }, { "ACCOUNTID", accountId } } ;
             Response<RequiredFiles> requiredFileResult = await _genericBusinessLogic.GetAsync(conditions);
             RequiredFiles myFile = requiredFileResult.Data.FirstOrDefault();
@@ -70,7 +70,7 @@ namespace TrainingManagementSystem.Controllers
         }
         public async Task<JsonResult> IsFilePresent(int prerequisiteId)
         {
-            int accountId = (int)Session["AccountId"]; 
+            int accountId = ((Account)Session["Account"]).AccountId; 
             Dictionary<string, object> conditions = new Dictionary<string, object>() { { "PREREQUISITEID", prerequisiteId }, { "ACCOUNTID", accountId } };
             Response<RequiredFiles> requiredFileResult = await _genericBusinessLogic.GetAsync(conditions);
             return (requiredFileResult.Success) ?
@@ -79,6 +79,6 @@ namespace TrainingManagementSystem.Controllers
 
         }
         public async Task<JsonResult> CoutPresentFile(int trainingId) 
-         => Json(await _requiredFileSBusinessLogic.CountFilePresentAsync(trainingId, (int) Session["AccountId"]), JsonRequestBehavior.AllowGet);
+         => Json(await _requiredFileSBusinessLogic.CountFilePresentAsync(trainingId, ((Account)Session["Account"]).AccountId), JsonRequestBehavior.AllowGet);
     }
 }

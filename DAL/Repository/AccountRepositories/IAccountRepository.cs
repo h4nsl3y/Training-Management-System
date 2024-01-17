@@ -11,12 +11,12 @@ namespace DAL.Repository.AccountRepositories
 {
     public interface IAccountRepository
     {
-        Task<Response<bool>> AddAsync(Account account);
         Task<Response<Account>> AuthenticateAsync(string email);
         Task<Response<bool>> DuplicatedAsync(Dictionary<string, object> conditions);
         Task<Response<Account>> GetAsync(Dictionary<string, object> conditions = null);
         Task<Response<Account>> GetAllAsync(Dictionary<string, object> conditions = null);
         Task<Response<Account>> GetActiveRequestEmployeeAsync(int managerId);
         Task<Response<Account>> GetManagerListAsync();
+        Task<Response<Account>> RegisterAccountAsync(Account account);
     }
 }

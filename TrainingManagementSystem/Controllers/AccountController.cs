@@ -11,15 +11,16 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace TrainingManagementSystem.Controllers
 {
     public class AccountController : Controller
     {
         private readonly IGenericBusinessLogic<Account> _genericBusinessLogic;
-        private readonly IAccountBusinesslogic _accountBusinessLogic;
+        private readonly IAccountBusinessLogic _accountBusinessLogic;
         private readonly string primaryKey;
-        public AccountController(IGenericBusinessLogic<Account> genericBusinessLogic, IAccountBusinesslogic accountBusinesslogic)
+        public AccountController(IGenericBusinessLogic<Account> genericBusinessLogic, IAccountBusinessLogic accountBusinesslogic)
         {
             _genericBusinessLogic = genericBusinessLogic;
             _accountBusinessLogic = accountBusinesslogic;
@@ -44,14 +45,8 @@ namespace TrainingManagementSystem.Controllers
                     Response<Account> _accountResult = await _accountBusinessLogic.GetByEmailAsync(account.Email);
                     if (_accountResult.Success)
                     {
-                        Account user = _accountResult.Data.FirstOrDefault();
-                        Session["AccountId"] = user.AccountId;
-                        Session["FirstName"] = user.FirstName;
-                        Session["LastName"] = user.LastName;
-                        Session["OtherName"] = user.OtherName;
-                        Session["Email"] = user.Email;
-                        Session["MobileNumber"] = user.MobileNumber;
-                        Session["Role"] = user.RoleId;
+                        Account user = _accountResult.Data.First();
+                        Session["Account"] = user;
                         Session["TrueRole"] = user.RoleId;
                         return Json(new { Success = true });
                     }
@@ -73,7 +68,6 @@ namespace TrainingManagementSystem.Controllers
         }
         [HttpGet]
         public async Task<JsonResult> GetAllAccount() => Json(await _accountBusinessLogic.GetAllAccountAsync(), JsonRequestBehavior.AllowGet);
-        
         [HttpPost]
         [OutputCache(NoStore = true, Duration = 0, VaryByParam = "*")]
         public JsonResult LogUserOut()
@@ -87,38 +81,21 @@ namespace TrainingManagementSystem.Controllers
             Response<bool> duplicatedResult = await _accountBusinessLogic.IsDuplicatedAsync(newAccount.Email, newAccount.NationalIdentificationNumber, newAccount.MobileNumber);
             if (duplicatedResult.Data.Any(item => item == true))
             {
-                string duplicateMessage = "The field(s) : ";
-                if (duplicatedResult.Data[0] == true) { duplicateMessage += "email,"; }
-                if (duplicatedResult.Data[1] == true) { duplicateMessage += "mobile number,"; }
-                if (duplicatedResult.Data[2] == true) { duplicateMessage += "national identification number,"; }
-                duplicateMessage = duplicateMessage.Substring(0, duplicateMessage.Length - 1);
-                duplicateMessage += " have already been registered ! ";
-                return Json(new { Success = false, Message = duplicateMessage });
+                return Json(new { Success = false, Message = duplicatedResult.Message });
             }
             else
             {
-                Response<bool> addResult = await _accountBusinessLogic.AddAccountAsync(newAccount);
+                Response<Account> addResult = await _accountBusinessLogic.AddAccountAsync(newAccount);
                 if (addResult.Success)
                 {
-                    Response<Account> accountResult = await _accountBusinessLogic.GetByEmailAsync(newAccount.Email);
-                    if (accountResult.Success)
-                    {
-                        Account user = accountResult.Data.FirstOrDefault();
-                        Session["AccountId"] = user.AccountId;
-                        Session["FirstName"] = user.FirstName;
-                        Session["LastName"] = user.LastName;
-                        Session["OtherName"] = user.OtherName;
-                        Session["Email"] = user.Email;
-                        Session["MobileNumber"] = user.MobileNumber;
-                        Session["Role"] = user.RoleId;
-                        Session["TrueRole"] = user.RoleId;
-                        return Json(new { Success = true });
-                    }
-                    else { return Json(new { Success = false, accountResult.Message }); };
+                    Account user  = addResult.Data.First();
+                    Session["Account"] = user;
+                    Session["TrueRole"] = user.RoleId;
+                    return Json(new { Success = true });
                 }
                 else
                 {
-                    return Json(new { Success = addResult.Message });
+                    return Json(new { Success = false , Message = addResult.Message });
                 }
             }
         }
@@ -128,8 +105,9 @@ namespace TrainingManagementSystem.Controllers
             return Json(new { Success = true });
         }
         [HttpGet]
-        public async Task<JsonResult> GetEmployeeEnrolled() 
-            => Json(await _accountBusinessLogic.GetActiveRequestEmployeeAsync((int)Session["AccountId"]), JsonRequestBehavior.AllowGet) ;
+        public async Task<JsonResult> GetEmployeeEnrolled()
+        =>  Json(await _accountBusinessLogic.GetActiveRequestEmployeeAsync((int)((Account)Session["Account"]).AccountId), JsonRequestBehavior.AllowGet);
+
         [HttpGet]
         public async Task<JsonResult> GetManagerList()
         {

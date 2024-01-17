@@ -28,7 +28,7 @@
                 <div class="field-container">
                     <div class="input-field">
                         <label for="FirstName">First name*</label>
-                        <input type="text" id="FirstNameFieldId" name="FirstName" required>
+                        <input type="text" id="FirstNameFieldId" name="FirstName" >
                     </div>
                     <div class="input-field">
                         <label for="OtherNameFieldId">Other name(s)</label>
@@ -39,35 +39,38 @@
                 <div class="field-container">
                     <div class="input-field">
                         <label for="LastNameFieldId">Last name*</label>
-                        <input type="text" id="LastNameFieldId" name="LastNameField" required>
+                        <input type="text" id="LastNameFieldId" name="LastNameField" >
                     </div>
                     <div class="input-field">
                         <label for="NationalIdentificationNumberFieldId">National Identification Number *</label>
-                        <input type="text" id="NationalIdentificationNumberFieldId" name="NationalIdentificationNumberField" required>
+                        <input type="text" id="NationalIdentificationNumberFieldId" name="NationalIdentificationNumberField" >
                     </div>
                 </div>
 
                 <div class="field-container">
                     <div class="input-field">
                         <label for="MobileNumberField">Mobile number*</label>
-                        <input type="tel" id="MobileNumberFieldId" name="MobileNumberField" required>
+                        <div class="split-number">
+                            <input type="tel" id="MobilePrefixFieldId" name="MobileNumberField" maxlength="4">
+                            <input type="number" id="MobileNumberFieldId" name="MobileNumberField" maxlength="9">
+                        </div>
                     </div>
                     <div class="input-field">
                         <label for="EmailFieldId">Email*</label>
-                        <input type="text" id="EmailFieldId" name="EmailField" required>
+                        <input type="text" id="EmailFieldId" name="EmailField" >
                     </div>
                 </div>
 
                 <div class="field-container">
                     <div class="input-field">
                         <label for="DepartmentComboBoxId">Department*</label>
-                        <select id="DepartmentComboBoxId" name="DepartmentComboBox" required>
+                        <select id="DepartmentComboBoxId" name="DepartmentComboBox" >
                             <option value="none" selected disabled hidden>Select a department</option>
                         </select>
                     </div>
                     <div class="input-field">
                         <label for="ManagerComboBoxId">Manager</label>
-                        <select id="ManagerComboBoxId" name="ManagerComboBox" required>
+                        <select id="ManagerComboBoxId" name="ManagerComboBox" >
                             <option value="none" selected disabled hidden>Select an manager</option>
                         </select>
                     </div>
@@ -76,7 +79,7 @@
                 <div class="field-container">
                     <div class="input-field">
                         <label for="RoleComboBoxId">Role*</label>
-                        <select id="RoleComboBoxId" name="RoleComboBox" required>
+                        <select id="RoleComboBoxId" name="RoleComboBox" >
                             <option value="none" selected disabled hidden>Select a role</option>
                         </select>
                     </div>
@@ -84,16 +87,14 @@
                     </div>
                 </div>
 
-
-
                 <div class="field-container">
                     <div class="input-field">
                         <label for="PasswordFieldId">Password*</label>
-                        <input type="Password" id="PasswordFieldId" name="PasswordField" required>
+                        <input type="Password" id="PasswordFieldId" name="PasswordField" >
                     </div>
                     <div class="input-field">
                         <label for="ConfirmPasswordFieldId">Confirm Password*</label>
-                        <input type="Password" id="ConfirmPasswordFieldId" name="ConfirmPasswordField" required>
+                        <input type="Password" id="ConfirmPasswordFieldId" name="ConfirmPasswordField" >
                     </div>
                 </div>
 

@@ -23,7 +23,7 @@ namespace DAL.Repository.TrainingRepositories
             string query = @"UPDATE TRAINING SET ISACTIVE = 0 WHERE TRAININGID = @TRAININGID;
                             DELETE FROM TRAININGPREREQUISITE WHERE TRAININGID = @TRAININGID;";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
-            return await _dataBaseHelper.ExecuteTransactionAsync(query, parameters);
+            return await _dataBaseHelper.ExecuteTransactionAffectedRowAsync(query, parameters);
         }
         public async Task<Response<Training>> GetAllTrainingAsync()
         {
@@ -67,7 +67,12 @@ namespace DAL.Repository.TrainingRepositories
         }
         public async Task<Response<bool>> IsAnyEnrollmentByTrainingAsync(int trainingId)
         {
-            string query = @"SELECT TOP 1 * FROM ENROLLMENT WHERE TRAININGID = @TRAININGID; ";
+            string query = @"SELECT TOP 1 * FROM ENROLLMENT 
+                            WHERE TRAININGID = @TRAININGID 
+                            AND STATEID NOT IN 
+                                (SELECT STATEID FROM STATE 
+                                WHERE STATEDEFINITION = 'CANCELLED' 
+                                OR STATEDEFINITION = 'REJECTED') ; ";
             List<SqlParameter> parameters = new List<SqlParameter>() { new SqlParameter("@TRAININGID", trainingId) };
             Response<Training> response = await _dataBaseHelper.ExecuteQueryAsync(query, parameters);
             return new Response<bool> { Success = response.Success, Data = { response.Data.Count() > 0 } };
@@ -97,7 +102,7 @@ namespace DAL.Repository.TrainingRepositories
                 new SqlParameter("@LONGDESCRIPTION", training.LongDescription),
                 new SqlParameter("@PREREQUISITEIDS", prerequisiteList)
             };
-            return await _dataBaseHelper.ExecuteTransactionAsync(query, parameters);
+            return await _dataBaseHelper.ExecuteTransactionAffectedRowAsync(query, parameters);
         }
         public async Task<Response<bool>> SetPrerequisiteAsync(int prerequisiteId, string title)
         {
@@ -145,7 +150,7 @@ namespace DAL.Repository.TrainingRepositories
                 new SqlParameter("@LONGDESCRIPTION", training.LongDescription),
                 new SqlParameter("@PREREQUISITEIDS", prerequisiteList)
             };
-            return await _dataBaseHelper.ExecuteTransactionAsync(query, parameters);
+            return await _dataBaseHelper.ExecuteTransactionAffectedRowAsync(query, parameters);
         }
     }
 }

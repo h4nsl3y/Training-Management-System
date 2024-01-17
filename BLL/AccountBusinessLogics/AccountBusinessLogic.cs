@@ -17,7 +17,7 @@ using System.Xml.Linq;
 
 namespace BLL.AccountBusinessLogics
 {
-    public class AccountBusinessLogic : IAccountBusinesslogic
+    public class AccountBusinessLogic : IAccountBusinessLogic
     {
         private readonly IAccountRepository _accountRepository;
         private readonly ILogger _logger;
@@ -30,17 +30,23 @@ namespace BLL.AccountBusinessLogics
             _resultError = new Response<Account> { Success = false, Message = "an Error has been encounter" };
             _resultBoolError = new Response<bool> { Success = false, Message = "an Error has been encounter" };
         }
-        public async Task<Response<bool>> AddAccountAsync(Account account)
+        public async Task<Response<Account>> AddAccountAsync(Account account)
         {
             try
             {
                 account.Password = await Task.Run(() => Encrypt(account.Password));
-                return await _accountRepository.AddAsync(account);
+                Response<Account> response = await _accountRepository.RegisterAccountAsync(account);
+                response.Data.First().Password = "";
+                return new Response<Account>
+                {
+                    Success = true,
+                    Data = { response.Data.First() }
+                };
             }
             catch (Exception exception)
             {
                 _logger.Log(exception);
-                return _resultBoolError;
+                return _resultError;
             }
         }
         public async Task<Response<bool>> AuthenticatedAsync(string email, string password)
@@ -79,7 +85,31 @@ namespace BLL.AccountBusinessLogics
                     {"MOBILENUMBER", mobileNumber},
                     {"NATIONALIDENTIFICATIONNUMBER", NationalIdentificationNumber}
                 };
-                return await _accountRepository.DuplicatedAsync(conditions);
+
+
+                Response<bool> duplicatedResult = await _accountRepository.DuplicatedAsync(conditions);
+                if (duplicatedResult.Data.Any(item => item == true))
+                {
+                    string duplicateMessage = "The field(s) : ";
+                    if (duplicatedResult.Data[0] == true) { duplicateMessage += "'email',"; }
+                    if (duplicatedResult.Data[1] == true) { duplicateMessage += "'mobile number',"; }
+                    if (duplicatedResult.Data[2] == true) { duplicateMessage += "'national identification number',"; }
+                    duplicateMessage = duplicateMessage.Remove(duplicateMessage.Length - 1, 1);
+
+                    int lastCommaIndex = duplicateMessage.LastIndexOf(',');
+                    if (lastCommaIndex >= 0)
+                    {
+                        duplicateMessage = duplicateMessage.Substring(0, lastCommaIndex) + " and " + duplicateMessage.Substring(lastCommaIndex + 1);
+                    }
+                    
+
+                    duplicateMessage += " have already been registered ! ";
+                    return new Response<bool> { Success = true, Data = { true }, Message = duplicateMessage };
+                }
+                else
+                {
+                    return new Response<bool> { Success = false, Data = { false } };
+                }
             }
             catch (Exception exception)
             {
@@ -130,7 +160,9 @@ namespace BLL.AccountBusinessLogics
             {
                 Dictionary<string, object> conditions = new Dictionary<string, object>()
                 {{"EMAIL", email }};
-                return await _accountRepository.GetAsync(conditions);
+                Response<Account> response =  await _accountRepository.GetAsync(conditions);
+                response.Data.First().Password = "";
+                return response;
             }
             catch (Exception exception)
             {

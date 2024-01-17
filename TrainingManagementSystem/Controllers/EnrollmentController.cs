@@ -29,13 +29,13 @@ namespace TrainingManagementSystem.Controllers
         [HttpGet]
         public async Task<JsonResult> GetAllEnrollmentByEmployeeId(int accountId)
         {
-            if (accountId == 0) { accountId = (int) Session["AccountId"]; }
+            if (accountId == 0) { accountId = ((Account)Session["Account"]).AccountId; }
             return Json(await _enrollmentBusinessLogic.GetEnrollmentByAccountAsync(accountId), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public async Task<ActionResult> RegisterEnrollment(int trainingId)
         {
-            Enrollment enrollment = new Enrollment() {TrainingId = trainingId,AccountId = (int)Session["AccountId"], SubmissionDate = DateTime.Now};
+            Enrollment enrollment = new Enrollment() {TrainingId = trainingId,AccountId = ((Account)Session["Account"]).AccountId, SubmissionDate = DateTime.Now};
             return Json(await _genericBusinessLogic.AddAsync(enrollment), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]

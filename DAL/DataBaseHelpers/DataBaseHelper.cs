@@ -42,7 +42,7 @@ namespace DAL.DataBaseHelpers
                     sqlCommand.Parameters.Clear();
                 }
             }
-            catch (Exception exception)
+            catch
             {
                 throw;
             }
@@ -52,7 +52,7 @@ namespace DAL.DataBaseHelpers
             }
             return result;
         }
-        public async Task<Response<bool>> ExecuteTransactionAsync(string query, List<SqlParameter> parameters = null)
+        public async Task<Response<bool>> ExecuteTransactionAffectedRowAsync(string query, List<SqlParameter> parameters = null)
         {
             Response<bool> result;
             try
@@ -70,14 +70,58 @@ namespace DAL.DataBaseHelpers
                             result = new Response<bool>() { Success = true, Data = { affectedrows > 0 } };
                         }
                     }
-                    catch(Exception exception)
+                    catch
                     {
                         transaction.Rollback(); 
                         throw;
                     }
                 }
             }
-            catch (Exception exception)
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                Disconnect();
+            }
+            return result;
+        }
+        public async Task<Response<T>> ExecuteTransactionAsync(string query, List<SqlParameter> parameters = null)
+        {
+            Response<T> result = new Response<T>();
+            List<T> objectList = new List<T>();
+            try
+            {
+                await ConnectAsync();
+                using (SqlTransaction transaction = _connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (SqlCommand sqlCommand = new SqlCommand(query, _connection, transaction))
+                        {
+                            if (parameters != null) { sqlCommand.Parameters.AddRange(parameters.ToArray()); }
+                            SqlDataReader reader = await sqlCommand.ExecuteReaderAsync();
+                            while (reader.Read())
+                            {
+                                T entity = await Task.Run(() => MapObject(reader));
+                                objectList.Add(entity);
+                            }
+                            reader.Close();
+                            result.Success = true;
+                            result.Data = objectList;
+                            sqlCommand.Parameters.Clear();
+                            transaction.Commit();
+                        }
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+            catch
             {
                 throw;
             }
@@ -101,7 +145,7 @@ namespace DAL.DataBaseHelpers
                     result = new Response<bool>() { Success = true, Data = { affectedrows > 0 } };
                 }
             }
-            catch (Exception exception)
+            catch
             {
                 throw;
             }

@@ -17,11 +17,10 @@ using System;
 namespace TestProject
 {
     [TestFixture]
-    public class UnitTest
+    public class AccountUtilsTest
     {
         private Mock<IAccountRepository> _stubAccountRepository;
         private AccountBusinessLogic _accountBusinessLogic;
-
         private List<Account> _accountList;
 
         [SetUp]
@@ -67,16 +66,17 @@ namespace TestProject
                     Password = "$2a$13$H1f8wryG3Lk0KtzV7ayvQ.3I2bsCbFpjw6HysbIJsxkr/M5K8ryOG", // administrator
                     RoleId = (int)RoleEnum.Administrator }
             };
-
             _stubAccountRepository = new Mock<IAccountRepository>();
 
-            _stubAccountRepository.Setup(accountRepository => accountRepository.AddAsync(It.IsAny<Account>()))
+            _stubAccountRepository.Setup(accountRepository => accountRepository.RegisterAccountAsync(It.IsAny<Account>()))
                 .ReturnsAsync((Account accountInstance) =>
                 {
                     _accountList.Add(accountInstance);
-                    return new Response<bool> { Success = true, Data = { true } };
+                    return new Response<Account> {
+                        Success = true,
+                        Data = _accountList.Where(account => account.AccountId == accountInstance.AccountId).ToList()
+                        };
                 });
-
             _stubAccountRepository.Setup(accountRepository => accountRepository.AuthenticateAsync(It.IsAny<string>())).
                 ReturnsAsync((string userEmail) => 
                     new Response<Account>() { Success = true, Data = { _accountList.FirstOrDefault(account => account.Email == userEmail) } });
@@ -165,10 +165,10 @@ namespace TestProject
                 RoleId = (int)RoleEnum.Employee
             };
             //Act 
-            Response<bool> response = await _accountBusinessLogic.AddAccountAsync(accountInstance);
+            Response<Account> response = await _accountBusinessLogic.AddAccountAsync(accountInstance);
             Account lastAddedAccount = _accountList.Last();
             //Assert
-            Assert.IsTrue(response.Success && accountInstance.AccountId == lastAddedAccount.AccountId);
+            Assert.IsTrue(response.Success && response.Data.First().AccountId == lastAddedAccount.AccountId);
         }
 
         [Test]
@@ -212,7 +212,7 @@ namespace TestProject
         }
 
         [Test]
-        [TestCase("","",ExpectedResult = 3 )]
+        [TestCase("","",ExpectedResult = 3)]
         [TestCase("Email", "hansley.eleonore@email.com", ExpectedResult = 1)]
         [TestCase("FakeField", "hansley.eleonore@email.com", ExpectedResult = 0)]
         [TestCase("Email", "FakeEmail", ExpectedResult = 0)]

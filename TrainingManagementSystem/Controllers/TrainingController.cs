@@ -14,8 +14,8 @@ namespace TrainingManagementSystem.Controllers
 {
     public class TrainingController : Controller
     {
-        private readonly ITrainingBusinesslogic _trainingBusinessLogic;
-        public TrainingController(ITrainingBusinesslogic trainingBusinesslogic)
+        private readonly ITrainingBusinessLogic _trainingBusinessLogic;
+        public TrainingController(ITrainingBusinessLogic trainingBusinesslogic)
         {
             _trainingBusinessLogic = trainingBusinesslogic;
         }
@@ -30,7 +30,7 @@ namespace TrainingManagementSystem.Controllers
             => Json(await _trainingBusinessLogic.GetAllTrainingAsync(), JsonRequestBehavior.AllowGet);
         [HttpGet] 
         public async Task<JsonResult> GetAvailableTraining() 
-            => Json(await _trainingBusinessLogic.GetAvailableTrainingAsync((int)Session["AccountId"]), JsonRequestBehavior.AllowGet) ;
+            => Json(await _trainingBusinessLogic.GetAvailableTrainingAsync(((Account)Session["Account"]).AccountId), JsonRequestBehavior.AllowGet) ;
         public async Task<JsonResult> IsAnyEnrollmentByTrainingAsync(int trainingId)
             => Json(await _trainingBusinessLogic.IsAnyEnrollmentByTrainingAsync(trainingId), JsonRequestBehavior.AllowGet);
         [HttpPost]

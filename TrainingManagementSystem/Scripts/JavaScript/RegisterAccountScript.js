@@ -14,7 +14,7 @@ function CheckTextField() {
     let firstName = document.getElementById("FirstNameFieldId").value;
     let lastName = document.getElementById("LastNameFieldId").value;
     let nationalIdentificationNumber = document.getElementById("NationalIdentificationNumberFieldId").value;
-    let mobileNumber = document.getElementById("MobileNumberFieldId").value;
+    let mobileNumber = document.getElementById("MobilePrefixFieldId").value.concat(document.getElementById("MobileNumberFieldId").value);
     let email = document.getElementById("EmailFieldId").value;
 
     let department = document.getElementById("DepartmentComboBoxId").value;
@@ -32,7 +32,6 @@ function CheckTextField() {
     if (role == "none") { EmptyNotificationText += "role ,"; emptyFlag = true }
     if (password == "") { EmptyNotificationText += "password ,"; emptyFlag = true };
     
-
     if (nationalIdentificationNumber.toString().length != 14)
     { InvalidNotificationText += "National identification number ,"; invalidFlag = true };
     let mobileNumberlenght = mobileNumber.toString().split(" ")[1].length;
@@ -128,19 +127,19 @@ function GetRoleList() {
     });
 };
 function GetPrefix(){
-    var countryData = window.intlTelInputGlobals.getCountryData(),
-        input = document.querySelector("#MobileNumberFieldId"),
+    let countryData = window.intlTelInputGlobals.getCountryData(),
+        input = document.querySelector("#MobilePrefixFieldId"),
         addressDropdown = document.querySelector("#country");
 
-    var iti = window.intlTelInput(input, {
+    let iti = window.intlTelInput(input, {
         hiddenInput: "full_phone",
         utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"
     });
-    for (var i = 0; i < countryData.length; i++) {
-        var country = countryData[i];
-        var optionNode = document.createElement("option");
+    for (let i = 0; i < countryData.length; i++) {
+        let country = countryData[i];
+        let optionNode = document.createElement("option");
         optionNode.value = country.iso2;
-        var textNode = document.createTextNode(country.name);
+        let textNode = document.createTextNode(country.name);
         optionNode.appendChild(textNode);
         addressDropdown.appendChild(optionNode);
     }
@@ -154,12 +153,12 @@ function GetPrefix(){
     input.value = '+1 ';
 }
 function Register() {
-    var userDetails = {
+    let userDetails = {
         FirstName: document.getElementById("FirstNameFieldId").value,
         OtherName: document.getElementById("OtherNameFieldId").value,
         LastName: document.getElementById("LastNameFieldId").value,
         NationalIdentificationNumber: document.getElementById("NationalIdentificationNumberFieldId").value,
-        MobileNumber: document.getElementById("MobileNumberFieldId").value,
+        MobileNumber:  document.getElementById("MobilePrefixFieldId").value.concat(document.getElementById("MobileNumberFieldId").value),
         Email: document.getElementById("EmailFieldId").value,
         DepartmentId: document.getElementById("DepartmentComboBoxId").value,
         ManagerId: document.getElementById("ManagerComboBoxId").value,

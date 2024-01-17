@@ -74,7 +74,7 @@ namespace TrainingManagementSystem
 
             //Account
             container.RegisterType<IAccountRepository, AccountRepository>();
-            container.RegisterType<IAccountBusinesslogic, AccountBusinessLogic>();
+            container.RegisterType<IAccountBusinessLogic, AccountBusinessLogic>();
 
             //Enrollment
             container.RegisterType<IEnrollmentRepository, EnrollmentRepository>();
@@ -82,7 +82,7 @@ namespace TrainingManagementSystem
 
             //Training
             container.RegisterType<ITrainingRepository, TrainingRepository>();
-            container.RegisterType<ITrainingBusinesslogic, TrainingBusinesslogic>();
+            container.RegisterType<ITrainingBusinessLogic, TrainingBusinesslogic>();
 
             //Required file
             container.RegisterType<IRequiredFilesRepository, RequiredFilesRepository>();
@@ -98,7 +98,7 @@ namespace TrainingManagementSystem
 
             //ViewModels
             container.RegisterType(typeof(IViewModelRepository<>), typeof(ViewModelRepository<>));
-            container.RegisterType(typeof(IViewModelBusinesslogic<>), typeof(ViewModelBusinessLogic<>));
+            container.RegisterType(typeof(IViewModelBusinessLogic<>), typeof(ViewModelBusinessLogic<>));
 
             //Application process
             container.RegisterType<IApplicationProcessRepository, ApplicationProcessRepository>();
