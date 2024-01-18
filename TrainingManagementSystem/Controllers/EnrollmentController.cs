@@ -39,13 +39,15 @@ namespace TrainingManagementSystem.Controllers
             return Json(await _genericBusinessLogic.AddAsync(enrollment), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public async Task<ActionResult> UpdateState(Enrollment enrollment) 
-            => Json(await _genericBusinessLogic.UpdateAsync(enrollment), JsonRequestBehavior.AllowGet);
+        public async Task<ActionResult> UpdateState(Enrollment enrollment)
+        =>Json(await _genericBusinessLogic.UpdateAsync(enrollment), JsonRequestBehavior.AllowGet);   
+        
         [HttpGet]
         public async Task<ActionResult> GenerateCSVFile(int trainingId)
         {
             Response<byte[]> byteResponse = await _enrollmentBusinessLogic.CreateExcelFile(trainingId);
             return File(byteResponse.Data.FirstOrDefault(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Data.xlsx");
         }
+
     }
 }

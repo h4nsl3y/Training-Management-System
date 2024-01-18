@@ -112,7 +112,7 @@ function GetRequestByEmployee(requestAccountId, requestAccountEmail) {
                                 let buttons =
                                     `<div class='split-Area'>
                                         <button class='item-button' id='detailBtn' onclick='UpdatRequestState( ${approvedEnrollmentParameter} ,${requestAccountId}, ${JSON.stringify(row.Title)}, ${JSON.stringify(requestAccountEmail)}, ${comment} )'>Approve</button> 
-                                        <button class='item-button' id='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} , ${requestAccountId}, ${JSON.stringify(row.Title)} , ${JSON.stringify(requestAccountEmail)} )'> Reject</button>
+                                        <button class='item-button' id='detailBtn' onclick='RejectRequest( ${rejectEnrollmentParameter} , ${requestAccountId}, ${JSON.stringify(row.Title)} , ${JSON.stringify(requestAccountEmail)} )'>Reject</button>
                                     </div>`; 
 
                             return buttons

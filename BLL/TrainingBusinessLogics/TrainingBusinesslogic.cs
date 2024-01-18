@@ -14,8 +14,8 @@ namespace BLL.TrainingBusinessLogics
     {
         private readonly ITrainingRepository _trainingRepository;
         private readonly ILogger _logger;
-        private Response<Training> _resultError;
-        private Response<bool> _resultboolError;
+        private readonly Response<Training> _resultError;
+        private readonly Response<bool> _resultboolError;
         public TrainingBusinesslogic(ITrainingRepository trainingRepository, ILogger logger)
         {
             _trainingRepository = trainingRepository;

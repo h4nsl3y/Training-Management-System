@@ -161,7 +161,10 @@ namespace BLL.AccountBusinessLogics
                 Dictionary<string, object> conditions = new Dictionary<string, object>()
                 {{"EMAIL", email }};
                 Response<Account> response =  await _accountRepository.GetAsync(conditions);
-                response.Data.First().Password = "";
+                if (response.Data.Any())
+                {
+                    response.Data.First().Password = "";
+                }
                 return response;
             }
             catch (Exception exception)

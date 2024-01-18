@@ -34,6 +34,13 @@ namespace DAL.Repository.EnrollmentRepositories
                                 (SELECT TRAININGID FROM TRAINING WHERE DEADLINE = CAST(GETDATE() AS DATE))";
             return await _dataBaseHelper.ExecuteQueryAsync(query);
         }
+        public async Task<Response<Enrollment>> GetTrainingByDeadlineAsync()
+        {
+            string query = @"SELECT DISTINCT TRAININGID FROM ENROLLMENT WHERE TRAININGID IN 
+                            (SELECT TRAININGID FROM TRAINING 
+                            WHERE DEADLINE = CAST(GETDATE() AS DATE)) ;";
+            return await _dataBaseHelper.ExecuteQueryAsync(query);
+        }
         public async Task SelectTrainingParticipants(int trainingId)
         {
             string query = $@"UPDATE ENROLLMENT

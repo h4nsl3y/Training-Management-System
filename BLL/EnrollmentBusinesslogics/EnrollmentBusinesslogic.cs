@@ -102,5 +102,17 @@ namespace BLL.EnrollmentBusinesslogics
                 return new Response<byte[]> { Success = false, Message = "File could not be generated" };
             }
         }
+
+        public async Task RenewSelection(Enrollment enrollment)
+        {
+            try
+            {
+                await _enrollmentRepository.SelectTrainingParticipants(enrollment.TrainingId);
+            }
+            catch (Exception exception)
+            {
+                _logger.Log(exception);
+            }
+        }
     }
 }

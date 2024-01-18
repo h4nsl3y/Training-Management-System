@@ -23,7 +23,6 @@ namespace DAL.Repository.AccountRepositories
         public AccountRepository(DataBaseHelper<Account> dataBaseHelper)
         {
             _dataBaseHelper = dataBaseHelper;
-            PropertyInfo[] properties = typeof(Account).GetProperties();
             tableName = typeof(Account).Name;
         }
         public async Task<Response<Account>> AuthenticateAsync(string email)

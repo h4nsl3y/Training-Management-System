@@ -233,6 +233,7 @@ function UpdateStateToCancel(enrollmentParameter) {
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
+                
                 ShowNotification(true, "Success", "Enrollment request has been cancelled"),
                 GetStateList()
             }

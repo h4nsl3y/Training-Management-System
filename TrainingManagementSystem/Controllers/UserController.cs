@@ -15,27 +15,27 @@ namespace TrainingManagementSystem.Controllers
         [CustomAuthorization(RoleEnum.Employee)]
         public ActionResult EmployeeViewPage()
         {
-            ViewBag.FirstName = ((Account)Session["Account"]).FirstName;
-            ViewBag.OtherName = ((Account)Session["Account"]).OtherName;
-            ViewBag.LastName = ((Account)Session["Account"]).LastName;
+            ViewBag.FirstName = ((Account)Session["Account"])?.FirstName ?? "";
+            ViewBag.OtherName = ((Account)Session["Account"])?.OtherName ?? "";
+            ViewBag.LastName = ((Account)Session["Account"])?.LastName ?? "";
             return View();
         }
         [CustomSessionState]
         [CustomAuthorization(RoleEnum.Manager)]
         public ActionResult ManagerViewPage()
         {
-            ViewBag.FirstName = ((Account)Session["Account"]).FirstName;
-            ViewBag.OtherName = ((Account)Session["Account"]).OtherName;
-            ViewBag.LastName = ((Account)Session["Account"]).LastName;
+            ViewBag.FirstName = ((Account)Session["Account"])?.FirstName ?? "";
+            ViewBag.OtherName = ((Account)Session["Account"])?.OtherName ?? "";
+            ViewBag.LastName = ((Account)Session["Account"])?.LastName ?? "";
             return View();
         }
         [CustomSessionState]
         [CustomAuthorization(RoleEnum.Administrator)]
         public ActionResult AdministratorViewPage()
         {
-            ViewBag.FirstName = ((Account)Session["Account"]).FirstName;
-            ViewBag.OtherName = ((Account)Session["Account"]).OtherName;
-            ViewBag.LastName = ((Account)Session["Account"]).LastName;
+            ViewBag.FirstName = ((Account)Session["Account"])?.FirstName ?? "";
+            ViewBag.OtherName = ((Account)Session["Account"])?.OtherName ?? "";
+            ViewBag.LastName = ((Account)Session["Account"])?.LastName ?? "";
             return View();
         }
     }

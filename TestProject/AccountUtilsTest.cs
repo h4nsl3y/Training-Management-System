@@ -86,8 +86,9 @@ namespace TestProject
                     Response<bool> result = new() { Success = true };
                     foreach (var condition in conditions)
                     {
-                        bool isDuplicate = _accountList.Any(account => account.GetType().GetProperty(condition.Key, 
-                            BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance).GetValue(account).Equals(condition.Value));
+                        bool isDuplicate = _accountList.Any(account => account.GetType().GetProperty(condition.Key,
+                            BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance)
+                            .GetValue(account).Equals(condition.Value));
                         result.Data.Add(isDuplicate);
                     }
                     return result;
@@ -146,6 +147,7 @@ namespace TestProject
 
             _accountBusinessLogic = new AccountBusinessLogic(_stubAccountRepository.Object, null);
         }
+#region Account Test
 
         [Test]
         public async Task Test_AddAccountAsync()
@@ -174,7 +176,7 @@ namespace TestProject
         [Test]
         [TestCase("hansley.eleonore@email.com", "manager", ExpectedResult = false)]
         [TestCase("hansley.eleonore@email.com", "employee", ExpectedResult = true)]
-        public async Task<bool> Test_AuthenticateUserError1(string employeeEmail, string password)
+        public async Task<bool> AuthenticateUser_NotExist_False(string employeeEmail, string password)
         {
             //Arrange
             //Act
@@ -187,7 +189,7 @@ namespace TestProject
         [TestCase("hansley.eleonore@email.com", "A1234567890123", "51234567", ExpectedResult = true)]
         [TestCase("fakeEmail", "A1234567890123", "51234567", ExpectedResult = true)]
         [TestCase("fakeEmail", "fakeId", "FakeNumber", ExpectedResult = false)]
-        public async Task<bool> Test_IsDuplicatedAsync(string email, string nationalIdentificationNumber, string mobileNumber)
+        public async Task<bool> IsDuplicatedAsync_DuplicateFound_True(string email, string nationalIdentificationNumber, string mobileNumber)
         {
             //Arrange
             //Act
@@ -201,7 +203,7 @@ namespace TestProject
         [TestCase("Email", "FakeEmail", ExpectedResult = false)]
         [TestCase("AccountId", 1, ExpectedResult = true)]
         [TestCase("AccountID", 100, ExpectedResult = false)]
-        public async Task<bool> Test_GetAccountAsync(string columnName, object value)
+        public async Task<bool> GetAccountAsync_Column_And_Value_Exist_True(string columnName, object value)
         {
             //Arrange
             Dictionary<string, object> dictionary = new () { { columnName, value } };
@@ -216,7 +218,7 @@ namespace TestProject
         [TestCase("Email", "hansley.eleonore@email.com", ExpectedResult = 1)]
         [TestCase("FakeField", "hansley.eleonore@email.com", ExpectedResult = 0)]
         [TestCase("Email", "FakeEmail", ExpectedResult = 0)]
-        public async Task<int> Test_GetAllAccountAsync(string columnName, object value)
+        public async Task<int> GetAllAccountAsync_Column_And_Value_Exist_True(string columnName, object value)
         {
             //Arrange
             Dictionary<string, object> dictionary = new() { { columnName, value } };
@@ -229,7 +231,7 @@ namespace TestProject
         [Test]
         [TestCase("hansley.eleonore@email.com", ExpectedResult = true)]
         [TestCase("FakeEmail", ExpectedResult = false)]
-        public async Task<bool> Test_GetByEmailAsync(string email)
+        public async Task<bool> GetByEmailAsync_Email_Exist_True(string email)
         {
             //Arrange
             //Act
@@ -239,16 +241,17 @@ namespace TestProject
         }
 
         [Test]
-        public async Task Test_GetManagerListAsync()
+        public async Task GetManagerListAsync_All_Manager_True()
         {
             //Arrange
             //Act
             Response<Account> response = await _accountBusinessLogic.GetManagerListAsync();
             //Assert
             Assert.IsTrue(response.Data.Any(value => 
-                value.RoleId == (int)RoleEnum.Manager ||
-                value.RoleId == (int)RoleEnum.Administrator
+                value.RoleId == (int)RoleEnum.Manager 
             ));
         }
+
+#endregion
     }
 }

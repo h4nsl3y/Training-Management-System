@@ -67,7 +67,6 @@ namespace TestProject.Services
             {
                 PollingInterval = TimeSpan.FromMilliseconds(200),
             };
-            wait.IgnoreExceptionTypes(typeof(ElementNotInteractableException));
             wait.Until(w => !w.FindElement(By.XPath(xpath)).Enabled);
         }
     }

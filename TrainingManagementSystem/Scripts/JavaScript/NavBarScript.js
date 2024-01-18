@@ -14,7 +14,7 @@
     });
 }
 function CreateNotification(accountId, enrollmentState, trainingTitle, comment, email) {
-    switch (enrollmentState) {
+/*    switch (enrollmentState) {
         case 3:
             subject = "Approval";
             body = `Your request for the training \n:'${trainingTitle}' \nhas been approved by your manager`;
@@ -28,12 +28,12 @@ function CreateNotification(accountId, enrollmentState, trainingTitle, comment, 
             body = `Your request for the training \n:'${trainingTitle}' \nhas been rejected due to :\n '${comment}'`;
             break;
     }
-    body = body.concat("\n\nThis message is computer-generated , please do not reply.");
-    let notification = { AccountId: accountId, Subject: subject, Body: body};
+    body = body.concat("\n\nThis message is computer-generated , please do not reply.");*/
+   /* let notification = { AccountId: accountId, Subject: subject, Body: body};*/
     $.ajax({
         type: "POST",
         url: "/Notification/AddNotification",
-        data: { notification: notification, email: email},
+        data: { accountId: accountId, enrollmentState: enrollmentState, trainingTitle: trainingTitle, comment: comment, email: email},
         error: function (error) {
             ShowNotification(false, "Error", "Communication has been interupted");
         }

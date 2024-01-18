@@ -21,7 +21,7 @@ namespace DAL.Custom
         {
             Controller controller = filterContext.Controller as Controller;
             Account userAccount = (Account)controller.Session["Account"];
-            if (controller != null && userAccount.RoleId != null)
+            if (controller != null && userAccount?.RoleId != null)
             {
                 RoleEnum currentRole = (RoleEnum)userAccount.RoleId;
                 if (AuthorizedRole != currentRole)

@@ -20,8 +20,8 @@ namespace TrainingManagementSystem.Controllers
             _notificationBusinessLogic = notificationBusinessLogic;
         }
         [HttpPost]
-        public async Task<JsonResult> AddNotification(Notification notification,string email) 
-            => Json(await _notificationBusinessLogic.AddNotificationAsync(notification,email), JsonRequestBehavior.AllowGet);
+        public async Task<JsonResult> AddNotification(int accountId,int enrollmentState,string trainingTitle,string comment, string email) 
+            => Json(await _notificationBusinessLogic.AddNotificationAsync(accountId, enrollmentState, trainingTitle, comment, email), JsonRequestBehavior.AllowGet);
         [HttpGet]
         public async Task<JsonResult> GetNotification()
          => Json(await _notificationBusinessLogic.GetNotificationAsync(((Account)Session["Account"]).AccountId), JsonRequestBehavior.AllowGet);

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using static Unity.Storage.RegistrationSet;
 
 namespace BLL.NotificationBusinessLogics
@@ -25,12 +26,35 @@ namespace BLL.NotificationBusinessLogics
             _resultBoolError = new Response<bool> { Success = false, Message = "an Error has been encounter" };
             _resultError = new Response<Notification> { Success = false, Message = "an Error has been encounter" };
         }
-        public async Task<Response<bool>> AddNotificationAsync(Notification notification, string email)
+        public async Task<Response<bool>> AddNotificationAsync(int accountId, int enrollmentState, string trainingTitle, string comment, string email)
         {
             try
             {
-                _ = Task.Run(() => SendEmail(email, notification.Subject, notification.Body));
-                return await _notificationRepository.AddNotificationAsync(notification);
+                string subject = "";
+                string body = "";
+                switch (enrollmentState)
+                {
+                    case (int)EnrollmentStateEnum.Approved:
+                        subject = "Approval";
+                        body = $"Your request for the training <br>:'{trainingTitle}' <br>has been approved by your manager`";
+                        break;
+                    case (int)EnrollmentStateEnum.Cancelled:
+                        subject = "Cancelled";
+                        body = $"Your request for the training <br>:'{trainingTitle}' <br>has been cancelled`";
+                        break;
+                    case (int)EnrollmentStateEnum.Confirmed:
+                        subject = "Confirmation";
+                        body = $"Your enrollment reguarding the training <br>: '{trainingTitle}' <br>has been confirmed.";
+                        break;
+                    default:
+                        subject = "Rejection";
+                        body = $"Your request for the training <br>:'{trainingTitle}'<br>has been rejected due to :<br> '{comment}'";
+                        break;
+                }
+                body = body+= "<br><br>This message is computer-generated , please do not reply.";
+                _ = Task.Run(() => SendEmail(email, subject, body));
+
+                return await _notificationRepository.AddNotificationAsync(new Notification { Subject = subject, Body = body});
             }
             catch (Exception exception)
             {

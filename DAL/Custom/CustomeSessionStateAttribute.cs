@@ -15,7 +15,7 @@ namespace DAL.Custom
         {
             Controller controller = filterContext.Controller as Controller;
             Account userAccount = (Account)controller.Session["Account"];
-            if (controller != null && userAccount.AccountId == null)
+            if (controller != null && userAccount?.AccountId == null)
             {
                 filterContext.Result = new RedirectToRouteResult(
                     new RouteValueDictionary(
