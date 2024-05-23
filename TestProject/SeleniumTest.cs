@@ -12,7 +12,6 @@ namespace TestProject
 
         private static DateTime currentDate = DateTime.Now;
         private static string _timestamp = (currentDate).ToString("ddMMyyyyHHmmssffff");
-
         private static string _department = $"Product and Technology";
         private static string _password = $"{_timestamp}!";
 
@@ -20,7 +19,7 @@ namespace TestProject
         private string _managerFirstName = $"Manager";
         private string _managerLastName = _timestamp;
         private string _managerNationalIdentificationNumber = "TM" + _timestamp.Substring(_timestamp.Length - 12);
-        private string _managerMobileNumber = _timestamp.Substring(_timestamp.Length - 8);
+        private string _managerMobileNumber = _timestamp.Substring(_timestamp.Length - 8) ;
         private string _managerEmail = $"Manager{_timestamp}@email.com";
         //Employee details
         private string _employeeFirstName = "Employee_TestFirstName";
@@ -61,6 +60,10 @@ namespace TestProject
             _seleniumHelper.EnterText("//input[@id='ConfirmPasswordFieldId']", _password);
             _seleniumHelper.DoubleClick("//input[@value='Sign Up']");
 
+            _seleniumHelper.ExplicitWait($"//label[text()='Manager']/preceding-sibling::input", 5000);
+            _seleniumHelper.Click($"//label[text()='Manager']/preceding-sibling::input");
+            _seleniumHelper.Click("//input[@value='Submit']");
+
             _seleniumHelper.WaitForDom(5000);
             _seleniumHelper.ExplicitWait($"//h2[contains(text(),'{_managerFirstName}') and contains( text(),'{_managerLastName}')]", 5000);
             Assert.IsTrue(_seleniumHelper.IsElementPresent($"//h2[contains(text(),'{_managerFirstName}') and contains( text(),'{_managerLastName}')]"));
@@ -95,7 +98,7 @@ namespace TestProject
             _seleniumHelper.Close();
         }
         [Test, Order(3)]
-        public void SeleniumTest_SignIn_employee()
+        public void SeleniumTest_LogIn_employee()
         {
             _seleniumHelper.GoTo(_URL);
             _seleniumHelper.WaitForDom(5000);
@@ -211,10 +214,6 @@ namespace TestProject
             _seleniumHelper.EnterText("//input[@id='employeeEmailId']", _employeeEmail);
             _seleniumHelper.EnterText("//input[@id='employeePasswordId']", _password);
             _seleniumHelper.Click("//input[@value='Sign In']");
-
-            //_seleniumHelper.ExplicitWait("//label[text()='Employee']/preceding-sibling::input", 5000);
-            //_seleniumHelper.Click("//label[text()='Employee']/preceding-sibling::input");
-            //_seleniumHelper.Click("//input[@value='Submit']");
 
             _seleniumHelper.WaitForDom(5000);
 

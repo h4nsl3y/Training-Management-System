@@ -25,7 +25,6 @@ namespace TrainingManagementSystem.Controllers
         [HttpGet]
         public async Task<JsonResult> GetNotification()
          => Json(await _notificationBusinessLogic.GetNotificationAsync(((Account)Session["Account"]).AccountId), JsonRequestBehavior.AllowGet);
-
         [HttpPost]
         public async Task<JsonResult> UpdateNotificationState(int notificationId) 
             => Json(await _notificationBusinessLogic.UpdateStateNotificationNotificationAsync(notificationId), JsonRequestBehavior.AllowGet);

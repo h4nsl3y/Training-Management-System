@@ -52,7 +52,7 @@ namespace DAL.Repository.EnrollmentRepositories
 				                            JOIN TRAINING ON ENROLLMENT.TRAININGID = TRAINING.TRAININGID
 				                            JOIN ACCOUNT ON ENROLLMENT.ACCOUNTID = ACCOUNT.ACCOUNTID
 				                            WHERE ENROLLMENT.TRAININGID = @TRAININGID
-				                            AND STATEID = @ENROLLMENTSTATEAPPROVE
+				                            AND (STATEID = @ENROLLMENTSTATEAPPROVE OR STATEID = @ENROLLMENTSTATECONFIRM)
 				                            ORDER BY 
 				                            CASE
 					                            WHEN TRAINING.DEPARTMENTID = ACCOUNT.DEPARTMENTID 

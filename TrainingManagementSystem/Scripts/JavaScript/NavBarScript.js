@@ -14,22 +14,6 @@
     });
 }
 function CreateNotification(accountId, enrollmentState, trainingTitle, comment, email) {
-/*    switch (enrollmentState) {
-        case 3:
-            subject = "Approval";
-            body = `Your request for the training \n:'${trainingTitle}' \nhas been approved by your manager`;
-            break;
-        case 4:
-            subject = "Cancelled";
-            body = `Your request for the training \n:'${trainingTitle}' \nhas been cancelled`;
-            break;
-        default:
-            subject = "Rejection";
-            body = `Your request for the training \n:'${trainingTitle}' \nhas been rejected due to :\n '${comment}'`;
-            break;
-    }
-    body = body.concat("\n\nThis message is computer-generated , please do not reply.");*/
-   /* let notification = { AccountId: accountId, Subject: subject, Body: body};*/
     $.ajax({
         type: "POST",
         url: "/Notification/AddNotification",

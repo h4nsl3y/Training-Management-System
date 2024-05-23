@@ -11,23 +11,30 @@ let departmentList = [];
 function AddDisplayPrerequisite() {
     let body = document.getElementById("prerequisiteRowId");
 
-    let comboBoxElement = document.createElement("select");
-    comboBoxElement.setAttribute("id", "trainingPrerequisiteDetailId-" + rowCount);
-    comboBoxElement.setAttribute("name", "PrerequisiteField");
-    comboBoxElement.setAttribute("class", "input-combo-box");
+    PreviousPrerequisites = document.getElementsByName("PrerequisiteField");
+    if (PreviousPrerequisites.length < 3) {
+        let comboBoxElement = document.createElement("select");
+        comboBoxElement.setAttribute("id", "trainingPrerequisiteDetailId-" + rowCount);
+        comboBoxElement.setAttribute("name", "PrerequisiteField");
+        comboBoxElement.setAttribute("class", "input-combo-box");
+        let buttonElement = document.createElement("button");
+        buttonElement.setAttribute("id", "removePrerequisiteBtnId-" + rowCount);
+        buttonElement.setAttribute("name", "PrerequisiteFieldButton");
+        buttonElement.setAttribute("class", "item-button");
+        buttonElement.setAttribute("type", "button");
+        buttonElement.setAttribute("onclick", "RemoveDisplayPrerequisite(" + rowCount + ");");
+        buttonElement.textContent = "Remove";
 
-    let buttonElement = document.createElement("button");
-    buttonElement.setAttribute("id", "removePrerequisiteBtnId-" + rowCount);
-    buttonElement.setAttribute("name", "PrerequisiteFieldButton");
-    buttonElement.setAttribute("class", "item-button");
-    buttonElement.setAttribute("type", "button");
-    buttonElement.setAttribute("onclick", "RemoveDisplayPrerequisite(" + rowCount + ");");
-    buttonElement.textContent = "Remove";
+        body.appendChild(comboBoxElement);
+        body.appendChild(buttonElement);
+        GetPrerequisiteList(rowCount);
+        rowCount += 1;
+    }
+    else {
+        ShowNotification(false,'Warning',"a maximum of 3 prerequisites per training")
+    }
 
-    body.appendChild(comboBoxElement);
-    body.appendChild(buttonElement);
-    GetPrerequisiteList(rowCount);
-    rowCount += 1;
+
 }
 function GetDepartmentList() {
     $.ajax({
@@ -60,11 +67,19 @@ function GetPrerequisiteList(rowId) {
         success: function (result) {
             if (result.Success == true) {
                 let combobox = document.getElementById("trainingPrerequisiteDetailId-" + rowId);
-                result.Data.forEach(function (row) {
-                    let option = document.createElement("option");
-                    option.value = row.PrerequisiteId;
-                    option.text = row.PrerequisiteDescription;
-                    combobox.add(option);
+                ListOfSetPrerequisites = [];
+                PreviousPrerequisites = document.getElementsByName("PrerequisiteField");
+                PreviousPrerequisites.forEach(function (comboBox) {
+                    ListOfSetPrerequisites.push(comboBox.value);
+                })
+                result.Data.forEach(function (prerequisite) {
+                    var a = _.includes(ListOfSetPrerequisites, prerequisite.PrerequisiteId.toString());
+                    if (_.includes(ListOfSetPrerequisites, prerequisite.PrerequisiteId.toString()) == false) {
+                        let option = document.createElement("option");
+                        option.value = prerequisite.PrerequisiteId;
+                        option.text = prerequisite.PrerequisiteDescription;
+                        combobox.add(option);
+                    }
                 })
             }
             else {
@@ -514,7 +529,7 @@ function GetPrerequisiteDataList() {
 //#endregion
 
 //#region functions
-function DisplayTab(event, tabId) {
+function DisplayTab(button, tabId) {
     let tabs = document.getElementsByName("tabArea")
     tabs.forEach((tab) => tab.style.display = 'none')
 
@@ -529,7 +544,7 @@ function DisplayTab(event, tabId) {
     table1.style.display = '';
     table2.style.display = 'initial';
 
-    event.currentTarget.style.backgroundColor = "#ffffff";
+    button.style.backgroundColor = "#ffffff";
 }
 function GenerateCSVFile(trainingId) {
     $.ajax({

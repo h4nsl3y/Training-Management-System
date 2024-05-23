@@ -126,10 +126,9 @@ namespace DAL.Repository.AccountRepositories
         {
             string query = $@"SELECT * FROM ACCOUNT INNER JOIN ACCOUNTROLE 
                               ON ACCOUNT.ACCOUNTID = ACCOUNTROLE.ACCOUNTID 
-                              WHERE ACCOUNTROLE.ROLEID = @ROLEID1 OR ACCOUNTROLE.ROLEID = @ROLEID2";
+                              WHERE ACCOUNTROLE.ROLEID = @ROLEID";
             List<SqlParameter> parameters = new List<SqlParameter>() { 
-                new SqlParameter($"@ROLEID1", RoleEnum.Manager), 
-                new SqlParameter($"@ROLEID2", RoleEnum.Administrator)
+                new SqlParameter($"@ROLEID", RoleEnum.Manager)
             };
             return await _dataBaseHelper.ExecuteQueryAsync(query,parameters);
         }
@@ -143,7 +142,14 @@ namespace DAL.Repository.AccountRepositories
 
                                     INSERT INTO ACCOUNTROLE(ACCOUNTID, ROLEID) VALUES(@ACCOUNTID, @ROLEID)
 
-                                    SELECT * FROM ACCOUNT WHERE ACCOUNTID = @ACCOUNTID";
+                                    SELECT ACCOUNT.ACCOUNTID,
+                                                    ACCOUNT.FIRSTNAME, ACCOUNT.OTHERNAME, ACCOUNT.LASTNAME, 
+                                                    ACCOUNT.NATIONALIDENTIFICATIONNUMBER, ACCOUNT.MOBILENUMBER, 
+                                                    ACCOUNT.EMAIL, ACCOUNT.MANAGERID, ACCOUNT.DEPARTMENTID, ACCOUNTROLE.ROLEID
+                                                    FROM ACCOUNT 
+                                                    INNER JOIN ACCOUNTROLE
+                                                    ON ACCOUNTROLE.ACCOUNTID = ACCOUNT.ACCOUNTID
+                                                    WHERE ISACTIVE = 1 AND ACCOUNT.ACCOUNTID = @ACCOUNTID";
             List<SqlParameter> parameters = new List<SqlParameter>()
             {
                 new SqlParameter("@FIRSTNAME",GetPropertyValue(account.FirstName)),

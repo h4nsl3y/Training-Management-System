@@ -6,8 +6,8 @@
     GetPrerequisiteFiles();
 });
 //GLOBAL VARIABLE
-var index = 0;
-var departmentList = [] ;
+let index = 0;
+let departmentList = [] ;
 
 //#region DataTable
 function GetAvailableTrainingList() {
@@ -233,7 +233,6 @@ function UpdateStateToCancel(enrollmentParameter) {
         dataType: 'json',
         success: function (result) {
             if (result.Success == true) {
-                
                 ShowNotification(true, "Success", "Enrollment request has been cancelled"),
                 GetStateList()
             }
@@ -599,7 +598,7 @@ function Upload(prerequisiteId) {
 //#endregion
 
 //#region function
-function DisplayTab(event, tabId) {
+function DisplayTab(button, tabId) {
     let tabs = document.getElementsByName("tabArea")
     tabs.forEach((tab) => tab.style.display = 'none')
 
@@ -609,7 +608,7 @@ function DisplayTab(event, tabId) {
     let displayTab = document.getElementById(tabId);
     displayTab.style.display = "inherit";
 
-    event.currentTarget.style.backgroundColor = "#ffffff";
+    button.style.backgroundColor = "#ffffff";
 }
 function HideTab() {
     let tabs = document.getElementsByName("tabArea")

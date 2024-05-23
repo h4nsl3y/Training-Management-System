@@ -37,7 +37,7 @@ namespace BLL.AutomaticProcess
                         .WithIntervalInSeconds(120)
                         .RepeatForever())
                     .Build();
-            /*.WithDailyTimeIntervalSchedule(x => x
+            /*
             .WithIntervalInHours(24)
             .OnEveryDay()
             .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(0, 0)))

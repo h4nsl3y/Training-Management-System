@@ -16,6 +16,6 @@ namespace DAL.Repository.GenericRepositories
         Task<Response<bool>> DeleteAsync(T entity);
         Task<Response<T>> GetAsync(Dictionary<string, object> conditions);
         Task<Response<T>> GetAllAsync(Dictionary<string, object> conditions = null);
-        Task<Response<bool>> UpdateAsync(T entity);//int Id, Dictionary<string, object> conditions);
+        Task<Response<bool>> UpdateAsync(T entity);
     }
 }

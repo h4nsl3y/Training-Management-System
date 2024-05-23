@@ -529,7 +529,7 @@ function GetPrerequisiteDataList() {
 //#endregion
 
 //#region functions
-function DisplayTab(event, tabId) {
+function DisplayTab(button, tabId) {
     let tabs = document.getElementsByName("tabArea")
     tabs.forEach((tab) => tab.style.display = 'none')
 
@@ -544,7 +544,7 @@ function DisplayTab(event, tabId) {
     table1.style.display = '';
     table2.style.display = 'initial';
 
-    event.currentTarget.style.backgroundColor = "#ffffff";
+    button.style.backgroundColor = "#ffffff";
 }
 function GenerateCSVFile(trainingId) {
     $.ajax({

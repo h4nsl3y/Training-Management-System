@@ -42,6 +42,10 @@ form {
     width: 80%;
     margin: 0px 10%;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    display: none;
+}
 .field-container {
     width: 100%;
     display: grid;
@@ -57,7 +61,7 @@ label {
 }
 .split-number{
     display: grid;
-    grid-template-columns: 30% 70%;
+    grid-template-columns: 35% 65%;
     grid-column-gap:5px;
 }
 input[type=text], input[type=number], input[type=password], input[type=tel], select {
