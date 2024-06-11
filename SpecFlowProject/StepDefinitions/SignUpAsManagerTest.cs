@@ -93,7 +93,7 @@ namespace SpecFlowProject.StepDefinitions
 
         public static void Log(string data)
         {
-            string _filepath = "C:\\Users\\P12B20B\\source\\repos\\assignment\\test.txt";
+            string _filepath = "repos\\assignment\\test.txt";
             if (File.Exists(_filepath)) { Write(_filepath,data); }
             else { File.Create(_filepath); Write(_filepath,data); }
         }
